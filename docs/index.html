@@ -335,7 +335,18 @@
 
 <script>
 const UNITS = [
-  {n:1,title:"Introduction to data analytics",hours:4,text:"Data analytics vs. data analysis, types of data analytics — descriptive, diagnostic, predictive, prescriptive analytics. Categories of variables: nominal, ordinal, interval, ratio."},
+  
+  {
+  n:1,
+  title:"Introduction to data analytics",
+  hours:4,
+  text:"Data analytics vs. data analysis, types of data analytics — descriptive, diagnostic, predictive, prescriptive analytics. Categories of variables: nominal, ordinal, interval, ratio.",
+
+  pdf:{
+      title:"Why Data Science",
+      url:"https://drive.google.com/file/d/1ee1WTo8d3X-1ffPYkgfgZLe4knIPbuN7/view?usp=sharing"
+  }
+},
   {n:2,title:"Getting started with raw data",hours:7,text:"The world of arrays with NumPy: creating arrays, mathematical operations, array subtraction, squaring, trigonometric functions, conditional operations, matrix multiplication, indexing and slicing, shape manipulation. Empowering data analysis with pandas: data structures, Series, importing/exporting CSV and XLS. Data cleansing: missing data, string operations, merging data. Data operations: aggregation."},
   {n:3,title:"Plotting and visualization",hours:5,text:"A brief matplotlib API primer, figures and subplots, colors, markers and line styles, ticks, labels and legends, annotations, saving plots to file, matplotlib configuration. Plotting with pandas: line plots, bar plots, histograms, density plots, scatter plots."},
   {n:4,title:"Inferential statistics",hours:8,text:"Measures of central tendency: mean, weighted mean, median, percentile. Dispersion: skewness, kurtosis, range, IQR, variance, coefficient of variation. Probability distributions: expected value, variance, standard deviation, covariance, correlation coefficient, the normal distribution. Hypothesis testing and ANOVA: null/alternative hypotheses, Type I/II error, analysis of variance."},
@@ -414,7 +425,19 @@ async function renderUnits(){
 
 function renderResourceBox(n, res){
   const box = document.getElementById('resbox-'+n);
-  let html = `<div class="label">Slides</div>`;
+  let html = `<div class="label">Learning Resources</div>`;
+  if(res && res.pptUrl){
+    if(UNITS[n-1].pdf){
+    html += `
+    <div class="resource-link" style="margin-bottom:10px;">
+        📄
+        <a href="${UNITS[n-1].pdf.url}"
+           target="_blank"
+           rel="noopener">
+           ${UNITS[n-1].pdf.title}
+        </a>
+    </div>`;
+}
   if(res && res.pptUrl){
     html += `<div class="resource-link"><a href="${res.pptUrl}" target="_blank" rel="noopener">Open unit ${n} slides ↗</a></div>`;
     if(res.notes) html += `<div style="margin-top:6px;color:var(--ink-dim);font-size:13px;">${res.notes}</div>`;
