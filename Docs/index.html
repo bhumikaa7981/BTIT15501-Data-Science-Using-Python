@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Science using Python — BTIT15501</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FFF7EA;
+    --cream-2:#FCEED4;
+    --card:#FFFFFF;
+    --ink:#2B2118;
+    --ink-dim:#7A6C58;
+    --coral:#FF6B5B;
+    --coral-d:#B8321F;
+    --sun:#FFC247;
+    --sun-d:#8A5E00;
+    --sky:#33BFCF;
+    --sky-d:#0E6E78;
+    --grape:#7C6CE0;
+    --grape-d:#453590;
+    --line:#EFE1C4;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    background:var(--cream);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    line-height:1.6;
+  }
+  h1,h2,h3,.display{font-family:'Baloo 2',sans-serif;font-weight:700;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  a{color:var(--sky-d);}
+  .wrap{max-width:920px;margin:0 auto;padding:0 24px;}
+  ::selection{background:var(--sun);color:var(--ink);}
+
+  /* NAV */
+  nav{
+    position:sticky;top:0;z-index:50;
+    background:rgba(255,247,234,0.9);
+    backdrop-filter:blur(6px);
+    border-bottom:2px solid var(--ink);
+  }
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;}
+  .brand{font-family:'Baloo 2',sans-serif;font-size:19px;font-weight:800;letter-spacing:0.2px;}
+  .brand span{color:var(--coral);}
+  nav .links{display:flex;gap:22px;font-size:14px;}
+  nav .links a{color:var(--ink);text-decoration:none;font-weight:500;}
+  nav .links a:hover{color:var(--coral);}
+
+  /* HERO */
+  header.hero{padding:60px 0 44px;position:relative;overflow:hidden;}
+  .hero-grid{display:grid;grid-template-columns:1.1fr 0.9fr;gap:40px;align-items:center;}
+  .eyebrow{
+    display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:0.5px;
+    background:var(--ink);color:var(--sun);padding:5px 12px;border-radius:999px;margin-bottom:16px;
+    transform:rotate(-2deg);
+  }
+  h1.title{font-size:46px;line-height:1.05;margin-bottom:14px;color:var(--ink);}
+  h1.title .hl{color:var(--coral);}
+  .subtitle{color:var(--ink-dim);font-size:16.5px;max-width:46ch;margin-bottom:22px;}
+  .chip-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px;}
+  .chip{
+    font-family:'IBM Plex Mono',monospace;font-size:12px;padding:6px 12px;border-radius:999px;
+    border:2px solid var(--ink);color:var(--ink);background:var(--card);
+  }
+  .cta-row{display:flex;gap:12px;flex-wrap:wrap;}
+  .btn{
+    font-family:'Inter',sans-serif;font-size:14.5px;font-weight:600;padding:12px 22px;
+    border-radius:999px;border:2px solid var(--ink);cursor:pointer;text-decoration:none;display:inline-block;
+    transition:transform 0.15s ease, box-shadow 0.15s ease;
+    box-shadow:3px 3px 0 var(--ink);
+  }
+  .btn:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--ink);}
+  .btn:active{transform:translate(0,0);box-shadow:1px 1px 0 var(--ink);}
+  .btn-primary{background:var(--coral);color:#fff;}
+  .btn-ghost{background:var(--card);color:var(--ink);}
+
+  svg.hero-viz{width:100%;height:auto;display:block;}
+  .draw{stroke-dasharray:600;stroke-dashoffset:600;animation:draw 1.6s ease-out forwards;}
+  .draw2{stroke-dasharray:900;stroke-dashoffset:900;animation:draw 2.1s 0.25s ease-out forwards;}
+  @keyframes draw{to{stroke-dashoffset:0;}}
+  @media (prefers-reduced-motion:reduce){.draw,.draw2{animation:none;stroke-dashoffset:0;}.dot{animation:none !important;opacity:1;}}
+  .dot{opacity:0;animation:pop 0.4s ease forwards;}
+  @keyframes pop{from{opacity:0;transform:scale(0);}to{opacity:1;transform:scale(1);}}
+
+  /* SECTIONS */
+  section{padding:54px 0;border-top:2px dashed var(--line);}
+  .kicker{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:1px;color:var(--sky-d);margin-bottom:8px;text-transform:uppercase;}
+  h2.sec-title{font-size:30px;margin-bottom:28px;color:var(--ink);}
+
+  /* INSTRUCTOR CARD */
+  .prof-card{
+    background:var(--card);color:var(--ink);border-radius:22px;padding:36px;
+    display:grid;grid-template-columns:120px 1fr;gap:28px;
+    border:2px solid var(--ink);box-shadow:6px 6px 0 var(--sun);
+  }
+  .avatar{
+    width:96px;height:96px;border-radius:50%;background:var(--grape);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-family:'Baloo 2',sans-serif;
+    font-size:32px;font-weight:800;border:2px solid var(--ink);
+  }
+  .prof-name{font-size:23px;margin-bottom:2px;}
+  .prof-role{color:var(--ink-dim);font-size:14px;margin-bottom:16px;}
+  .quote{
+    font-family:'Baloo 2',sans-serif;font-size:19px;line-height:1.45;font-weight:600;
+    color:var(--coral-d);background:var(--cream-2);border-radius:12px;padding:14px 18px;margin:14px 0 18px;
+  }
+  .prof-bio p{font-size:14.5px;color:#4A4437;margin-bottom:12px;}
+  .stat-row{display:flex;gap:24px;margin:18px 0;flex-wrap:wrap;}
+  .stat{font-family:'IBM Plex Mono',monospace;}
+  .stat b{display:block;font-size:21px;color:var(--ink);}
+  .stat span{font-size:12px;color:var(--ink-dim);}
+  .tag-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0;}
+  .tag{background:var(--sky);color:#04333A;border-radius:999px;padding:5px 12px;font-size:12.5px;font-weight:600;}
+  .research-box{
+    background:var(--ink);color:var(--sun);border-radius:14px;padding:16px 18px;margin-top:16px;
+  }
+  .research-box .k{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1px;color:var(--sun);text-transform:uppercase;margin-bottom:6px;opacity:0.8;}
+  .research-box .body-text{color:#FFF7EA;}
+  .interests{font-size:13.5px;color:var(--ink-dim);margin-top:14px;}
+
+  /* SYLLABUS */
+  .unit{
+    background:var(--card);border:2px solid var(--ink);border-radius:16px;margin-bottom:12px;overflow:hidden;
+  }
+  .unit-head{
+    display:flex;align-items:center;gap:16px;padding:16px 20px;cursor:pointer;
+  }
+  .unit-num{
+    font-family:'Baloo 2',sans-serif;font-size:15px;color:#fff;min-width:34px;height:34px;
+    background:var(--coral);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;
+  }
+  .unit-title{font-weight:600;flex:1;font-size:15.5px;}
+  .unit-hours{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--sky-d);border:2px solid var(--sky);padding:3px 9px;border-radius:999px;}
+  .chevron{transition:transform 0.2s ease;color:var(--ink-dim);font-size:18px;}
+  .unit.open .chevron{transform:rotate(180deg);}
+  .unit-body{max-height:0;overflow:hidden;transition:max-height 0.3s ease;}
+  .unit.open .unit-body{max-height:600px;}
+  .unit-body-inner{padding:0 20px 20px;font-size:14px;color:var(--ink-dim);}
+  .unit-body-inner .content-text{margin-bottom:16px;}
+  .resource-box{
+    background:var(--cream-2);border:2px dashed var(--sun-d);border-radius:12px;padding:14px 16px;
+  }
+  .resource-box .label{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1px;color:var(--sun-d);text-transform:uppercase;margin-bottom:8px;}
+  .resource-link{display:flex;align-items:center;gap:10px;font-size:14px;}
+  .resource-link a{font-weight:600;}
+  .resource-empty{color:var(--ink-dim);font-style:italic;font-size:13.5px;}
+  .edit-row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
+  .edit-row input{
+    flex:1;min-width:200px;background:#fff;border:2px solid var(--ink);color:var(--ink);
+    padding:8px 10px;border-radius:8px;font-size:13px;font-family:'Inter',sans-serif;
+  }
+  .edit-row button{
+    background:var(--sun);color:var(--ink);border:2px solid var(--ink);padding:8px 16px;border-radius:999px;font-size:13px;cursor:pointer;font-weight:700;
+  }
+
+  /* ADMIN BAR */
+  .admin-bar{
+    background:var(--ink);color:var(--cream);border-radius:14px;padding:14px 18px;margin-bottom:20px;
+    display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;
+  }
+  .admin-bar .msg{font-size:13.5px;}
+  .admin-bar button{
+    background:var(--sun);color:var(--ink);border:none;padding:9px 18px;border-radius:999px;font-size:13px;cursor:pointer;font-weight:700;
+  }
+  .admin-input{
+    background:transparent;border:2px solid var(--sun);color:var(--cream);padding:7px 10px;border-radius:8px;font-size:13px;margin-right:8px;
+  }
+  .admin-input::placeholder{color:#C9BB9E;}
+  .status-pill{
+    font-family:'IBM Plex Mono',monospace;font-size:11px;padding:4px 10px;border-radius:999px;background:var(--sun);color:var(--ink);font-weight:700;
+  }
+
+  /* RESOURCES TABLE */
+  table{width:100%;border-collapse:collapse;font-size:13.5px;}
+  th{
+    text-align:left;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1px;text-transform:uppercase;
+    color:var(--ink-dim);padding:8px 10px;border-bottom:2px solid var(--line);
+  }
+  td{padding:10px 10px;border-bottom:1px solid var(--line);color:var(--ink-dim);}
+  td.book-title{color:var(--ink);font-weight:500;}
+
+  .co-table td:first-child, .co-table th:first-child{width:70px;}
+  .co-table td:last-child, .co-table th:last-child{width:90px;text-align:right;}
+
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+  .info-card{background:var(--card);border:2px solid var(--ink);border-radius:16px;padding:20px;}
+  .info-card h3{font-size:16px;margin-bottom:10px;color:var(--ink);}
+  .info-card p{font-size:13.5px;color:var(--ink-dim);}
+  .info-card ul{padding-left:18px;font-size:13.5px;color:var(--ink-dim);}
+  .info-card li{margin-bottom:4px;}
+
+  footer{padding:36px 0;text-align:center;font-size:12.5px;color:var(--ink-dim);border-top:2px solid var(--ink);}
+  footer .mono{color:var(--ink-dim);}
+
+  @media (max-width:760px){
+    .hero-grid{grid-template-columns:1fr;}
+    .prof-card{grid-template-columns:1fr;text-align:left;}
+    h1.title{font-size:34px;}
+    .two-col{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="brand">BTIT15501 <span>·</span> Data Science</div>
+    <div class="links">
+      <a href="#professor">Professor</a>
+      <a href="#syllabus">Syllabus</a>
+      <a href="#resources">Resources</a>
+      <a href="#lab">Lab</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow">open elective &middot; sem V &middot; 45 hrs of plot twists</div>
+      <h1 class="title">Data Science <span class="hl">using Python</span></h1>
+      <p class="subtitle">Where arrays learn to behave, scatterplots tell the truth, and a stubborn dataset finally makes sense. NumPy, pandas, stats, and a bit of machine learning — no prior data science required.</p>
+      <div class="chip-row">
+        <span class="chip">EL</span><span class="chip">EC</span><span class="chip">Chemical</span><span class="chip">Mechanical</span><span class="chip">IC</span>
+        <span class="chip">3-0-2-4 credits</span>
+      </div>
+      <div class="cta-row">
+        <a href="#syllabus" class="btn btn-primary">Peek at the syllabus</a>
+        <a href="#professor" class="btn btn-ghost">Meet your professor</a>
+      </div>
+    </div>
+    <div>
+      <svg class="hero-viz" viewBox="0 0 340 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Playful scatter plot with a hand-drawn regression line">
+        <line x1="30" y1="220" x2="320" y2="220" stroke="#2B2118" stroke-width="2" opacity="0.35"/>
+        <line x1="30" y1="220" x2="30" y2="20" stroke="#2B2118" stroke-width="2" opacity="0.35"/>
+        <circle class="dot" cx="60" cy="190" r="6" fill="#33BFCF" style="animation-delay:0.15s"/>
+        <circle class="dot" cx="95" cy="170" r="6" fill="#FF6B5B" style="animation-delay:0.28s"/>
+        <circle class="dot" cx="120" cy="185" r="6" fill="#7C6CE0" style="animation-delay:0.41s"/>
+        <circle class="dot" cx="150" cy="140" r="6" fill="#33BFCF" style="animation-delay:0.54s"/>
+        <circle class="dot" cx="175" cy="150" r="6" fill="#FFC247" style="animation-delay:0.67s"/>
+        <circle class="dot" cx="205" cy="110" r="6" fill="#7C6CE0" style="animation-delay:0.8s"/>
+        <circle class="dot" cx="235" cy="95" r="6" fill="#33BFCF" style="animation-delay:0.93s"/>
+        <circle class="dot" cx="260" cy="80" r="6" fill="#FF6B5B" style="animation-delay:1.06s"/>
+        <circle class="dot" cx="285" cy="60" r="6" fill="#FFC247" style="animation-delay:1.19s"/>
+        <circle class="dot" cx="300" cy="45" r="6" fill="#7C6CE0" style="animation-delay:1.32s"/>
+        <path class="draw2" d="M45 205 Q170 150 305 40" fill="none" stroke="#2B2118" stroke-width="3" stroke-linecap="round"/>
+        <text x="170" y="245" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#7A6C58">y = mx + (a lot of coffee)</text>
+      </svg>
+    </div>
+  </div>
+</header>
+
+<section id="professor">
+  <div class="wrap">
+    <div class="kicker">the person who'll be arguing with the machine alongside you</div>
+    <h2 class="sec-title">Your instructor</h2>
+    <div class="prof-card">
+      <div class="avatar">BS</div>
+      <div>
+        <div class="prof-name">Prof. Bhumika Shah</div>
+        <div class="prof-role">Assistant Professor, Dept. of Information Technology</div>
+        <div class="quote">"I don't just teach AI. I enjoy asking questions that don't have answers yet."</div>
+        <div class="prof-bio">
+          <p>20+ years in Computer Engineering education — teaching, mentoring, and publishing across AI, NLP, Image Processing, and Compiler Design, with 8 research papers and 200+ citations along the way. I've guided postgraduate and undergraduate researchers from a first idea to a published paper.</p>
+          <p>In between, I spent three years as SVP–Operations at an online bookstore, running sales, marketing, tech, and a 15-person team end to end. Turns out AI, SEO, and data aren't just classroom topics — they're what kept that business running. That's the version of me that walked back into teaching.</p>
+        </div>
+        <div class="stat-row">
+          <div class="stat"><b>20+ yrs</b><span>in education</span></div>
+          <div class="stat"><b>8</b><span>research papers</span></div>
+          <div class="stat"><b>200+</b><span>citations</span></div>
+        </div>
+        <div class="tag-row">
+          <span class="tag">AI</span><span class="tag">NLP</span><span class="tag">Image Processing</span><span class="tag">Compiler Design</span>
+        </div>
+        <div class="research-box">
+          <div class="k">Current research question</div>
+          <div class="body-text">Can AI understand our dreams? Working at the intersection of NLP, affective computing, and cognitive science — exploring how language can help decode emotion, dreams, and the sleeping mind.</div>
+        </div>
+        <div class="interests">When not teaching: reading, writing, theatre, building ideas, and debugging life one cup of coffee at a time.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="syllabus">
+  <div class="wrap">
+    <div class="kicker">contents &middot; 45 hours, give or take a few tangents</div>
+    <h2 class="sec-title">Unit-wise syllabus</h2>
+
+    <div class="admin-bar" id="adminBar">
+      <div class="msg" id="adminMsg">Prof. Shah around? Sign in to drop this week's slides.</div>
+      <div id="adminControls">
+        <input class="admin-input" type="password" id="adminPass" placeholder="Instructor passcode">
+        <button onclick="tryLogin()">Sign in</button>
+      </div>
+    </div>
+
+    <div id="unitList"></div>
+  </div>
+</section>
+
+<section id="resources">
+  <div class="wrap">
+    <div class="kicker">for further reading (and citing in your viva)</div>
+    <h2 class="sec-title">Resources</h2>
+    <div class="two-col">
+      <div class="info-card">
+        <h3>Course outcomes</h3>
+        <table class="co-table">
+          <tr><th>CO</th><th>Statement</th><th>Weight</th></tr>
+          <tr><td class="mono">CO-1</td><td>Basics of Python, data handling and visualization</td><td>25%</td></tr>
+          <tr><td class="mono">CO-2</td><td>Inferential statistics and data distributions</td><td>20%</td></tr>
+          <tr><td class="mono">CO-3</td><td>Regression models and performance measures</td><td>20%</td></tr>
+          <tr><td class="mono">CO-4</td><td>Clustering and classification models</td><td>25%</td></tr>
+        </table>
+      </div>
+      <div class="info-card" id="lab">
+        <h3>Lab &amp; online resources</h3>
+        <p style="margin-bottom:10px;">Minimum 10 laboratory practicals based on course contents, evaluated under CA3 and the term-end practical exam. Bring snacks; debugging is hungry work.</p>
+        <p><a href="https://onlinecourses.nptel.ac.in/noc23_cs08/course" target="_blank" rel="noopener">NPTEL course companion ↗</a></p>
+      </div>
+    </div>
+    <div style="margin-top:24px;" class="info-card">
+      <h3>Reference books</h3>
+      <table id="bookTable">
+        <tr><th>Title</th><th>Author(s)</th><th>Publisher</th></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="mono">BTIT15501 &middot; Data Science using Python &middot; Sarvajanik College of Engineering and Technology</div>
+    <div style="margin-top:6px;">Maintained by Prof. Bhumika Shah, with occasional help from caffeine and pandas (the library, not the animal)</div>
+  </div>
+</footer>
+
+<script>
+const UNITS = [
+  {n:1,title:"Introduction to data analytics",hours:4,text:"Data analytics vs. data analysis, types of data analytics — descriptive, diagnostic, predictive, prescriptive analytics. Categories of variables: nominal, ordinal, interval, ratio."},
+  {n:2,title:"Getting started with raw data",hours:7,text:"The world of arrays with NumPy: creating arrays, mathematical operations, array subtraction, squaring, trigonometric functions, conditional operations, matrix multiplication, indexing and slicing, shape manipulation. Empowering data analysis with pandas: data structures, Series, importing/exporting CSV and XLS. Data cleansing: missing data, string operations, merging data. Data operations: aggregation."},
+  {n:3,title:"Plotting and visualization",hours:5,text:"A brief matplotlib API primer, figures and subplots, colors, markers and line styles, ticks, labels and legends, annotations, saving plots to file, matplotlib configuration. Plotting with pandas: line plots, bar plots, histograms, density plots, scatter plots."},
+  {n:4,title:"Inferential statistics",hours:8,text:"Measures of central tendency: mean, weighted mean, median, percentile. Dispersion: skewness, kurtosis, range, IQR, variance, coefficient of variation. Probability distributions: expected value, variance, standard deviation, covariance, correlation coefficient, the normal distribution. Hypothesis testing and ANOVA: null/alternative hypotheses, Type I/II error, analysis of variance."},
+  {n:5,title:"Linear regression",hours:10,text:"Simple linear regression, least squares method, coefficient of determination, testing for significance, estimation and prediction, multiple linear regression, adjusted R², F-test, t-test. Logistic regression: equation, applications, G statistics, linear vs logistic models. Confusion matrix and ROC: accuracy, recall, precision, F-score, specificity, sensitivity, AUC."},
+  {n:6,title:"Cluster analysis",hours:6,text:"Cluster and discriminant analysis, standardizing data, detecting outliers. Distance measures: Euclidean, Manhattan, Minkowski. Interpreting distance matrices, similarities and dissimilarities, handling different variable types. K-Means clustering and hierarchical agglomerative clustering (HAC)."},
+  {n:7,title:"Classification and regression trees",hours:5,text:"Decision tree algorithm, splitting criteria, termination conditions. Attribute selection measures: information gain, gain ratio, and Gini index."}
+];
+
+const BOOKS = [
+  ["Mastering Python for Data Science","Samir Madhavan","Ingram short title"],
+  ["Python for Data Analysis","McKinney, W.","O'Reilly Media"],
+  ["Applied Statistics & Probability for Engineering","Montgomery & Runger","John Wiley & Sons"],
+  ["Practical Statistics for Data Scientists","Peter Bruce, Andrew Bruce","O'Reilly Media"],
+  ["Data Science for Dummies","John Muller","Wiley"]
+];
+
+const ADMIN_PASS = "sceit-ds-2026";
+let isAdmin = false;
+
+const EMPTY_LINES = [
+  "Not uploaded yet — probably still napping in a Drive folder.",
+  "Nothing here yet. The slides are fashionably late.",
+  "Slot's empty. Ask Prof. Shah nicely (or just wait for class).",
+  "TBD — patience, young data scientist."
+];
+
+function renderBooks(){
+  const t = document.getElementById('bookTable');
+  BOOKS.forEach(b=>{
+    const row = document.createElement('tr');
+    row.innerHTML = `<td class="book-title">${b[0]}</td><td>${b[1]}</td><td>${b[2]}</td>`;
+    t.appendChild(row);
+  });
+}
+
+async function getResource(n){
+  try{
+    const r = await window.storage.get('unit:'+n, true);
+    return r ? JSON.parse(r.value) : null;
+  }catch(e){ return null; }
+}
+
+async function setResource(n, data){
+  try{
+    await window.storage.set('unit:'+n, JSON.stringify(data), true);
+    return true;
+  }catch(e){ return false; }
+}
+
+async function renderUnits(){
+  const list = document.getElementById('unitList');
+  list.innerHTML = '';
+  for(const u of UNITS){
+    const res = await getResource(u.n);
+    const el = document.createElement('div');
+    el.className = 'unit';
+    el.id = 'unit-'+u.n;
+    el.innerHTML = `
+      <div class="unit-head" onclick="toggleUnit(${u.n})">
+        <span class="unit-num">${u.n}</span>
+        <span class="unit-title">${u.title}</span>
+        <span class="unit-hours">${u.hours} hrs</span>
+        <span class="chevron">▾</span>
+      </div>
+      <div class="unit-body">
+        <div class="unit-body-inner">
+          <p class="content-text">${u.text}</p>
+          <div class="resource-box" id="resbox-${u.n}"></div>
+        </div>
+      </div>
+    `;
+    list.appendChild(el);
+    renderResourceBox(u.n, res);
+  }
+}
+
+function renderResourceBox(n, res){
+  const box = document.getElementById('resbox-'+n);
+  let html = `<div class="label">Slides</div>`;
+  if(res && res.pptUrl){
+    html += `<div class="resource-link"><a href="${res.pptUrl}" target="_blank" rel="noopener">Open unit ${n} slides ↗</a></div>`;
+    if(res.notes) html += `<div style="margin-top:6px;color:var(--ink-dim);font-size:13px;">${res.notes}</div>`;
+  } else {
+    const line = EMPTY_LINES[n % EMPTY_LINES.length];
+    html += `<div class="resource-empty">${line}</div>`;
+  }
+  if(isAdmin){
+    html += `
+      <div class="edit-row">
+        <input type="text" id="url-${n}" placeholder="Paste Google Drive / OneDrive link to slides" value="${res && res.pptUrl ? res.pptUrl : ''}">
+        <button onclick="saveResource(${n})">Save</button>
+      </div>
+      <div class="edit-row">
+        <input type="text" id="notes-${n}" placeholder="Optional note for students" value="${res && res.notes ? res.notes : ''}">
+      </div>
+    `;
+  }
+  box.innerHTML = html;
+}
+
+async function saveResource(n){
+  const url = document.getElementById('url-'+n).value.trim();
+  const notes = document.getElementById('notes-'+n).value.trim();
+  const ok = await setResource(n, {pptUrl:url, notes:notes, updatedAt:new Date().toISOString()});
+  const res = await getResource(n);
+  renderResourceBox(n, res);
+  if(!ok) alert('Could not save right now — try again in a bit.');
+}
+
+function toggleUnit(n){
+  document.getElementById('unit-'+n).classList.toggle('open');
+}
+
+function tryLogin(){
+  const val = document.getElementById('adminPass').value;
+  if(val === ADMIN_PASS){
+    isAdmin = true;
+    document.getElementById('adminMsg').innerHTML = 'Welcome back, professor. <span class="status-pill">edit mode on</span>';
+    document.getElementById('adminControls').innerHTML = '<button onclick="location.reload()">Sign out</button>';
+    renderUnits();
+  } else {
+    alert("That's not quite it. Ask Prof. Shah if the passcode needs a reset.");
+  }
+}
+
+renderBooks();
+renderUnits();
+</script>
+
+</body>
+</html>
