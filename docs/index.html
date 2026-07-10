@@ -429,37 +429,29 @@ function renderResourceBox(n, res){
 
     const box = document.getElementById('resbox-'+n);
 
-    let html = `<div class="label">Learning Resources</div>`;
-// Show PDF if available
-if(UNITS[n-1].pdf){
-    html += `
-    <div class="resource-link">
-        📄
-        <a href="${UNITS[n-1].pdf.url}"
-           target="_blank"
-           rel="noopener">
-           ${UNITS[n-1].pdf.title}
-        </a>
-    </div>`;
-}
-    // Check whether this unit has a PDF
-    const hasPDF = UNITS[n-1].pdf !== undefined;
+    const unit = UNITS[n-1];
+    const hasPDF = !!unit.pdf;
+    const hasSlides = res && res.pptUrl;
 
-    /* ---------- PDF ---------- */
+    let html = `<div class="label">Learning Resources</div>`;
+
+    /* PDF */
+
     if(hasPDF){
         html += `
-        <div class="resource-link" style="margin-bottom:10px;">
+        <div class="resource-link">
             📄
-            <a href="${UNITS[n-1].pdf.url}"
+            <a href="${unit.pdf.url}"
                target="_blank"
                rel="noopener">
-                ${UNITS[n-1].pdf.title}
+               ${unit.pdf.title}
             </a>
         </div>`;
     }
 
-    /* ---------- Slides ---------- */
-    if(res && res.pptUrl){
+    /* Slides */
+
+    if(hasSlides){
 
         html += `
         <div class="resource-link">
@@ -479,15 +471,18 @@ if(UNITS[n-1].pdf){
         }
     }
 
-    /* ---------- Show placeholder ONLY if nothing exists ---------- */
-    else{
+    /* Show placeholder ONLY if there is neither PDF nor slides */
+
+    if(!hasPDF && !hasSlides){
         html += `
         <div class="resource-empty">
             ${EMPTY_LINES[n % EMPTY_LINES.length]}
         </div>`;
     }
 
-    /* ---------- Admin Controls ---------- */
+    box.innerHTML = html;
+}
+     /* ---------- Admin Controls ---------- */
     if(isAdmin){
 
         html += `
