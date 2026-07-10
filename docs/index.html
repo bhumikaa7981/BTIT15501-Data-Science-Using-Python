@@ -437,7 +437,7 @@ function renderResourceBox(n, res){
            ${UNITS[n-1].pdf.title}
         </a>
     </div>`;
-}
+}}
   if(res && res.pptUrl){
     html += `<div class="resource-link"><a href="${res.pptUrl}" target="_blank" rel="noopener">Open unit ${n} slides ↗</a></div>`;
     if(res.notes) html += `<div style="margin-top:6px;color:var(--ink-dim);font-size:13px;">${res.notes}</div>`;
