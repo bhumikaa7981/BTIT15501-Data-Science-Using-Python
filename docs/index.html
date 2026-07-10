@@ -335,21 +335,17 @@
 
 <script>
 const UNITS = [
-  {
-    n: 1,
-    title: "Introduction to Data Analytics",
-    hours: 4,
-    text: "Data analytics vs. data analysis, types of data analytics - descriptive, diagnostic, predictive, prescriptive analytics. Categories of variables: nominal, ordinal, interval, ratio.",
+ {
+    n:1,
+    title:"Introduction to data analytics",
+    hours:4,
+    text:"...",
 
-    resources: [
-      {
-        type: "pdf",
-        title: "Why Data Science",
-        url: "https://drive.google.com/file/d/1ee1WTo8d3X-1ffPYkgfgZLe4knIPbuN7/view?usp=sharing",
-        icon: "📄"
-      }
-    ]
-  },
+    pdf:{
+        title:"Why Data Science",
+        url:"https://drive.google.com/uc?export=download&id=1ee1WTo8d3X-1ffPYkgfgZLe4knIPbuN7"
+    }
+},
   {n:2,title:"Getting started with raw data",hours:7,text:"The world of arrays with NumPy: creating arrays, mathematical operations, array subtraction, squaring, trigonometric functions, conditional operations, matrix multiplication, indexing and slicing, shape manipulation. Empowering data analysis with pandas: data structures, Series, importing/exporting CSV and XLS. Data cleansing: missing data, string operations, merging data. Data operations: aggregation."},
   {n:3,title:"Plotting and visualization",hours:5,text:"A brief matplotlib API primer, figures and subplots, colors, markers and line styles, ticks, labels and legends, annotations, saving plots to file, matplotlib configuration. Plotting with pandas: line plots, bar plots, histograms, density plots, scatter plots."},
   {n:4,title:"Inferential statistics",hours:8,text:"Measures of central tendency: mean, weighted mean, median, percentile. Dispersion: skewness, kurtosis, range, IQR, variance, coefficient of variation. Probability distributions: expected value, variance, standard deviation, covariance, correlation coefficient, the normal distribution. Hypothesis testing and ANOVA: null/alternative hypotheses, Type I/II error, analysis of variance."},
@@ -377,12 +373,22 @@ const EMPTY_LINES = [
 ];
 
 function renderBooks(){
-  const t = document.getElementById('bookTable');
-  BOOKS.forEach(b=>{
-    const row = document.createElement('tr');
-    row.innerHTML = `<td class="book-title">${b[0]}</td><td>${b[1]}</td><td>${b[2]}</td>`;
-    t.appendChild(row);
-  });
+
+    const t=document.getElementById("bookTable");
+
+    BOOKS.forEach(b=>{
+
+        const row=document.createElement("tr");
+
+        row.innerHTML=`
+        <td class="book-title">${b[0]}</td>
+        <td>${b[1]}</td>
+        <td>${b[2]}</td>`;
+
+        t.appendChild(row);
+
+    });
+
 }
 
 async function getResource(n){
@@ -434,21 +440,20 @@ function renderResourceBox(n, res){
     const hasSlides = res && res.pptUrl;
 
     let html = `<div class="label">Learning Resources</div>`;
-
+  const hasPDF = !!UNITS[n-1].pdf;
     /* PDF */
 
-    if(hasPDF){
-        html += `
-        <div class="resource-link">
-            📄
-            <a href="${unit.pdf.url}"
-               target="_blank"
-               rel="noopener">
-               ${unit.pdf.title}
-            </a>
-        </div>`;
-    }
+   if(hasPDF){
 
+    html += `
+    <div class="resource-link">
+        📄
+        <a href="${UNITS[n-1].pdf.url}"
+        target="_blank">
+        ${UNITS[n-1].pdf.title}
+        </a>
+    </div>`;
+}
     /* Slides */
 
     if(hasSlides){
@@ -473,12 +478,13 @@ function renderResourceBox(n, res){
 
     /* Show placeholder ONLY if there is neither PDF nor slides */
 
-    if(!hasPDF && !hasSlides){
-        html += `
-        <div class="resource-empty">
-            ${EMPTY_LINES[n % EMPTY_LINES.length]}
-        </div>`;
-    }
+    if(!hasPDF && !(res && res.pptUrl)){
+
+    html += `
+    <div class="resource-empty">
+        ${EMPTY_LINES[n % EMPTY_LINES.length]}
+    </div>`;
+}
 
     box.innerHTML = html;
 }
