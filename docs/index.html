@@ -425,32 +425,38 @@ async function renderUnits(){
     renderResourceBox(u.n, res);
   }
 }
-
 function renderResourceBox(n, res){
 
     const box = document.getElementById('resbox-'+n);
 
     let html = `<div class="label">Learning Resources</div>`;
 
-    /* PDF Link */
-    if(UNITS[n-1].pdf){
+    // Check whether this unit has a PDF
+    const hasPDF = UNITS[n-1].pdf !== undefined;
+
+    /* ---------- PDF ---------- */
+    if(hasPDF){
         html += `
         <div class="resource-link" style="margin-bottom:10px;">
             📄
             <a href="${UNITS[n-1].pdf.url}"
                target="_blank"
                rel="noopener">
-               ${UNITS[n-1].pdf.title}
+                ${UNITS[n-1].pdf.title}
             </a>
         </div>`;
     }
 
-    /* Slides */
+    /* ---------- Slides ---------- */
     if(res && res.pptUrl){
+
         html += `
         <div class="resource-link">
-            <a href="${res.pptUrl}" target="_blank" rel="noopener">
-                Open Unit ${n} Slides ↗
+            📑
+            <a href="${res.pptUrl}"
+               target="_blank"
+               rel="noopener">
+               Open Unit ${n} Slides ↗
             </a>
         </div>`;
 
@@ -460,33 +466,35 @@ function renderResourceBox(n, res){
                 ${res.notes}
             </div>`;
         }
+    }
 
-    } else {
-
-        const line = EMPTY_LINES[n % EMPTY_LINES.length];
-
+    /* ---------- Show placeholder ONLY if nothing exists ---------- */
+    if(!hasPDF && !(res && res.pptUrl)){
         html += `
         <div class="resource-empty">
-            ${line}
+            ${EMPTY_LINES[n % EMPTY_LINES.length]}
         </div>`;
     }
 
+    /* ---------- Admin Controls ---------- */
     if(isAdmin){
 
         html += `
         <div class="edit-row">
-            <input type="text"
-                   id="url-${n}"
-                   placeholder="Paste Google Drive / OneDrive link"
-                   value="${res && res.pptUrl ? res.pptUrl : ''}">
+            <input
+                type="text"
+                id="url-${n}"
+                placeholder="Paste Google Drive / OneDrive link"
+                value="${res && res.pptUrl ? res.pptUrl : ''}">
             <button onclick="saveResource(${n})">Save</button>
         </div>
 
         <div class="edit-row">
-            <input type="text"
-                   id="notes-${n}"
-                   placeholder="Optional note"
-                   value="${res && res.notes ? res.notes : ''}">
+            <input
+                type="text"
+                id="notes-${n}"
+                placeholder="Optional note"
+                value="${res && res.notes ? res.notes : ''}">
         </div>`;
     }
 
