@@ -424,41 +424,71 @@ async function renderUnits(){
 }
 
 function renderResourceBox(n, res){
-  const box = document.getElementById('resbox-'+n);
-  let html = `<div class="label">Learning Resources</div>`;
-  if(res && res.pptUrl){
-    if(UNITS[n-1].pdf){
-    html += `
-    <div class="resource-link" style="margin-bottom:10px;">
-        📄
-        <a href="${UNITS[n-1].pdf.url}"
-           target="_blank"
-           rel="noopener">
-           ${UNITS[n-1].pdf.title}
-        </a>
-    </div>`;
-}}
-  if(res && res.pptUrl){
-    html += `<div class="resource-link"><a href="${res.pptUrl}" target="_blank" rel="noopener">Open unit ${n} slides ↗</a></div>`;
-    if(res.notes) html += `<div style="margin-top:6px;color:var(--ink-dim);font-size:13px;">${res.notes}</div>`;
-  } else {
-    const line = EMPTY_LINES[n % EMPTY_LINES.length];
-    html += `<div class="resource-empty">${line}</div>`;
-  }
-  if(isAdmin){
-    html += `
-      <div class="edit-row">
-        <input type="text" id="url-${n}" placeholder="Paste Google Drive / OneDrive link to slides" value="${res && res.pptUrl ? res.pptUrl : ''}">
-        <button onclick="saveResource(${n})">Save</button>
-      </div>
-      <div class="edit-row">
-        <input type="text" id="notes-${n}" placeholder="Optional note for students" value="${res && res.notes ? res.notes : ''}">
-      </div>
-    `;
-  }
-  box.innerHTML = html;
-}
 
+    const box = document.getElementById('resbox-'+n);
+
+    let html = `<div class="label">Learning Resources</div>`;
+
+    /* PDF Link */
+    if(UNITS[n-1].pdf){
+        html += `
+        <div class="resource-link" style="margin-bottom:10px;">
+            📄
+            <a href="${UNITS[n-1].pdf.url}"
+               target="_blank"
+               rel="noopener">
+               ${UNITS[n-1].pdf.title}
+            </a>
+        </div>`;
+    }
+
+    /* Slides */
+    if(res && res.pptUrl){
+        html += `
+        <div class="resource-link">
+            <a href="${res.pptUrl}" target="_blank" rel="noopener">
+                Open Unit ${n} Slides ↗
+            </a>
+        </div>`;
+
+        if(res.notes){
+            html += `
+            <div style="margin-top:6px;color:var(--ink-dim);font-size:13px;">
+                ${res.notes}
+            </div>`;
+        }
+
+    } else {
+
+        const line = EMPTY_LINES[n % EMPTY_LINES.length];
+
+        html += `
+        <div class="resource-empty">
+            ${line}
+        </div>`;
+    }
+
+    if(isAdmin){
+
+        html += `
+        <div class="edit-row">
+            <input type="text"
+                   id="url-${n}"
+                   placeholder="Paste Google Drive / OneDrive link"
+                   value="${res && res.pptUrl ? res.pptUrl : ''}">
+            <button onclick="saveResource(${n})">Save</button>
+        </div>
+
+        <div class="edit-row">
+            <input type="text"
+                   id="notes-${n}"
+                   placeholder="Optional note"
+                   value="${res && res.notes ? res.notes : ''}">
+        </div>`;
+    }
+
+    box.innerHTML = html;
+}
 async function saveResource(n){
   const url = document.getElementById('url-'+n).value.trim();
   const notes = document.getElementById('notes-'+n).value.trim();
