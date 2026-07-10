@@ -334,8 +334,7 @@
 </footer>
 
 <script>
-const UNITS = [
- {
+const UNITS = [ {
     n:1,
     title:"Introduction to data analytics",
     hours:4,
@@ -433,42 +432,43 @@ async function renderUnits(){
 }
 function renderResourceBox(n, res){
 
-    const box = document.getElementById('resbox-'+n);
+    const box = document.getElementById('resbox-' + n);
 
-    const unit = UNITS[n-1];
+    const unit = UNITS[n - 1];
+
     const hasPDF = !!unit.pdf;
+
     const hasSlides = res && res.pptUrl;
 
     let html = `<div class="label">Learning Resources</div>`;
-  const hasPDF = !!UNITS[n-1].pdf;
-    /* PDF */
 
-   if(hasPDF){
+    /* ---------- PDF ---------- */
 
-    html += `
-    <div class="resource-link">
-        📄
-        <a href="${UNITS[n-1].pdf.url}"
-        target="_blank">
-        ${UNITS[n-1].pdf.title}
-        </a>
-    </div>`;
-}
-    /* Slides */
+    if(hasPDF){
+
+        html += `
+        <div class="resource-link">
+            📄
+            <a href="${unit.pdf.url}" target="_blank" rel="noopener">
+                ${unit.pdf.title}
+            </a>
+        </div>`;
+    }
+
+    /* ---------- Slides ---------- */
 
     if(hasSlides){
 
         html += `
         <div class="resource-link">
             📑
-            <a href="${res.pptUrl}"
-               target="_blank"
-               rel="noopener">
-               Open Unit ${n} Slides ↗
+            <a href="${res.pptUrl}" target="_blank" rel="noopener">
+                Open Unit ${n} Slides ↗
             </a>
         </div>`;
 
         if(res.notes){
+
             html += `
             <div style="margin-top:6px;color:var(--ink-dim);font-size:13px;">
                 ${res.notes}
@@ -476,19 +476,18 @@ function renderResourceBox(n, res){
         }
     }
 
-    /* Show placeholder ONLY if there is neither PDF nor slides */
+    /* ---------- Placeholder ---------- */
 
-    if(!hasPDF && !(res && res.pptUrl)){
+    if(!hasPDF && !hasSlides){
 
-    html += `
-    <div class="resource-empty">
-        ${EMPTY_LINES[n % EMPTY_LINES.length]}
-    </div>`;
-}
+        html += `
+        <div class="resource-empty">
+            ${EMPTY_LINES[n % EMPTY_LINES.length]}
+        </div>`;
+    }
 
-    box.innerHTML = html;
-}
-     /* ---------- Admin Controls ---------- */
+    /* ---------- Admin Controls ---------- */
+
     if(isAdmin){
 
         html += `
@@ -497,7 +496,7 @@ function renderResourceBox(n, res){
                 type="text"
                 id="url-${n}"
                 placeholder="Paste Google Drive / OneDrive link"
-                value="${res && res.pptUrl ? res.pptUrl : ''}">
+                value="${hasSlides ? res.pptUrl : ''}">
             <button onclick="saveResource(${n})">Save</button>
         </div>
 
@@ -512,7 +511,7 @@ function renderResourceBox(n, res){
 
     box.innerHTML = html;
 }
-async function saveResource(n){
+  async function saveResource(n){
   const url = document.getElementById('url-'+n).value.trim();
   const notes = document.getElementById('notes-'+n).value.trim();
   const ok = await setResource(n, {pptUrl:url, notes:notes, updatedAt:new Date().toISOString()});
