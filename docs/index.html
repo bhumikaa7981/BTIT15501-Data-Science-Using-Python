@@ -426,7 +426,7 @@ async function renderUnits(){
   }
 }
 function renderResourceBox(n, res){
-console.log(UNITS[n-1]);
+
     const box = document.getElementById('resbox-'+n);
 
     let html = `<div class="label">Learning Resources</div>`;
@@ -480,7 +480,7 @@ if(UNITS[n-1].pdf){
     }
 
     /* ---------- Show placeholder ONLY if nothing exists ---------- */
-    else(!hasPDF && !(res && res.pptUrl)){
+    else{
         html += `
         <div class="resource-empty">
             ${EMPTY_LINES[n % EMPTY_LINES.length]}
