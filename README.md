@@ -31,4 +31,3 @@ Sarvajanik College of Engineering & Technology (SCET), Surat
 
 ---
 
-## Repository Structure
