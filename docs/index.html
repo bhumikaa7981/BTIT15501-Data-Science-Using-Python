@@ -430,7 +430,18 @@ function renderResourceBox(n, res){
     const box = document.getElementById('resbox-'+n);
 
     let html = `<div class="label">Learning Resources</div>`;
-
+// Show PDF if available
+if(UNITS[n-1].pdf){
+    html += `
+    <div class="resource-link">
+        📄
+        <a href="${UNITS[n-1].pdf.url}"
+           target="_blank"
+           rel="noopener">
+           ${UNITS[n-1].pdf.title}
+        </a>
+    </div>`;
+}
     // Check whether this unit has a PDF
     const hasPDF = UNITS[n-1].pdf !== undefined;
 
@@ -469,7 +480,7 @@ function renderResourceBox(n, res){
     }
 
     /* ---------- Show placeholder ONLY if nothing exists ---------- */
-    if(!hasPDF && !(res && res.pptUrl)){
+    else(!hasPDF && !(res && res.pptUrl)){
         html += `
         <div class="resource-empty">
             ${EMPTY_LINES[n % EMPTY_LINES.length]}
