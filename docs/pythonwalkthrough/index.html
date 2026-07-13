@@ -290,9 +290,41 @@ footer .footer-credit{font-size:.8rem; margin-top:14px; opacity:.8;}
   .hero{padding:50px 18px 30px;}
   .modal{padding:24px 18px;}
 }
+
+/* ===== Top nav ===== */
+.site-nav{
+  position:sticky; top:0; z-index:150;
+  background:rgba(253,252,255,0.85); backdrop-filter:blur(8px);
+  border-bottom:2px solid var(--lavender);
+}
+.site-nav .nav-wrap{
+  max-width:1100px; margin:0 auto; padding:12px 24px;
+  display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;
+}
+.site-nav .nav-brand{
+  font-family:'Baloo 2', cursive; font-weight:800; font-size:1.05rem; color:var(--ink);
+}
+.site-nav .nav-links{display:flex; gap:6px; flex-wrap:wrap;}
+.site-nav .nav-links a{
+  text-decoration:none; font-weight:800; font-size:.85rem; color:#5B5470;
+  padding:8px 14px; border-radius:999px; transition:background .2s ease, color .2s ease;
+}
+.site-nav .nav-links a:hover{background:var(--lavender); color:var(--violet);}
 </style>
 </head>
 <body>
+
+<nav class="site-nav">
+  <div class="nav-wrap">
+    <div class="nav-brand">🐍 Python Walkthrough</div>
+    <div class="nav-links">
+      <a href="#concepts">Concepts</a>
+      <a href="#libraries">Library Ref</a>
+      <a href="#practicals">Practicals</a>
+      <a href="#quiz">Quiz</a>
+    </div>
+  </div>
+</nav>
 
 <div id="spine-wrap"><div id="spine-fill"></div></div>
 <div id="snake-rider">🐍</div>
@@ -317,7 +349,7 @@ footer .footer-credit{font-size:.8rem; margin-top:14px; opacity:.8;}
 </section>
 
 <!-- INTRO -->
-<div class="section-intro">
+<div class="section-intro" id="concepts">
   <h2>Pick a card. Any card.</h2>
   <p>Every concept below follows the same recipe: 2-3 tiny worked programs → what's actually happening → a real output. Filter by topic zone, or just wander.</p>
 </div>
@@ -340,8 +372,15 @@ footer .footer-credit{font-size:.8rem; margin-top:14px; opacity:.8;}
 </div>
 <div class="lib-wrap" id="libWrap"></div>
 
+<!-- LAB PRACTICALS -->
+<div class="section-intro" id="practicals">
+  <h2>🧪 Lab Practicals</h2>
+  <p>Before you touch NumPy or Pandas, these are the core Python programs every student should be able to write cold. Start with Lab-1 below — tap a program to expand the code and its output.</p>
+</div>
+<div class="lib-wrap" id="practicalsWrap"></div>
+
 <!-- QUIZ RECAP -->
-<div class="section-intro">
+<div class="section-intro" id="quiz">
   <h2>60-second gut check 🧠</h2>
   <p>Tap a question. See if your gut agrees with Python.</p>
 </div>
@@ -2071,6 +2110,177 @@ print(reduce(lambda a,b: a*b, [1,2,3,4]))`, out:`24`},
  ]},
 ];
 
+/* ================= LAB PRACTICALS DATA ================= */
+const PRACTICALS = {
+  label:"Lab-1: Practical 1 — Python Walkthrough Programs",
+  tagline:"Foundational Python revision programs — the kind you should be able to type out from memory before moving on to NumPy/Pandas. Tap any program to expand it.",
+  programs:[
+    {name:'Program 1: Sum, Average & Largest of N Numbers',
+     desc:'Reads N numbers from the user into a list, then reports their sum, average and the largest value.',
+     code:`n = int(input("How many numbers? "))
+nums = []
+for i in range(n):
+    nums.append(int(input(f"Enter number {i+1}: ")))
+
+total = sum(nums)
+avg = total / n
+largest = max(nums)
+
+print("Sum:", total)
+print("Average:", avg)
+print("Largest:", largest)`,
+     out:`How many numbers? 4
+Enter number 1: 12
+Enter number 2: 45
+Enter number 3: 7
+Enter number 4: 30
+Sum: 94
+Average: 23.5
+Largest: 45`},
+    {name:'Program 2: Check whether a Number is Prime',
+     desc:'Tests divisibility from 2 up to the square root of the number — the standard efficient prime check.',
+     code:`num = int(input("Enter a number: "))
+is_prime = num > 1
+
+for i in range(2, int(num**0.5) + 1):
+    if num % i == 0:
+        is_prime = False
+        break
+
+print(f"{num} is {'Prime' if is_prime else 'Not Prime'}")`,
+     out:`Enter a number: 29
+29 is Prime`},
+    {name:'Program 3: Factorial of a Number (Iterative & Recursive)',
+     desc:'Computes n! two ways — a simple loop, and a recursive function — to compare both approaches side by side.',
+     code:`def factorial_iterative(n):
+    result = 1
+    for i in range(1, n+1):
+        result *= i
+    return result
+
+def factorial_recursive(n):
+    if n <= 1:
+        return 1
+    return n * factorial_recursive(n-1)
+
+num = 6
+print("Iterative:", factorial_iterative(num))
+print("Recursive:", factorial_recursive(num))`,
+     out:`Iterative: 720
+Recursive: 720`},
+    {name:'Program 4: Fibonacci Series up to N Terms',
+     desc:'Generates the first N terms of the Fibonacci sequence using a simple two-variable running pair.',
+     code:`n = int(input("How many terms? "))
+a, b = 0, 1
+series = []
+
+for _ in range(n):
+    series.append(a)
+    a, b = b, a + b
+
+print("Fibonacci series:", series)`,
+     out:`How many terms? 8
+Fibonacci series: [0, 1, 1, 2, 3, 5, 8, 13]`},
+    {name:'Program 5: Palindrome Check (String & Number)',
+     desc:'Checks whether a string reads the same forwards and backwards, then repeats the check for a number.',
+     code:`text = "madam"
+is_pal_str = text == text[::-1]
+print(f'"{text}" is a palindrome: {is_pal_str}')
+
+num = 12321
+is_pal_num = str(num) == str(num)[::-1]
+print(f"{num} is a palindrome: {is_pal_num}")`,
+     out:`"madam" is a palindrome: True
+12321 is a palindrome: True`},
+    {name:'Program 6: Armstrong Number Check',
+     desc:'An Armstrong number equals the sum of its own digits, each raised to the power of the digit count.',
+     code:`num = 153
+digits = str(num)
+power = len(digits)
+
+total = sum(int(d)**power for d in digits)
+print(f"{num} is {'an Armstrong number' if total==num else 'NOT an Armstrong number'}")`,
+     out:`153 is an Armstrong number`},
+    {name:'Program 7: Swap Two Numbers without a Third Variable',
+     desc:'Uses Python\u2019s tuple-unpacking trick to swap two values in a single line, with no temp variable.',
+     code:`a, b = 5, 9
+print("Before:", a, b)
+
+a, b = b, a
+
+print("After:", a, b)`,
+     out:`Before: 5 9
+After: 9 5`},
+    {name:'Program 8: Count Vowels & Consonants in a String',
+     desc:'Loops through a string once, classifying every alphabet character as a vowel or consonant.',
+     code:`text = "Data Science using Python"
+vowels = "aeiouAEIOU"
+v_count = c_count = 0
+
+for ch in text:
+    if ch.isalpha():
+        if ch in vowels:
+            v_count += 1
+        else:
+            c_count += 1
+
+print("Vowels:", v_count)
+print("Consonants:", c_count)`,
+     out:`Vowels: 8
+Consonants: 15`},
+    {name:'Program 9: Right-Angled Triangle Star Pattern',
+     desc:'Classic nested-loop pattern printing — the outer loop controls rows, the inner loop controls stars per row.',
+     code:`rows = 5
+for i in range(1, rows+1):
+    print("*" * i)`,
+     out:`*
+**
+***
+****
+*****`},
+    {name:'Program 10: Bubble Sort a List (without sort())',
+     desc:'Implements Bubble Sort manually — repeatedly swapping adjacent out-of-order elements — to understand what sorted() hides.',
+     code:`nums = [64, 34, 25, 12, 22, 11, 90]
+n = len(nums)
+
+for i in range(n-1):
+    for j in range(n-1-i):
+        if nums[j] > nums[j+1]:
+            nums[j], nums[j+1] = nums[j+1], nums[j]
+
+print("Sorted list:", nums)`,
+     out:`Sorted list: [11, 12, 22, 25, 34, 64, 90]`},
+    {name:'Program 11: Simple Calculator using Functions',
+     desc:'Wraps the four basic operations into separate functions, then dispatches based on user choice.',
+     code:`def add(a,b): return a+b
+def sub(a,b): return a-b
+def mul(a,b): return a*b
+def div(a,b): return a/b if b!=0 else "Error: divide by zero"
+
+x, y, op = 15, 4, "div"
+ops = {"add":add, "sub":sub, "mul":mul, "div":div}
+
+print(f"{x} {op} {y} =", ops[op](x, y))`,
+     out:`15 div 4 = 3.75`},
+    {name:'Program 12: Word Frequency Counter',
+     desc:'Splits a sentence into words and uses a dictionary to count how often each word appears — a mini preview of groupby().',
+     code:`sentence = "data is the new oil data is powerful"
+words = sentence.split()
+freq = {}
+
+for w in words:
+    freq[w] = freq.get(w, 0) + 1
+
+for word, count in freq.items():
+    print(word, ":", count)`,
+     out:`data : 2
+is : 2
+the : 1
+new : 1
+oil : 1
+powerful : 1`},
+  ]
+};
 
 /* ================= RENDER ================= */
 const seen = new Set();
@@ -2278,6 +2488,44 @@ document.getElementById('libSearch').addEventListener('input', (e)=>{
   renderLibrary();
 });
 
+/* ===== Lab Practicals ===== */
+function renderPracticals(){
+  const wrap = document.getElementById('practicalsWrap');
+  if(!wrap) return;
+
+  wrap.innerHTML = `<p class="lib-tagline">${PRACTICALS.tagline}</p>
+    <div class="lib-group">
+      <div class="lib-group-title">${PRACTICALS.label}</div>
+      ${PRACTICALS.programs.map((p,i)=>`
+        <div class="lib-func" data-key="practical-${i}">
+          <div class="lib-func-head">
+            <div>
+              <div class="lib-func-name">${escHtml(p.name)}</div>
+              <div class="lib-func-desc">${p.desc}</div>
+            </div>
+            <span class="chev">⌄</span>
+          </div>
+          <div class="lib-func-body">
+            <pre><code class="language-python">${escHtml(p.code)}</code></pre>
+            <div class="out-label">Sample output</div>
+            <div class="out">${escHtml(p.out)}</div>
+          </div>
+        </div>`).join('')}
+    </div>`;
+
+  wrap.querySelectorAll('.lib-func').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      const wasOpen = el.classList.contains('open');
+      el.classList.toggle('open');
+      if(!wasOpen){
+        const codeEl = el.querySelector('code');
+        codeEl.removeAttribute('data-highlighted');
+        hljs.highlightElement(codeEl);
+      }
+    });
+  });
+}
+
 /* ===== Hero typing effect ===== */
 function typeHero(){
   const text = `import pandas as pd\ndf = pd.read_csv("life.csv")\ndf.head()  # let's begin →`;
@@ -2300,6 +2548,7 @@ renderGrid('all');
 renderQuiz();
 renderLibPills();
 renderLibrary();
+renderPracticals();
 typeHero();
 </script>
 </body>
