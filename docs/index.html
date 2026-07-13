@@ -146,6 +146,7 @@
   }
   .resource-box .label{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1px;color:var(--sun-d);text-transform:uppercase;margin-bottom:8px;}
   .resource-link{display:flex;align-items:center;gap:10px;font-size:14px;}
+  .resource-link + .resource-link{margin-top:8px;}
   .resource-link a{font-weight:600;}
   .resource-empty{color:var(--ink-dim);font-style:italic;font-size:13.5px;}
   .edit-row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
@@ -343,7 +344,15 @@ const UNITS = [ {
     pdf:{
         title:"Why Data Science",
        url:"https://drive.google.com/file/d/1ee1WTo8d3X-1ffPYkgfgZLe4knIPbuN7/view"
-    }
+    },
+    extraLinks:[
+        {
+            icon:"🔗",
+            title:"Python Walkthrough",
+            url:"https://bhumikaa7981.github.io/BTIT15501-Data-Science-Using-Python/pythonWalkthrough/"
+        }
+    ]
+ 
 },
   {n:2,title:"Getting started with raw data",hours:7,text:"The world of arrays with NumPy: creating arrays, mathematical operations, array subtraction, squaring, trigonometric functions, conditional operations, matrix multiplication, indexing and slicing, shape manipulation. Empowering data analysis with pandas: data structures, Series, importing/exporting CSV and XLS. Data cleansing: missing data, string operations, merging data. Data operations: aggregation."},
   {n:3,title:"Plotting and visualization",hours:5,text:"A brief matplotlib API primer, figures and subplots, colors, markers and line styles, ticks, labels and legends, annotations, saving plots to file, matplotlib configuration. Plotting with pandas: line plots, bar plots, histograms, density plots, scatter plots."},
@@ -437,6 +446,7 @@ function renderResourceBox(n, res){
     const unit = UNITS[n-1];
     const hasPDF = !!unit.pdf;
     const hasSlides = res && res.pptUrl;
+    const extraLinks = unit.extraLinks || [];
 
     let html = `<div class="label">Learning Resources</div>`;
 
@@ -452,6 +462,19 @@ function renderResourceBox(n, res){
             </a>
         </div>`;
     }
+
+    /* Any extra static links defined on the unit (e.g. walkthroughs, demos) */
+    extraLinks.forEach(link => {
+        html += `
+        <div class="resource-link">
+            ${link.icon || "🔗"}
+            <a href="${link.url}"
+               target="_blank"
+               rel="noopener">
+               ${link.title} ↗
+            </a>
+        </div>`;
+    });
 
     /* Slides */
     if(hasSlides){
@@ -474,7 +497,7 @@ function renderResourceBox(n, res){
     }
 
     /* Show placeholder only if nothing exists */
-    if(!hasPDF && !hasSlides){
+    if(!hasPDF && !hasSlides && extraLinks.length === 0){
         html += `
         <div class="resource-empty">
             ${EMPTY_LINES[n % EMPTY_LINES.length]}
