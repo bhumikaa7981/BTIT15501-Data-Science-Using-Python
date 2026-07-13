@@ -1,1 +1,2306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python, From Scratch to Science 🐍</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<style>
+:root{
+  --lavender:#F1E9FF;
+  --mint:#D8F8E8;
+  --peach:#FFE3D1;
+  --sky:#DCEEFF;
+  --ink:#2B2640;
+  --coral:#FF7E9C;
+  --violet:#8B7BFF;
+  --teal:#2FCFA0;
+  --sun:#FFC857;
+  --card:#FFFFFF;
+  --shadow: 0 10px 30px rgba(139,123,255,0.16);
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'Nunito', sans-serif;
+  color:var(--ink);
+  background:
+    radial-gradient(circle at 8% 12%, var(--sky) 0%, transparent 40%),
+    radial-gradient(circle at 92% 8%, var(--peach) 0%, transparent 38%),
+    radial-gradient(circle at 85% 85%, var(--mint) 0%, transparent 42%),
+    linear-gradient(180deg, #FDFCFF 0%, #FAF7FF 100%);
+  min-height:100vh;
+  padding-bottom:80px;
+  overflow-x:hidden;
+}
+h1,h2,h3,.display{font-family:'Baloo 2', cursive;}
+code, pre, .mono{font-family:'Fira Code', monospace;}
+a{color:inherit;}
 
+/* ===== Snake progress spine ===== */
+#spine-wrap{
+  position:fixed; top:0; left:0; width:100%; height:6px; z-index:200;
+  background:rgba(255,255,255,0.5);
+}
+#spine-fill{
+  height:100%; width:0%;
+  background:linear-gradient(90deg, var(--teal), var(--violet), var(--coral));
+  transition:width .5s cubic-bezier(.4,0,.2,1);
+}
+#snake-rider{
+  position:fixed; top:-10px; left:0%; font-size:22px; z-index:201;
+  transition:left .5s cubic-bezier(.4,0,.2,1);
+  filter:drop-shadow(0 2px 4px rgba(0,0,0,.2));
+}
+
+/* ===== Hero ===== */
+.hero{
+  max-width:1100px; margin:0 auto; padding:70px 24px 40px; text-align:center; position:relative;
+}
+.eyebrow{
+  display:inline-flex; align-items:center; gap:8px;
+  background:var(--card); border:2px solid var(--violet);
+  padding:6px 16px; border-radius:999px; font-weight:800; font-size:.8rem;
+  letter-spacing:.06em; text-transform:uppercase; color:var(--violet);
+  box-shadow:var(--shadow);
+}
+.hero h1{
+  font-size:clamp(2.4rem, 6vw, 4.2rem); line-height:1.05; margin:22px 0 16px;
+  color:var(--ink);
+}
+.hero h1 .hl{
+  background:linear-gradient(180deg, transparent 60%, var(--sun) 60%);
+  padding:0 4px;
+}
+.hero p.sub{
+  font-size:1.15rem; max-width:640px; margin:0 auto; color:#5B5470; font-weight:600;
+}
+.hero p.credit{
+  font-size:.85rem; max-width:640px; margin:12px auto 0; color:#8B84A3; font-weight:700;
+  letter-spacing:.02em;
+}
+.hero p.credit b{color:var(--violet);}
+.hero-stats{
+  display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-top:34px;
+}
+.stat-pill{
+  background:var(--card); border-radius:18px; padding:14px 22px; box-shadow:var(--shadow);
+  min-width:130px; border:2px solid transparent;
+}
+.stat-pill b{display:block; font-family:'Baloo 2'; font-size:1.5rem; color:var(--violet);}
+.stat-pill span{font-size:.8rem; font-weight:700; color:#847C99;}
+
+/* typing code snippet in hero */
+.hero-code{
+  max-width:560px; margin:34px auto 0; text-align:left;
+  background:#2B2640; border-radius:16px; padding:18px 22px; box-shadow:var(--shadow);
+  position:relative; overflow:hidden;
+}
+.hero-code::before{
+  content:"● ● ●"; color:#8B7BFF; letter-spacing:6px; font-size:.7rem; display:block; margin-bottom:10px;
+}
+.hero-code code{color:#E6E1FF; font-size:.92rem; white-space:pre;}
+.cursor{display:inline-block; width:8px; height:1em; background:var(--sun); vertical-align:middle; animation:blink 1s infinite;}
+@keyframes blink{50%{opacity:0;}}
+
+/* ===== Section headers ===== */
+.section-intro{max-width:900px; margin:64px auto 22px; padding:0 24px; text-align:center;}
+.section-intro h2{font-size:clamp(1.6rem,3.4vw,2.3rem);}
+.section-intro p{color:#6C6480; font-weight:600; margin-top:8px;}
+
+/* ===== Category pills ===== */
+.pillbar{
+  display:flex; gap:10px; flex-wrap:wrap; justify-content:center;
+  max-width:1000px; margin:26px auto; padding:0 24px;
+}
+.pill{
+  cursor:pointer; user-select:none; font-weight:800; font-size:.85rem;
+  padding:10px 18px; border-radius:999px; border:2px solid transparent;
+  background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  transition:transform .15s ease, background .2s ease, color .2s ease;
+  white-space:nowrap;
+}
+.pill:hover{transform:translateY(-2px);}
+.pill.active{
+  background:linear-gradient(135deg, var(--violet), var(--coral)); color:#fff; border-color:transparent;
+}
+
+/* ===== Card grid ===== */
+.grid-wrap{max-width:1180px; margin:0 auto; padding:10px 24px 20px;}
+.grid{
+  display:grid; grid-template-columns:repeat(auto-fill, minmax(260px,1fr)); gap:20px;
+}
+.card{
+  background:var(--card); border-radius:20px; padding:22px; box-shadow:var(--shadow);
+  cursor:pointer; position:relative; border:2px solid transparent;
+  transition:transform .2s ease, border-color .2s ease;
+  display:flex; flex-direction:column; gap:10px; min-height:190px;
+}
+.card:hover{transform:translateY(-5px) rotate(-.3deg); border-color:var(--violet);}
+.card.seen::after{
+  content:"✓ explored"; position:absolute; top:14px; right:14px;
+  font-size:.65rem; font-weight:800; color:var(--teal); background:#E6FBF3;
+  padding:3px 9px; border-radius:999px;
+}
+.card .icon{
+  width:46px; height:46px; border-radius:14px; display:flex; align-items:center; justify-content:center;
+  font-size:22px;
+}
+.card h3{font-size:1.15rem;}
+.card p{font-size:.88rem; color:#6C6480; font-weight:600; line-height:1.4; flex-grow:1;}
+.card .catlabel{font-size:.68rem; font-weight:800; text-transform:uppercase; letter-spacing:.05em; color:var(--violet);}
+.card .goto{font-size:.8rem; font-weight:800; color:var(--coral);}
+
+/* icon color variants */
+.ic-basics{background:var(--sky);}
+.ic-control{background:var(--peach);}
+.ic-collections{background:var(--mint);}
+.ic-functions{background:var(--lavender);}
+.ic-oop{background:#FFE0EC;}
+.ic-errors{background:#FFF3D6;}
+.ic-keywords{background:#EDE4FF;}
+.ic-numpy{background:#DDEBFF;}
+.ic-pandas{background:#E3FBEA;}
+.ic-matplotlib{background:#FFE7F0;}
+
+/* ===== Modal ===== */
+#overlay{
+  position:fixed; inset:0; background:rgba(43,38,64,.55); backdrop-filter:blur(3px);
+  display:none; align-items:flex-start; justify-content:center; z-index:300; padding:5vh 16px; overflow-y:auto;
+}
+#overlay.show{display:flex;}
+.modal{
+  background:#fff; border-radius:26px; max-width:760px; width:100%; padding:32px;
+  box-shadow:0 30px 60px rgba(43,38,64,.35); position:relative; animation:pop .28s ease;
+}
+@keyframes pop{from{transform:translateY(18px) scale(.97); opacity:0;} to{transform:none; opacity:1;}}
+.modal .close{
+  position:absolute; top:18px; right:18px; width:36px; height:36px; border-radius:50%;
+  background:var(--lavender); border:none; font-size:18px; cursor:pointer; font-weight:800; color:var(--violet);
+}
+.modal .modal-tag{font-size:.72rem; font-weight:800; text-transform:uppercase; letter-spacing:.06em; color:var(--violet);}
+.modal h2{margin:6px 0 4px; font-size:1.7rem;}
+.modal .blurb{color:#6C6480; font-weight:700; margin-bottom:18px;}
+.ex-tabs{
+  display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px;
+}
+.ex-tab{
+  cursor:pointer; background:var(--lavender); border:2px solid transparent; border-radius:12px;
+  padding:8px 14px; font-weight:800; font-size:.8rem; color:#5B5470; transition:all .15s ease;
+  display:flex; flex-direction:column; gap:2px; line-height:1.25;
+}
+.ex-tab .ex-tab-name{font-weight:600; font-size:.72rem; color:#8A82A0; text-transform:none;}
+.ex-tab:hover{border-color:var(--violet);}
+.ex-tab.active{background:var(--violet); color:#fff;}
+.ex-tab.active .ex-tab-name{color:#EAE6FF;}
+.ex-title{font-weight:800; color:var(--violet); font-size:.95rem; margin-bottom:8px;}
+.modal pre{
+  background:#2B2640; border-radius:14px; padding:18px; overflow-x:auto; margin-bottom:18px;
+  font-size:.85rem; line-height:1.55;
+}
+.modal .why{background:var(--sky); border-radius:16px; padding:16px 18px; margin-bottom:14px;}
+.modal .why h4{font-size:.78rem; text-transform:uppercase; letter-spacing:.05em; color:#2C6DB0; margin-bottom:8px;}
+.modal ul{padding-left:20px;}
+.modal li{margin-bottom:7px; font-weight:600; font-size:.94rem; line-height:1.5;}
+.modal .tip{
+  display:flex; gap:10px; align-items:flex-start; background:var(--peach); border-radius:16px; padding:14px 16px;
+  font-weight:700; font-size:.9rem;
+}
+.modal .tip span.badge{font-size:1.1rem;}
+.modal .out-label{font-size:.72rem; font-weight:800; text-transform:uppercase; color:#7A7290; margin:16px 0 6px;}
+.modal .out{
+  background:var(--mint); border-radius:12px; padding:12px 16px; font-family:'Fira Code', monospace; font-size:.82rem;
+  white-space:pre-wrap; color:#146C48;
+}
+
+/* highlight.js pastel-on-dark overrides */
+.hljs{background:transparent!important; color:#E6E1FF;}
+.hljs-keyword,.hljs-built_in{color:#8FD3FF;}
+.hljs-string{color:#B5FFCB;}
+.hljs-number{color:#FFC857;}
+.hljs-comment{color:#9089B0; font-style:italic;}
+.hljs-title.function_{color:#FFB4D4;}
+.hljs-params{color:#E6E1FF;}
+.hljs-literal{color:#FF9AC1;}
+
+/* ===== Quiz ===== */
+.quiz-wrap{max-width:900px; margin:60px auto; padding:0 24px;}
+.quiz-card{
+  background:var(--card); border-radius:20px; padding:22px 24px; margin-bottom:14px; box-shadow:var(--shadow);
+  cursor:pointer;
+}
+.quiz-q{font-weight:800; display:flex; justify-content:space-between; align-items:center; gap:10px;}
+.quiz-q .qnum{color:var(--violet); font-family:'Baloo 2';}
+.quiz-a{
+  max-height:0; overflow:hidden; transition:max-height .3s ease, padding .3s ease; font-weight:600; color:#4E7A5C;
+}
+.quiz-card.open .quiz-a{max-height:200px; padding-top:12px;}
+.quiz-card.open{border:2px solid var(--teal);}
+.chev{transition:transform .3s ease; color:#B7AFD1; font-weight:900;}
+.quiz-card.open .chev{transform:rotate(180deg); color:var(--teal);}
+
+/* ===== Library Reference ===== */
+.lib-search-wrap{max-width:900px; margin:0 auto 30px; padding:0 24px; text-align:center;}
+.lib-search{
+  width:100%; max-width:480px; padding:12px 18px; border-radius:999px; border:2px solid var(--lavender);
+  font-family:'Nunito', sans-serif; font-weight:700; font-size:.95rem; color:var(--ink); outline:none;
+  box-shadow:var(--shadow); background:var(--card);
+}
+.lib-search:focus{border-color:var(--violet);}
+.lib-wrap{max-width:980px; margin:0 auto 60px; padding:0 24px;}
+.lib-tagline{
+  text-align:center; color:#6C6480; font-weight:700; max-width:640px; margin:0 auto 30px; font-size:.95rem;
+}
+.lib-group{margin-bottom:26px;}
+.lib-group-title{
+  font-family:'Baloo 2'; font-size:1.15rem; color:var(--violet); margin-bottom:12px;
+  display:flex; align-items:center; gap:8px;
+}
+.lib-group-title::after{content:""; flex:1; height:2px; background:var(--lavender); border-radius:2px;}
+.lib-func{
+  background:var(--card); border-radius:16px; padding:16px 20px; margin-bottom:10px; box-shadow:var(--shadow);
+  cursor:pointer; border:2px solid transparent;
+}
+.lib-func-head{display:flex; justify-content:space-between; align-items:flex-start; gap:12px;}
+.lib-func-name{font-family:'Fira Code', monospace; font-weight:700; color:var(--ink); font-size:.92rem;}
+.lib-func-desc{font-size:.85rem; color:#6C6480; font-weight:600; margin-top:4px; line-height:1.4;}
+.lib-func-body{max-height:0; overflow:hidden; transition:max-height .3s ease;}
+.lib-func.open .lib-func-body{max-height:400px;}
+.lib-func.open{border-color:var(--teal);}
+.lib-func.open .chev{transform:rotate(180deg); color:var(--teal);}
+.lib-func-body pre{
+  background:#2B2640; border-radius:12px; padding:14px 16px; margin-top:14px; overflow-x:auto;
+  font-size:.8rem; line-height:1.5;
+}
+.lib-func-body .out-label{font-size:.68rem; font-weight:800; text-transform:uppercase; color:#7A7290; margin:10px 0 4px;}
+.lib-func-body .out{
+  background:var(--mint); border-radius:10px; padding:10px 14px; font-family:'Fira Code', monospace; font-size:.78rem;
+  white-space:pre-wrap; color:#146C48;
+}
+.lib-no-results{text-align:center; color:#8B84A3; font-weight:700; padding:30px;}
+
+/* ===== Footer ===== */
+footer{text-align:center; padding:50px 20px 10px; color:#8B84A3; font-weight:700;}
+footer .snake-final{font-size:2rem; margin-bottom:10px;}
+footer .footer-credit{font-size:.8rem; margin-top:14px; opacity:.8;}
+
+@media(max-width:640px){
+  .hero{padding:50px 18px 30px;}
+  .modal{padding:24px 18px;}
+}
+</style>
+</head>
+<body>
+
+<div id="spine-wrap"><div id="spine-fill"></div></div>
+<div id="snake-rider">🐍</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="eyebrow">🐍 BTIT15501 · Data Science using Python</div>
+  <h1>Python, from <span class="hl">"wait, what's a list?"</span><br>to your first ML model.</h1>
+  <p class="sub">Zero jargon. Zero assumptions. Just click any card below, read the tiny code, and watch a concept click into place — one bite-sized bit at a time.</p>
+  <p class="credit">Taught &amp; prepared by <b>Prof. Bhumika</b>, Assistant Professor, Information Technology Department, SCET, Surat</p>
+
+  <div class="hero-stats">
+    <div class="stat-pill"><b id="statTotal">0</b><span>concepts to explore</span></div>
+    <div class="stat-pill"><b id="statSeen">0</b><span>explored so far</span></div>
+    <div class="stat-pill"><b id="statZones">0</b><span>topic zones</span></div>
+    <div class="stat-pill"><b id="statExamples">0</b><span>worked programs</span></div>
+  </div>
+
+  <div class="hero-code">
+    <code id="typeTarget"></code><span class="cursor"></span>
+  </div>
+</section>
+
+<!-- INTRO -->
+<div class="section-intro">
+  <h2>Pick a card. Any card.</h2>
+  <p>Every concept below follows the same recipe: 2-3 tiny worked programs → what's actually happening → a real output. Filter by topic zone, or just wander.</p>
+</div>
+
+<div class="pillbar" id="pillbar"></div>
+
+<div class="grid-wrap">
+  <div class="grid" id="grid"></div>
+</div>
+
+<!-- LIBRARY REFERENCE -->
+<div class="section-intro" id="libraries">
+  <h2>📚 Library Reference — every function, explained</h2>
+  <p>NumPy, Pandas, Matplotlib &amp; the small standard-library toolkits (math, random, statistics, datetime, functools) — pick a library, then tap any function to see what it does, its syntax, and a tiny runnable example.</p>
+</div>
+
+<div class="pillbar" id="libPillbar"></div>
+<div class="lib-search-wrap">
+  <input type="text" id="libSearch" class="lib-search" placeholder="🔎 Search a function… e.g. groupby, reshape, mean">
+</div>
+<div class="lib-wrap" id="libWrap"></div>
+
+<!-- QUIZ RECAP -->
+<div class="section-intro">
+  <h2>60-second gut check 🧠</h2>
+  <p>Tap a question. See if your gut agrees with Python.</p>
+</div>
+<div class="quiz-wrap" id="quizWrap"></div>
+
+<footer>
+  <div class="snake-final">🐍✨</div>
+  <div>Now go break some code — retype every snippet yourself, then break it on purpose and fix it.</div>
+  <div class="footer-credit">Prepared &amp; taught by Prof. Bhumika, Assistant Professor, Information Technology Department, SCET, Surat · BTIT15501 Data Science using Python</div>
+</footer>
+
+<!-- MODAL -->
+<div id="overlay">
+  <div class="modal">
+    <button class="close" onclick="closeModal()">✕</button>
+    <div class="modal-tag" id="mTag"></div>
+    <h2 id="mTitle"></h2>
+    <p class="blurb" id="mBlurb"></p>
+    <div class="ex-tabs" id="mTabs"></div>
+    <div class="ex-title" id="mExTitle"></div>
+    <pre><code class="language-python" id="mCode"></code></pre>
+    <div class="why">
+      <h4>What's actually going on</h4>
+      <ul id="mPoints"></ul>
+    </div>
+    <div class="out-label">Sample output</div>
+    <div class="out" id="mOut"></div>
+  </div>
+</div>
+
+<script>
+/* ================= DATA ================= */
+const CATS = [
+  {id:'basics', label:'🔤 Basics', icon:'🔤', cls:'ic-basics'},
+  {id:'control', label:'🚦 Control Flow', icon:'🚦', cls:'ic-control'},
+  {id:'collections', label:'🧺 Collections', icon:'🧺', cls:'ic-collections'},
+  {id:'functions', label:'🧩 Functions & Lambda', icon:'🧩', cls:'ic-functions'},
+  {id:'oop', label:'🏗️ OOP', icon:'🏗️', cls:'ic-oop'},
+  {id:'errors', label:'🛟 Errors & Files', icon:'🛟', cls:'ic-errors'},
+  {id:'keywords', label:'🗝️ Keywords & Built-ins', icon:'🗝️', cls:'ic-keywords'},
+  {id:'numpy', label:'🔢 NumPy', icon:'🔢', cls:'ic-numpy'},
+  {id:'pandas', label:'🐼 Pandas', icon:'🐼', cls:'ic-pandas'},
+  {id:'matplotlib', label:'📊 Matplotlib', icon:'📊', cls:'ic-matplotlib'},
+];
+
+const CONCEPTS = [
+{id:'variables', cat:'basics', title:'Variables & Data Types',
+ blurb:'Labelled boxes that hold your stuff — Python guesses the type for you.',
+ examples:[
+  {title:'Basic types & dynamic typing',
+   code:`age = 20          # int
+height = 5.6      # float
+name = "Riya"     # string
+is_pass = True    # bool
+
+print(type(age), type(name))
+age = "twenty"     # re-assigned, type changes!
+print(type(age))`,
+   points:[
+    `A variable is just a <b>name tag</b> stuck on a value — no need to declare a type first, unlike C/Java.`,
+    `The 4 basic types you'll use constantly: <code>int</code>, <code>float</code>, <code>str</code>, <code>bool</code>.`,
+    `Python figures out the type the moment you assign a value — that's called <b>dynamic typing</b>, and it can change on re-assignment.`
+   ],
+   out:`<class 'int'> <class 'str'>
+<class 'str'>`},
+  {title:'Multiple assignment & swapping',
+   code:`a, b, c = 10, 20, 30
+x = y = 0            # same value to many names
+
+a, b = b, a           # classic Pythonic swap
+print(a, b, c, x, y)`,
+   points:[
+    `You can assign several variables in one line — great for returning multiple values from a function too.`,
+    `<code>a, b = b, a</code> swaps two values without a temporary variable — a very "Pythonic" trick.`
+   ],
+   out:`20 10 30 0 0`}
+ ]},
+{id:'operators', cat:'basics', title:'Operators',
+ blurb:'The maths and logic symbols that make Python actually *do* things.',
+ examples:[
+  {title:'Arithmetic & comparison',
+   code:`a, b = 10, 3
+print(a + b, a - b, a * b)
+print(a / b)     # 3.33 true divide
+print(a // b)    # 3   floor divide
+print(a % b)     # 1   remainder
+print(a ** b)    # 1000 power
+print(a > b, a == b, a != b)`,
+   points:[
+    `<b>Arithmetic:</b> <code>+ - * / // % **</code> — <code>/</code> always gives a decimal, <code>//</code> rounds down, <code>**</code> is power.`,
+    `<b>Comparison:</b> <code>== != > < >= <=</code> — these always return <code>True</code> or <code>False</code>.`
+   ],
+   out:`13 7 30
+3.3333333333333335
+3
+1
+1000
+True False True`},
+  {title:'Logical, identity & membership',
+   code:`a, b = 10, 3
+print(a > b and b > 0)   # logical AND
+print(a < b or b > 0)    # logical OR
+print(not(a > b))        # logical NOT
+
+x = [1, 2, 3]
+y = x
+print(x is y)            # same object?
+print(2 in x)            # membership`,
+   points:[
+    `<b>Logical:</b> <code>and / or / not</code> combine multiple True/False conditions into one decision.`,
+    `<b>Identity:</b> <code>is / is not</code> check if two names point to the exact same object (not just equal value).`,
+    `<b>Membership:</b> <code>in / not in</code> check if a value exists inside a list, string, dict, etc.`
+   ],
+   out:`True
+True
+False
+True
+True`}
+ ]},
+{id:'typecast-io', cat:'basics', title:'Type Casting & Input/Output',
+ blurb:'Converting between types, and talking to the user.',
+ examples:[
+  {title:'Type casting (conversion)',
+   code:`x = "25"
+y = int(x) + 5       # str -> int
+z = float("3.14")    # str -> float
+s = str(100)          # int -> str
+lst = list("abc")     # str -> list
+
+print(y, z, s, lst)`,
+   points:[
+    `<code>int() / float() / str() / list()</code> convert a value from one type to another — called <b>type casting</b>.`,
+    `Casting a non-numeric string like <code>int("abc")</code> raises a <code>ValueError</code> — always validate user input first.`
+   ],
+   out:`30 3.14 100 ['a', 'b', 'c']`},
+  {title:'input() and formatted output',
+   code:`name = input("Your name: ")     # always returns a string
+age = int(input("Your age: "))  # cast to int for maths
+
+print("Hello", name, "-", age)
+print(f"{name} will be {age+1} next year")`,
+   points:[
+    `<code>input()</code> always returns a <b>string</b> — cast it with <code>int()</code>/<code>float()</code> if you need to do maths on it.`,
+    `<code>print()</code> accepts multiple comma-separated values, and f-strings let you embed variables directly in text.`
+   ],
+   out:`Your name: Riya
+Your age: 20
+Hello Riya - 20
+Riya will be 21 next year`}
+ ]},
+{id:'fstrings', cat:'basics', title:'String Formatting',
+ blurb:'Three ways to blend variables into text — and why f-strings win.',
+ examples:[
+  {title:'f-strings (modern & preferred)',
+   code:`name, marks = "Aman", 87.5
+print(f"{name} scored {marks} marks")
+print(f"{name} scored {marks:.1f}%")
+print(f"Pass: {marks >= 40}")`,
+   points:[
+    `f-strings (<code>f"..."</code>) let you embed any expression directly inside <code>{ }</code> — including maths and conditions.`,
+    `<code>{marks:.1f}</code> formats a float to 1 decimal place — format specs go after a colon.`
+   ],
+   out:`Aman scored 87.5 marks
+Aman scored 87.5%
+Pass: True`},
+  {title:'.format() and % (older styles)',
+   code:`name, marks = "Aman", 87.5
+print("{} scored {}".format(name, marks))
+print("{n} scored {m:.0f}%".format(n=name, m=marks))
+print("%s scored %d" % (name, marks))`,
+   points:[
+    `<code>.format()</code> uses <code>{}</code> placeholders filled positionally or by name — common in older codebases.`,
+    `<code>%s / %d</code> is the oldest C-style formatting — still seen in legacy code, but f-strings are the modern default.`
+   ],
+   out:`Aman scored 87.5
+Aman scored 88%
+Aman scored 87`}
+ ]},
+{id:'conditionals', cat:'control', title:'Conditionals (if / elif / else)',
+ blurb:'How Python makes decisions — exactly like a flowchart, in text form.',
+ examples:[
+  {title:'if / elif / else chain',
+   code:`marks = 72
+if marks >= 75:
+    print("Distinction")
+elif marks >= 40:
+    print("Pass")
+else:
+    print("Fail")`,
+   points:[
+    `<code>if / elif / else</code> checks conditions top to bottom — the <b>first true one wins</b>, the rest are skipped.`,
+    `<b>Indentation is law.</b> Those 4 spaces define which lines belong to which block.`,
+    `Only ONE branch ever runs per pass through the code — never both.`
+   ],
+   out:`Pass`},
+  {title:'Nested if & the ternary shortcut',
+   code:`age, has_id = 20, True
+if age >= 18:
+    if has_id:
+        print("Entry allowed")
+    else:
+        print("Need ID")
+else:
+    print("Too young")
+
+# ternary (conditional expression) - one-liner if/else
+status = "Adult" if age >= 18 else "Minor"
+print(status)`,
+   points:[
+    `An <code>if</code> inside another <code>if</code> is a <b>nested condition</b> — useful when a decision depends on two things at once.`,
+    `<code>value_if_true if condition else value_if_false</code> is a <b>ternary expression</b> — a compact one-line if/else for simple cases.`
+   ],
+   out:`Entry allowed
+Adult`}
+ ]},
+{id:'for-loop', cat:'control', title:'The for Loop',
+ blurb:'Repeating an action for every item in a known sequence.',
+ examples:[
+  {title:'for with range()',
+   code:`for i in range(5):
+    print(i, "squared is", i**2)
+
+for i in range(2, 10, 2):   # start, stop, step
+    print(i, end=" ")`,
+   points:[
+    `<code>for</code> loops repeat a <b>known number of times</b>, or once for every item in a sequence.`,
+    `<code>range(5)</code> gives <code>0,1,2,3,4</code> — Python counts from zero, always! <code>range(start,stop,step)</code> customises it.`
+   ],
+   out:`0 squared is 0
+1 squared is 1
+2 squared is 4
+3 squared is 9
+4 squared is 16
+2 4 6 8 `},
+  {title:'Looping over lists, strings & with enumerate()',
+   code:`fruits = ["apple", "banana", "kiwi"]
+for f in fruits:
+    print(f.upper())
+
+for ch in "Py":
+    print(ch)
+
+for idx, f in enumerate(fruits):
+    print(idx, "->", f)`,
+   points:[
+    `<code>for</code> works directly on lists, strings, tuples, dicts — anything <b>iterable</b>, no index needed.`,
+    `<code>enumerate(seq)</code> gives you both the <b>index and the value</b> together — much cleaner than manually tracking a counter.`
+   ],
+   out:`APPLE
+BANANA
+KIWI
+P
+y
+0 -> apple
+1 -> banana
+2 -> kiwi`}
+ ]},
+{id:'while-loop', cat:'control', title:'The while Loop',
+ blurb:'Repeating until a condition turns False — perfect when you don\u2019t know the count upfront.',
+ examples:[
+  {title:'Basic while & countdown',
+   code:`n = 5
+while n > 0:
+    print(n)
+    n -= 1
+print("Liftoff!")`,
+   points:[
+    `<code>while</code> keeps looping <b>as long as its condition is True</b> — checked fresh before every pass.`,
+    `You must change something inside the loop (like <code>n -= 1</code>) or it never stops — an <b>infinite loop</b>.`
+   ],
+   out:`5
+4
+3
+2
+1
+Liftoff!`},
+  {title:'Sentinel-controlled while True + break',
+   code:`total = 0
+while True:
+    x = int(input("Enter a number (-1 to stop): "))
+    if x == -1:
+        break
+    total += x
+print("Sum so far:", total)`,
+   points:[
+    `<code>while True:</code> loops forever <b>on purpose</b> — you exit it explicitly with <code>break</code> when a "sentinel" value shows up.`,
+    `This pattern is common when you don't know in advance how many inputs the user will give.`
+   ],
+   out:`Enter a number (-1 to stop): 4
+Enter a number (-1 to stop): 6
+Enter a number (-1 to stop): -1
+Sum so far: 10`}
+ ]},
+{id:'loop-control', cat:'control', title:'break, continue, pass & loop-else',
+ blurb:'Fine-grained remote control over what a loop does mid-flight.',
+ examples:[
+  {title:'break — exit the loop early',
+   code:`for n in range(1, 20):
+    if n == 7:
+        print("Found 7, stopping!")
+        break
+    print(n)`,
+   points:[
+    `<code>break</code> immediately <b>exits the whole loop</b>, skipping any remaining iterations entirely.`,
+    `Common use: searching for something and stopping the instant it's found.`
+   ],
+   out:`1
+2
+3
+4
+5
+6
+Found 7, stopping!`},
+  {title:'continue — skip to the next iteration',
+   code:`for n in range(1, 10):
+    if n % 2 == 0:
+        continue     # skip even numbers
+    print(n)`,
+   points:[
+    `<code>continue</code> skips the <b>rest of the current iteration only</b> and jumps straight to the next one — the loop keeps going.`,
+    `Different from <code>break</code>: <code>continue</code> doesn't stop the loop, it just skips one round.`
+   ],
+   out:`1
+3
+5
+7
+9`},
+  {title:'pass — a placeholder that does nothing, and loop-else',
+   code:`for n in range(3):
+    pass   # TODO: fill this in later, keeps syntax valid
+
+for n in range(5):
+    if n == 99:
+        break
+else:
+    print("Loop finished without a break!")   # runs because no break happened`,
+   points:[
+    `<code>pass</code> is a <b>do-nothing placeholder</b> — used when a block is syntactically required but you have nothing to write yet.`,
+    `A loop's <code>else:</code> block runs <b>only if the loop completed normally</b> (no <code>break</code> occurred) — great for "search not found" logic.`
+   ],
+   out:`Loop finished without a break!`}
+ ]},
+{id:'nested-loops', cat:'control', title:'Nested Loops',
+ blurb:'A loop inside a loop — for grids, patterns and 2-D data.',
+ examples:[
+  {title:'Pattern printing (multiplication grid)',
+   code:`for i in range(1, 4):
+    for j in range(1, 4):
+        print(i*j, end="\\t")
+    print()   # new line after each row`,
+   points:[
+    `The <b>outer loop</b> controls the rows, the <b>inner loop</b> completely finishes for every single step of the outer one.`,
+    `A 3x3 outer/inner combo runs the inner body <b>9 times total</b> (3 x 3) — nested loops multiply the work.`
+   ],
+   out:`1	2	3	
+2	4	6	
+3	6	9	`},
+  {title:'Traversing a 2-D list (matrix)',
+   code:`matrix = [[1,2,3],[4,5,6],[7,8,9]]
+total = 0
+for row in matrix:
+    for val in row:
+        total += val
+print("Sum of all values:", total)`,
+   points:[
+    `A "list of lists" is how Python represents a grid/matrix — the outer loop grabs each <b>row</b>, the inner loop grabs each <b>cell</b>.`,
+    `This exact double-loop pattern is what NumPy/Pandas optimise away later with vectorization.`
+   ],
+   out:`Sum of all values: 45`}
+ ]},
+{id:'comprehensions', cat:'control', title:'List, Dict & Set Comprehensions',
+ blurb:'Writing a loop that builds a collection, in a single readable line.',
+ examples:[
+  {title:'List comprehension',
+   code:`squares = [x**2 for x in range(6)]
+evens = [x for x in range(20) if x % 2 == 0]
+labels = ["even" if x%2==0 else "odd" for x in range(4)]
+
+print(squares)
+print(evens)
+print(labels)`,
+   points:[
+    `<code>[expression for item in iterable]</code> builds a new list — it's a <code>for</code> loop and <code>.append()</code> compressed into one line.`,
+    `Add <code>if condition</code> at the end to filter; add <code>... if ... else ...</code> before the <code>for</code> to transform conditionally.`
+   ],
+   out:`[0, 1, 4, 9, 16, 25]
+[0, 2, 4, 6, 8, 10, 12, 14, 16, 18]
+['even', 'odd', 'even', 'odd']`},
+  {title:'Dict & set comprehensions',
+   code:`nums = [1, 2, 3, 4, 5]
+sq_dict = {n: n**2 for n in nums}
+unique_lengths = {len(w) for w in ["hi","bye","yo","cat"]}
+
+print(sq_dict)
+print(unique_lengths)`,
+   points:[
+    `<code>{key: value for item in iterable}</code> builds a dictionary in one line — same idea as list comprehensions.`,
+    `<code>{expression for item in iterable}</code> builds a set — duplicates are automatically dropped.`
+   ],
+   out:`{1: 1, 2: 4, 3: 9, 4: 16, 5: 25}
+{2, 3}`}
+ ]},
+{id:'lists', cat:'collections', title:'Lists & Tuples',
+ blurb:'Ordered containers — one you can edit, one that\u2019s locked forever.',
+ examples:[
+  {title:'Creating, indexing & modifying',
+   code:`fruits = ["apple", "banana"]
+fruits.append("kiwi")
+fruits.remove("banana")
+
+point = (10, 20)   # tuple: frozen
+print(fruits, point)
+print(fruits[0], fruits[-1])`,
+   points:[
+    `<b>List <code>[ ]</code></b> → ordered & changeable — your everyday, all-purpose container.`,
+    `<b>Tuple <code>( )</code></b> → ordered but <b>immutable</b> — perfect for fixed data like coordinates.`,
+    `Both support indexing: <code>fruits[0]</code> gets the first item, <code>fruits[-1]</code> gets the last.`
+   ],
+   out:`['apple', 'kiwi'] (10, 20)
+apple kiwi`},
+  {title:'Slicing a list',
+   code:`nums = [10,20,30,40,50,60]
+print(nums[1:4])     # index 1 up to (not incl.) 4
+print(nums[:3])      # first 3
+print(nums[3:])      # from index 3 onward
+print(nums[::-1])    # reversed
+print(nums[::2])     # every 2nd item`,
+   points:[
+    `<code>list[start:stop:step]</code> grabs a sub-section — <code>stop</code> is always <b>excluded</b>.`,
+    `<code>[::-1]</code> is the classic "reverse everything" trick; leaving start/stop blank means "from the very beginning/to the very end."`
+   ],
+   out:`[20, 30, 40]
+[10, 20, 30]
+[40, 50, 60]
+[60, 50, 40, 30, 20, 10]
+[10, 30, 50]`}
+ ]},
+{id:'dicts', cat:'collections', title:'Dictionaries & Sets',
+ blurb:'Look things up by name, not by position.',
+ examples:[
+  {title:'Dictionary basics',
+   code:`student = {"name": "Riya", "age": 20}
+student["age"] = 21          # update
+student["branch"] = "IT"     # add
+del student["name"]          # delete
+
+print(student)
+print(student.keys())
+print(student.values())`,
+   points:[
+    `<b>Dictionary <code>{key: value}</code></b> → look up data by a meaningful <b>key</b> instead of a numeric position.`,
+    `Add a key by simply assigning it: <code>d["new_key"] = value</code> — no special method needed.`,
+    `<code>.keys() / .values() / .items()</code> give you views over a dict's keys, values, or (key,value) pairs.`
+   ],
+   out:`{'age': 21, 'branch': 'IT'}
+dict_keys(['age', 'branch'])
+dict_values([21, 'IT'])`},
+  {title:'Looping a dict, and sets',
+   code:`marks = {"Riya": 90, "Aman": 78}
+for name, score in marks.items():
+    print(name, "scored", score)
+
+unique_ids = {1, 2, 2, 3}    # set - duplicates gone
+unique_ids.add(4)
+print(unique_ids)
+print({1,2,3} & {2,3,4})     # intersection`,
+   points:[
+    `<code>.items()</code> lets you loop over key AND value together — the most common way to walk through a dict.`,
+    `<b>Set <code>{ }</code></b> → unordered, auto-drops duplicates, and supports maths-style ops like <code>&</code> (intersection), <code>|</code> (union).`
+   ],
+   out:`Riya scored 90
+Aman scored 78
+{1, 2, 3, 4}
+{2, 3}`}
+ ]},
+{id:'strings', cat:'collections', title:'String Power-ups',
+ blurb:'Text isn\u2019t just for printing — it has a whole toolbox.',
+ examples:[
+  {title:'Cleaning & case methods',
+   code:`name = "  riya  "
+print(name.strip().upper())
+print(name.strip().title())
+print("a" in name)
+print(name.strip().replace("riya","Riya"))`,
+   points:[
+    `<code>.strip()</code> removes stray spaces — a lifesaver on messy real-world data.`,
+    `<code>.upper() / .lower() / .title()</code> control capitalisation instantly.`,
+    `<code>in</code> checks if a substring exists; <code>.replace(old,new)</code> swaps text in bulk.`
+   ],
+   out:`RIYA
+Riya
+True
+Riya`},
+  {title:'Splitting & joining',
+   code:`sentence = "Data Science is fun"
+words = sentence.split()          # -> list of words
+csv_line = "Amit,20,IT"
+fields = csv_line.split(",")
+
+rejoined = "-".join(words)
+print(words, fields)
+print(rejoined)
+print(sentence.startswith("Data"), sentence.endswith("fun"))`,
+   points:[
+    `<code>.split(sep)</code> breaks text into a <b>list</b>; the default separator is any whitespace.`,
+    `<code>"sep".join(list)</code> is the reverse — glues a list of strings back together with a chosen separator.`
+   ],
+   out:`['Data', 'Science', 'is', 'fun'] ['Amit', '20', 'IT']
+Data-Science-is-fun
+True True`}
+ ]},
+{id:'functions', cat:'functions', title:'Functions',
+ blurb:'Package reusable logic into a named, callable block.',
+ examples:[
+  {title:'Defining, calling & default args',
+   code:`def greet(name, msg="Hi"):
+    return f"{msg}, {name}!"
+
+print(greet("Aman"))
+print(greet("Aman", "Welcome"))
+print(greet(name="Riya", msg="Hey"))`,
+   points:[
+    `<code>def</code> creates a reusable block — write the logic once, call it forever.`,
+    `<b>Default arguments</b> like <code>msg="Hi"</code> make a parameter optional at call time.`,
+    `Arguments can be passed <b>positionally</b> or by <b>keyword</b> (<code>name=...</code>) — keyword args can be given in any order.`
+   ],
+   out:`Hi, Aman!
+Welcome, Aman!
+Hey, Riya!`},
+  {title:'Multiple return values & no-return functions',
+   code:`def stats(nums):
+    return min(nums), max(nums), sum(nums)/len(nums)
+
+lo, hi, avg = stats([4, 9, 2, 7])
+print(lo, hi, avg)
+
+def log(msg):
+    print("[LOG]", msg)          # no return statement
+
+result = log("saved")
+print(result)`,
+   points:[
+    `Returning several values separated by commas actually returns one <b>tuple</b>, which you can unpack straight into variables.`,
+    `A function with no <code>return</code> secretly returns <code>None</code> — a very common silent bug for beginners.`
+   ],
+   out:`2 9 5.5
+[LOG] saved
+None`}
+ ]},
+{id:'argskwargs', cat:'functions', title:'*args & **kwargs',
+ blurb:'Functions that accept "however many inputs you throw at them."',
+ examples:[
+  {title:'*args — variable positional arguments',
+   code:`def add_all(*args):
+    print("args is a", type(args))
+    return sum(args)
+
+print(add_all(10, 20, 30))
+print(add_all(1, 2))`,
+   points:[
+    `<code>*args</code> collects any number of extra positional values into a <b>tuple</b> inside the function.`,
+    `Use it when you genuinely don't know in advance how many values will arrive.`
+   ],
+   out:`args is a <class 'tuple'>
+60
+3`},
+  {title:'**kwargs — variable keyword arguments',
+   code:`def show(**kwargs):
+    for k, v in kwargs.items():
+        print(k, ":", v)
+
+show(name="Aman", branch="Mech")
+show(city="Surat")`,
+   points:[
+    `<code>**kwargs</code> collects any number of extra <code>key=value</code> pairs into a <b>dictionary</b>.`,
+    `You've already seen this pattern everywhere — <code>print()</code> itself accepts flexible arguments thanks to a similar idea.`
+   ],
+   out:`name : Aman
+branch : Mech
+city : Surat`}
+ ]},
+{id:'lambda', cat:'functions', title:'Lambda, Map, Filter, Reduce',
+ blurb:'One-line throwaway functions, and the trio that loves using them.',
+ examples:[
+  {title:'lambda + map + filter',
+   code:`nums = [1,2,3,4,5]
+sq = list(map(lambda x: x**2, nums))
+even = list(filter(lambda x: x%2==0, nums))
+print(sq)
+print(even)`,
+   points:[
+    `<code>lambda args: expression</code> writes a tiny, nameless function in a single line — great for quick, one-off logic.`,
+    `<code>map(fn, seq)</code> applies a function to <b>every</b> element; <code>filter(fn, seq)</code> keeps only elements where <code>fn</code> returns True.`
+   ],
+   out:`[1, 4, 9, 16, 25]
+[2, 4]`},
+  {title:'reduce — collapse a list into one value',
+   code:`from functools import reduce
+nums = [1,2,3,4,5]
+
+total = reduce(lambda a,b: a+b, nums)
+biggest = reduce(lambda a,b: a if a>b else b, nums)
+print(total, biggest)`,
+   points:[
+    `<code>reduce(fn, seq)</code> repeatedly combines elements pairwise until only <b>one final value</b> remains (like a running total).`,
+    `These three (map/filter/reduce) are the secret engine behind a lot of Pandas magic you'll use later — same idea, bigger tables.`
+   ],
+   out:`15 5`}
+ ]},
+{id:'recursion-scope', cat:'functions', title:'Recursion & Variable Scope',
+ blurb:'Functions that call themselves, and where a variable actually "lives."',
+ examples:[
+  {title:'Recursion — a function calling itself',
+   code:`def factorial(n):
+    if n <= 1:          # base case - stops the recursion
+        return 1
+    return n * factorial(n-1)   # recursive case
+
+print(factorial(5))   # 5*4*3*2*1`,
+   points:[
+    `A <b>base case</b> is essential — without one, the function calls itself forever and crashes (<code>RecursionError</code>).`,
+    `Each call waits for the "smaller" call below it to finish, then multiplies — recursion trades loops for self-calls.`
+   ],
+   out:`120`},
+  {title:'Local vs global scope',
+   code:`x = 10   # global
+
+def change_local():
+    x = 99   # this x is LOCAL, doesn't touch the global one
+    print("inside:", x)
+
+def change_global():
+    global x
+    x = 99   # this DOES change the global x
+
+change_local()
+print("after local:", x)
+change_global()
+print("after global:", x)`,
+   points:[
+    `A variable created inside a function is <b>local</b> — it disappears once the function ends and never leaks outside.`,
+    `<code>global x</code> tells Python "don't create a new local — modify the outer, global <code>x</code> instead."`
+   ],
+   out:`inside: 99
+after local: 10
+after global: 99`}
+ ]},
+{id:'oop-basics', cat:'oop', title:'Classes & Objects',
+ blurb:'Blueprint in, real thing out.',
+ examples:[
+  {title:'Defining a class & creating objects',
+   code:`class Student:
+    def __init__(self, name, marks):
+        self.name = name
+        self.marks = marks
+
+    def result(self):
+        return "Pass" if self.marks>=40 else "Fail"
+
+s1 = Student("Priya", 78)
+s2 = Student("Rohan", 30)
+print(s1.name, s1.result())
+print(s2.name, s2.result())`,
+   points:[
+    `A <b>class</b> is a blueprint; an <b>object</b> is a real thing built from that blueprint.`,
+    `<code>__init__</code> runs automatically the instant an object is created — it sets up the starting values.`,
+    `<code>self</code> simply means "this particular object" — each object keeps track of its own data.`
+   ],
+   out:`Priya Pass
+Rohan Fail`},
+  {title:'Class variables vs instance variables',
+   code:`class Student:
+    college = "ABC Institute"   # class variable - shared by all
+
+    def __init__(self, name):
+        self.name = name        # instance variable - unique per object
+
+s1 = Student("Priya")
+s2 = Student("Rohan")
+print(s1.college, s2.college)   # same for both
+Student.college = "XYZ College"
+print(s1.college, s2.college)   # both updated!
+print(s1.name, s2.name)         # different per object`,
+   points:[
+    `A <b>class variable</b> is shared by every object of that class — changing it affects everyone at once.`,
+    `An <b>instance variable</b> (set via <code>self.x = ...</code>) belongs only to that one object.`
+   ],
+   out:`ABC Institute ABC Institute
+XYZ College XYZ College
+Priya Rohan`}
+ ]},
+{id:'inheritance', cat:'oop', title:'Inheritance & Polymorphism',
+ blurb:'Reusing and specialising blueprints between classes.',
+ examples:[
+  {title:'Inheritance — a child class extends a parent',
+   code:`class Animal:
+    def __init__(self, name):
+        self.name = name
+    def speak(self):
+        return "..."
+
+class Dog(Animal):          # Dog inherits from Animal
+    def speak(self):        # overrides the parent's method
+        return "Woof!"
+
+class Cat(Animal):
+    def speak(self):
+        return "Meow!"
+
+for pet in [Dog("Rex"), Cat("Tom")]:
+    print(pet.name, "says", pet.speak())`,
+   points:[
+    `<code>class Dog(Animal):</code> means Dog <b>inherits</b> all of Animal's attributes and methods automatically.`,
+    `Re-defining a method in the child class (like <code>speak</code>) is called <b>overriding</b> — the child's version wins.`
+   ],
+   out:`Rex says Woof!
+Tom says Meow!`},
+  {title:'Polymorphism — same call, different behaviour',
+   code:`class Shape:
+    def area(self):
+        return 0
+
+class Circle(Shape):
+    def __init__(self, r): self.r = r
+    def area(self): return 3.14 * self.r ** 2
+
+class Square(Shape):
+    def __init__(self, s): self.s = s
+    def area(self): return self.s ** 2
+
+shapes = [Circle(3), Square(4)]
+for sh in shapes:
+    print(type(sh).__name__, "area:", sh.area())`,
+   points:[
+    `<b>Polymorphism</b> means the <b>same method name</b> (<code>area()</code>) behaves differently depending on which object calls it.`,
+    `This lets you loop over a mixed list of related objects and call one shared method name — no need for if/elif chains checking type.`
+   ],
+   out:`Circle area: 28.26
+Square area: 16`}
+ ]},
+{id:'encapsulation', cat:'oop', title:'Encapsulation & Dunder Methods',
+ blurb:'Protecting an object\u2019s data, and teaching Python how to print/compare it.',
+ examples:[
+  {title:'Encapsulation — private-ish attributes',
+   code:`class Account:
+    def __init__(self, balance):
+        self.__balance = balance   # double underscore -> "private"
+
+    def deposit(self, amt):
+        self.__balance += amt
+
+    def get_balance(self):
+        return self.__balance
+
+acc = Account(1000)
+acc.deposit(500)
+print(acc.get_balance())
+# print(acc.__balance)   # would raise AttributeError`,
+   points:[
+    `A leading <code>__</code> (double underscore) signals a "private" attribute — it should only be touched through the class's own methods.`,
+    `<b>Encapsulation</b> means hiding internal data and exposing controlled methods (like <code>deposit()</code>) instead of letting outside code edit it directly.`
+   ],
+   out:`1500`},
+  {title:'Dunder (magic) methods: __str__ and __eq__',
+   code:`class Point:
+    def __init__(self, x, y):
+        self.x, self.y = x, y
+    def __str__(self):
+        return f"Point({self.x}, {self.y})"
+    def __eq__(self, other):
+        return self.x == other.x and self.y == other.y
+
+p1, p2 = Point(1,2), Point(1,2)
+print(p1)              # uses __str__ automatically
+print(p1 == p2)        # uses __eq__ automatically`,
+   points:[
+    `"Dunder" = <b>d</b>ouble <b>under</b>score, like <code>__init__</code>, <code>__str__</code>, <code>__eq__</code> — Python calls these automatically for built-in operations.`,
+    `<code>__str__</code> controls what <code>print(obj)</code> shows; <code>__eq__</code> controls what <code>==</code> means for your own objects.`
+   ],
+   out:`Point(1, 2)
+True`}
+ ]},
+{id:'errors', cat:'errors', title:'Try / Except / Finally',
+ blurb:'Letting your program fail politely instead of crashing ugly.',
+ examples:[
+  {title:'Catching multiple error types',
+   code:`try:
+    x = int(input("Enter a number: "))
+    print(10 / x)
+except ZeroDivisionError:
+    print("Can't divide by zero!")
+except ValueError:
+    print("That's not a number!")
+finally:
+    print("Done")`,
+   points:[
+    `<code>try:</code> holds the risky code; <code>except:</code> catches the crash and handles it gracefully.`,
+    `You can stack multiple <code>except</code> blocks to handle different error types differently.`,
+    `<code>finally:</code> always runs, crash or not — perfect spot for cleanup code.`
+   ],
+   out:`Enter a number: 0
+Can't divide by zero!
+Done`},
+  {title:'try...else, and catching "anything"',
+   code:`try:
+    num = int("42")
+except ValueError:
+    print("bad input")
+else:
+    print("No error! num is", num)   # runs ONLY if try succeeded
+
+try:
+    1/0
+except Exception as e:               # catches almost any error
+    print("Something went wrong:", e)`,
+   points:[
+    `An optional <code>else:</code> block runs <b>only if no exception occurred</b> in the try block.`,
+    `<code>except Exception as e:</code> is a broad catch-all — handy for logging, but prefer specific exception types when you can.`
+   ],
+   out:`No error! num is 42
+Something went wrong: division by zero`}
+ ]},
+{id:'custom-errors', cat:'errors', title:'Raising & Custom Exceptions',
+ blurb:'Making your OWN errors, on purpose, with a clear message.',
+ examples:[
+  {title:'raise — triggering an error deliberately',
+   code:`def set_age(age):
+    if age < 0:
+        raise ValueError("Age cannot be negative!")
+    return age
+
+try:
+    set_age(-5)
+except ValueError as e:
+    print("Rejected:", e)`,
+   points:[
+    `<code>raise SomeError("message")</code> lets YOU trigger an exception on purpose when input is invalid.`,
+    `Raising early with a clear message is far better than letting bad data silently cause weird bugs later.`
+   ],
+   out:`Rejected: Age cannot be negative!`},
+  {title:'Defining a custom exception class',
+   code:`class InsufficientFundsError(Exception):
+    pass   # inherits everything from Exception, adds nothing new
+
+def withdraw(balance, amount):
+    if amount > balance:
+        raise InsufficientFundsError(f"Need {amount}, only have {balance}")
+    return balance - amount
+
+try:
+    withdraw(100, 250)
+except InsufficientFundsError as e:
+    print("Transaction failed:", e)`,
+   points:[
+    `A custom exception is just a class that inherits from <code>Exception</code> — <code>pass</code> is enough since it reuses the parent's behaviour.`,
+    `Custom exceptions give your errors <b>meaningful names</b> instead of generic ones — much easier to debug large programs.`
+   ],
+   out:`Transaction failed: Need 250, only have 100`}
+ ]},
+{id:'files', cat:'errors', title:'Reading & Writing Files',
+ blurb:'Every CSV/Excel file you\u2019ll use later is just structured text.',
+ examples:[
+  {title:'Writing and reading a text file',
+   code:`with open("notes.txt","w") as f:
+    f.write("Data Science is fun")
+
+with open("notes.txt","r") as f:
+    text = f.read()
+
+print(len(text.split()))   # word count`,
+   points:[
+    `<code>with open(...) as f:</code> safely opens a file and <b>auto-closes</b> it, even if something goes wrong.`,
+    `Modes: <code>"w"</code> write/overwrite, <code>"r"</code> read, <code>"a"</code> append to the end.`,
+    `<code>.split()</code> breaks any block of text into a list of words in one call.`
+   ],
+   out:`4`},
+  {title:'Reading line-by-line & appending',
+   code:`with open("log.txt","w") as f:
+    f.write("Line 1\\nLine 2\\nLine 3")
+
+with open("log.txt","r") as f:
+    for line in f:
+        print("→", line.strip())
+
+with open("log.txt","a") as f:
+    f.write("\\nLine 4")   # appended, not overwritten`,
+   points:[
+    `Looping directly <code>for line in f:</code> reads a file <b>one line at a time</b> — memory-friendly for huge files.`,
+    `Mode <code>"a"</code> (append) adds to the end of the file instead of erasing what's already there.`
+   ],
+   out:`→ Line 1
+→ Line 2
+→ Line 3`}
+ ]},
+{id:'py-keywords', cat:'keywords', title:'Python Keywords (the reserved words)',
+ blurb:'~35 words Python reserves for itself — you can\u2019t use them as variable names.',
+ examples:[
+  {title:'Value, boolean & logical keywords',
+   code:`print(True, False, None)          # value keywords
+print(5 and 3)      # and/or/not - logical
+print(not False)
+x = None            # "no value yet"
+print(x is None)`,
+   points:[
+    `<code>True / False / None</code> are keywords representing boolean values and "no value" — not strings, not functions.`,
+    `<code>and / or / not</code> are the logical keywords used to combine or invert conditions.`,
+    `<code>is / is not / in / not in</code> are identity & membership keywords, different from <code>==</code>.`
+   ],
+   out:`True False None
+3
+True
+True`},
+  {title:'Control-flow & loop keywords',
+   code:`# if / elif / else / for / while / break / continue / pass
+for n in range(5):
+    if n == 3:
+        break
+    elif n == 1:
+        continue
+    else:
+        print(n)
+else:
+    print("(else only runs if no break)")`,
+   points:[
+    `<code>if / elif / else</code>, <code>for / while</code>, and <code>break / continue / pass</code> are the control-flow keywords covered in the Control Flow zone above.`,
+    `Keywords cannot be reused as variable names — e.g. <code>for = 5</code> is a <code>SyntaxError</code>.`
+   ],
+   out:`0`},
+  {title:'Function, class & error-handling keywords',
+   code:`def add(a, b):
+    return a + b
+
+class Dog:
+    pass
+
+try:
+    raise ValueError("oops")
+except ValueError:
+    pass
+finally:
+    print("cleanup")
+
+import math as m
+lambda_fn = lambda x: x*2
+print(add(2,3), m.pi, lambda_fn(5))`,
+   points:[
+    `<code>def / return / lambda</code> build functions; <code>class</code> builds classes; <code>import / as / from</code> bring in outside code.`,
+    `<code>try / except / finally / raise</code> handle errors; <code>global / nonlocal</code> control variable scope from inside functions.`
+   ],
+   out:`cleanup
+5 3.141592653589793 10`}
+ ]},
+{id:'builtin-funcs', cat:'keywords', title:'Handy Built-in Functions',
+ blurb:'Ready-made tools Python gives you for free, no import needed.',
+ examples:[
+  {title:'len, sorted, reversed, range',
+   code:`nums = [5, 2, 9, 1]
+print(len(nums))
+print(sorted(nums))                 # new sorted list
+print(sorted(nums, reverse=True))
+print(list(reversed(nums)))         # reverse original order
+print(list(range(3)))`,
+   points:[
+    `<code>len()</code> gives the size of any sequence; <code>sorted()</code> returns a <b>new</b> sorted list, leaving the original untouched.`,
+    `<code>reversed()</code> flips the order; <code>range()</code> generates a sequence of numbers lazily (used constantly in loops).`
+   ],
+   out:`4
+[1, 2, 5, 9]
+[9, 5, 2, 1]
+[1, 9, 2, 5]
+[0, 1, 2]`},
+  {title:'zip, enumerate, map/filter recap',
+   code:`names = ["Amit", "Riya"]
+marks = [85, 90]
+
+for n, m in zip(names, marks):     # pair up two lists
+    print(n, "->", m)
+
+for i, n in enumerate(names, start=1):
+    print(i, n)`,
+   points:[
+    `<code>zip(a, b)</code> pairs up two (or more) sequences element-by-element — perfect for looping over related lists together.`,
+    `<code>enumerate(seq, start=1)</code> gives index+value pairs, and lets you choose where the index starts counting.`
+   ],
+   out:`Amit -> 85
+Riya -> 90
+1 Amit
+2 Riya`},
+  {title:'min, max, sum, abs, round, type',
+   code:`nums = [4, -9, 2, 7]
+print(min(nums), max(nums), sum(nums))
+print(abs(-9))
+print(round(3.14159, 2))
+print(type(nums), isinstance(nums, list))`,
+   points:[
+    `<code>min() / max() / sum()</code> summarise a sequence of numbers in one call — no manual loop needed.`,
+    `<code>abs()</code> strips a negative sign; <code>round(x, n)</code> rounds to <code>n</code> decimals; <code>type()</code>/<code>isinstance()</code> check an object's type.`
+   ],
+   out:`-9 7 4
+9
+3.14
+<class 'list'> True`}
+ ]},
+{id:'modules-import', cat:'keywords', title:'Modules, import & the Standard Library',
+ blurb:'Python ships with a huge toolbox of ready modules — just import them.',
+ examples:[
+  {title:'import styles',
+   code:`import math
+from math import sqrt, pi
+import statistics as stats
+
+print(math.sqrt(16))     # module.function()
+print(sqrt(25))          # imported directly, no prefix
+print(pi)
+print(stats.mean([1,2,3,4]))`,
+   points:[
+    `<code>import module</code> loads the whole module — access things with <code>module.thing</code>.`,
+    `<code>from module import x, y</code> pulls specific pieces in directly, no prefix needed.`,
+    `<code>import module as alias</code> gives it a short nickname — e.g. <code>import numpy as np</code> everywhere in data science.`
+   ],
+   out:`4.0
+5.0
+3.141592653589841
+2.5`},
+  {title:'A tour of common standard-library modules',
+   code:`import random
+import datetime
+
+print(random.randint(1, 6))          # dice roll
+print(random.choice(["A","B","C"]))
+
+today = datetime.date.today()
+print(today.year, today.month)`,
+   points:[
+    `<code>random</code> generates randomness — <code>randint()</code>, <code>choice()</code>, <code>shuffle()</code> are staples for simulations.`,
+    `<code>datetime</code> handles dates & times — you'll meet it again when Pandas parses date columns.`
+   ],
+   out:`4
+B
+2026 7`}
+ ]},
+{id:'np-create', cat:'numpy', title:'Creating Arrays',
+ blurb:'NumPy = fast, grid-shaped storage — the engine room under every other library.',
+ examples:[
+  {title:'Making arrays several ways',
+   code:`import numpy as np
+a = np.array([1,2,3,4,5])
+b = np.arange(0,10,2)
+e = np.linspace(0,1,5)
+z = np.zeros((2,3))
+o = np.ones((2,2))
+
+print(a.shape, a.ndim, a.dtype)
+print(b, e)`,
+   points:[
+    `<code>np.array()</code> turns a normal Python list into a supercharged NumPy array.`,
+    `<code>arange(start,stop,step)</code> = range with a step; <code>linspace(start,stop,n)</code> = n evenly-spaced points; <code>zeros()/ones()</code> pre-fill a shape.`,
+    `<code>.shape / .ndim / .dtype</code> describe an array's structure — always check these when confused.`
+   ],
+   out:`(5,) 1 int64
+[0 2 4 6 8] [0.   0.25 0.5  0.75 1.  ]`},
+  {title:'Array vs Python list — why bother?',
+   code:`import time
+py_list = list(range(1000000))
+np_arr = np.arange(1000000)
+
+# Python list needs a loop to square everything:
+py_result = [x**2 for x in py_list]
+# NumPy does it directly on the whole array:
+np_result = np_arr ** 2
+
+print(np_result[:5])
+print(type(np_result))`,
+   points:[
+    `A Python list can hold mixed types and needs a loop for maths; a NumPy array holds <b>one fixed type</b> and applies maths to everything at once.`,
+    `That single-type, grid-shaped storage is exactly what makes NumPy dramatically faster for numeric work.`
+   ],
+   out:`[0 1 4 9 16]
+<class 'numpy.ndarray'>`}
+ ]},
+{id:'np-math', cat:'numpy', title:'Array Math (Vectorization & Broadcasting)',
+ blurb:'No loops needed — operate on entire arrays, even different shapes, in one line.',
+ examples:[
+  {title:'Element-wise vectorization',
+   code:`arr1 = np.array([10,20,30,40])
+arr2 = np.array([1,2,3,4])
+
+print(arr1 - arr2)
+print(arr1 ** 2)
+print(arr1 > 25)`,
+   points:[
+    `Operations apply <b>element-by-element automatically</b> — no manual loop required. This is called <b>vectorisation</b>.`,
+    `Comparisons like <code>arr1 > 25</code> return an array of <code>True/False</code> — used constantly for filtering.`
+   ],
+   out:`[ 9 18 27 36]
+[ 100  400  900 1600]
+[False False  True  True]`},
+  {title:'Broadcasting — combining different shapes',
+   code:`prices = np.array([100, 200, 300])
+discount = 10          # a single number ("scalar")
+final = prices - discount
+
+matrix = np.array([[1,2,3],[4,5,6]])
+row = np.array([10,20,30])
+print(final)
+print(matrix + row)    # row is "stretched" across every row`,
+   points:[
+    `<b>Broadcasting</b> lets NumPy combine arrays of different shapes by automatically "stretching" the smaller one — no manual copying needed.`,
+    `A single scalar broadcasts against an entire array; a 1-row array broadcasts against every row of a matrix.`
+   ],
+   out:`[ 90 190 290]
+[[11 22 33]
+ [14 25 36]]`}
+ ]},
+{id:'np-index', cat:'numpy', title:'Indexing, Slicing & Boolean Masking',
+ blurb:'Grabbing exactly the numbers you want, instantly.',
+ examples:[
+  {title:'Slicing',
+   code:`arr = np.array([5,12,17,23,8,30,42,3])
+print(arr[:3], arr[::2], arr[::-1])
+print(arr[2:5])`,
+   points:[
+    `<code>[start:stop:step]</code> slices any sub-part — <code>[::-1]</code> is the classic "reverse everything" trick.`,
+    `Slicing works exactly like Python list slicing, but returns a NumPy array, not a plain list.`
+   ],
+   out:`[ 5 12 17] [ 5 17  8 42] [ 3 42 30  8 23 17 12  5]
+[17 23  8]`},
+  {title:'Boolean masking & np.where',
+   code:`arr = np.array([5,12,17,23,8,30,42,3])
+big = arr[arr > 15]
+flag = np.where(arr>15, 1, 0)
+
+print(big)
+print(flag)`,
+   points:[
+    `<code>arr[condition]</code> filters elements instantly — this is called <b>boolean masking</b>.`,
+    `<code>np.where(cond, A, B)</code> is a super-fast if-else applied across the whole array — this exact pattern (<code>data[data > threshold]</code>) is how you'll spot outliers later.`
+   ],
+   out:`[17 23 30 42]
+[0 0 1 1 0 1 1 0]`}
+ ]},
+{id:'np-matrix', cat:'numpy', title:'Matrix Ops & Reshape',
+ blurb:'Images, signals and datasets are all just reshaped arrays.',
+ examples:[
+  {title:'Matrix multiplication',
+   code:`A = np.array([[1,2],[3,4]])
+B = np.array([[5,6],[7,8]])
+prod = np.dot(A,B)
+elementwise = A * B
+
+print(prod)
+print(elementwise)`,
+   points:[
+    `<code>np.dot()</code> (or the <code>@</code> operator) performs true <b>matrix multiplication</b>.`,
+    `Plain <code>*</code> between two arrays is <b>element-wise</b> multiplication — a completely different, easily-confused operation.`
+   ],
+   out:`[[19 22]
+ [43 50]]
+[[ 5 12]
+ [21 32]]`},
+  {title:'Reshaping & flattening',
+   code:`arr = np.arange(1,13).reshape(3,4)
+flat = arr.flatten()
+transposed = arr.T
+
+print(arr.shape, flat.shape)
+print(transposed.shape)`,
+   points:[
+    `<code>.reshape(rows, cols)</code> reorganises the same data into new dimensions — total element count must stay the same.`,
+    `<code>.flatten()</code> collapses any shape back to 1-D; <code>.T</code> transposes rows and columns — this is the machinery behind image processing.`
+   ],
+   out:`(3, 4) (12,)
+(4, 3)`}
+ ]},
+{id:'np-stats', cat:'numpy', title:'Statistics & Random Numbers',
+ blurb:'The quick numeric summaries you\u2019ll run on every dataset.',
+ examples:[
+  {title:'Descriptive statistics',
+   code:`data = np.array([12, 15, 12, 18, 25, 30, 12])
+print("mean:", data.mean())
+print("median:", np.median(data))
+print("std:", data.std())
+print("min/max:", data.min(), data.max())`,
+   points:[
+    `<code>.mean() / .std()</code> give the average and spread of the data — the two most-used summary numbers in stats.`,
+    `<code>np.median()</code> is the middle value — often more robust to outliers than the mean.`
+   ],
+   out:`mean: 17.714285714285715
+median: 15.0
+std: 6.360449559574526
+min/max: 12 30`},
+  {title:'Random numbers for simulation',
+   code:`np.random.seed(0)         # makes results repeatable
+dice = np.random.randint(1, 7, size=5)
+floats = np.random.rand(3)             # uniform [0,1)
+normal = np.random.randn(3)            # standard normal
+
+print(dice)
+print(floats)`,
+   points:[
+    `<code>np.random.seed(n)</code> locks the random generator so everyone gets the <b>same "random" results</b> — essential for reproducible experiments.`,
+    `<code>randint()</code> gives whole numbers in a range; <code>rand()</code> gives uniform decimals; <code>randn()</code> samples from a bell-curve (normal) distribution.`
+   ],
+   out:`[6 1 4 4 8]
+[0.5488135  0.71518937 0.60276338]`}
+ ]},
+{id:'pd-basics', cat:'pandas', title:'Series & DataFrame',
+ blurb:'Pandas = Excel inside Python.',
+ examples:[
+  {title:'Building a DataFrame',
+   code:`import pandas as pd
+data = {"Name":["Amit","Riya"], "Marks":[85,90]}
+df = pd.DataFrame(data)
+df["Grade"] = ["A","A+"]
+print(df)
+print(df.dtypes)`,
+   points:[
+    `A <b>Series</b> is one labelled column; a <b>DataFrame</b> is a full table made of many Series.`,
+    `A Python dictionary converts neatly into a DataFrame — keys become column names.`,
+    `Add a new column by simply assigning it: <code>df["new_col"] = [...]</code>.`
+   ],
+   out:`   Name  Marks Grade
+0  Amit     85     A
+1  Riya     90    A+
+Name      object
+Marks      int64
+Grade     object
+dtype: object`},
+  {title:'Exploring a DataFrame',
+   code:`df = pd.DataFrame({"Name":["Amit","Riya","Sam"], "Marks":[85,90,60]})
+print(df.head(2))     # first n rows
+print(df.shape)       # (rows, cols)
+print(df["Marks"].describe())`,
+   points:[
+    `<code>.head(n)</code> previews the first n rows — the very first thing to run on any new dataset.`,
+    `<code>.shape</code> gives (rows, columns); <code>.describe()</code> instantly summarises a numeric column (mean, min, max, quartiles).`
+   ],
+   out:`   Name  Marks
+0  Amit     85
+1  Riya     90
+(3, 2)
+count     3.0
+mean     78.3
+std      15.9
+min      60.0
+max      90.0
+Name: Marks, dtype: float64`}
+ ]},
+{id:'pd-io', cat:'pandas', title:'Import & Export (CSV / Excel)',
+ blurb:'How your real project data gets in and out of Python.',
+ examples:[
+  {title:'Saving to disk',
+   code:`df = pd.DataFrame({"Name":["Amit","Riya"], "Marks":[85,90]})
+df.to_csv("students.csv", index=False)
+df.to_excel("students.xlsx", index=False)`,
+   points:[
+    `<code>to_csv()</code> / <code>to_excel()</code> save your table to disk in one call.`,
+    `<code>index=False</code> stops Pandas from saving an extra, unwanted row-number column.`
+   ],
+   out:`(students.csv and students.xlsx written to disk)`},
+  {title:'Loading back in',
+   code:`csv_data = pd.read_csv("students.csv")
+xl_data = pd.read_excel("students.xlsx")
+print(csv_data)`,
+   points:[
+    `<code>read_csv()</code> / <code>read_excel()</code> load a file straight back into a DataFrame.`,
+    `This is how YOUR real lab or project dataset enters Python — memorise this pair of lines, you'll type it constantly.`
+   ],
+   out:`   Name  Marks
+0  Amit     85
+1  Riya     90`}
+ ]},
+{id:'pd-missing', cat:'pandas', title:'Handling Missing Values',
+ blurb:'Real-world data is messy — cleaning it is 80% of the job.',
+ examples:[
+  {title:'Detecting & filling with mean',
+   code:`import numpy as np
+df = pd.DataFrame({"Marks":[85, np.nan, 78, np.nan]})
+print(df["Marks"].isnull())
+
+df["Marks"] = df["Marks"].fillna(df["Marks"].mean())
+print(df["Marks"])`,
+   points:[
+    `<code>.isnull()</code> flags every missing (<code>NaN</code>) cell in a table with True/False.`,
+    `<code>.fillna(mean)</code> replaces gaps with the column's average value — a common quick fix.`
+   ],
+   out:`0    False
+1     True
+2    False
+3     True
+Name: Marks, dtype: bool
+0    85.0
+1    81.5
+2    78.0
+3    81.5
+Name: Marks, dtype: float64`},
+  {title:'Forward-fill & dropping rows',
+   code:`df = pd.DataFrame({"Marks":[85, np.nan, 78, np.nan]})
+df_ffill = df.fillna(method="ffill")
+df_dropped = df.dropna()
+
+print(df_ffill["Marks"].tolist())
+print(df_dropped["Marks"].tolist())`,
+   points:[
+    `<b>Forward-fill</b> (<code>method="ffill"</code>) copies the previous valid value downward to plug small gaps.`,
+    `<code>.dropna()</code> simply removes any row containing a missing value — useful when gaps are rare and safe to discard.`
+   ],
+   out:`[85.0, 85.0, 78.0, 78.0]
+[85.0, 78.0]`}
+ ]},
+{id:'pd-filter-sort', cat:'pandas', title:'Filtering, Sorting & apply()',
+ blurb:'Asking questions of your table: "show me only...", "in what order..."',
+ examples:[
+  {title:'Boolean filtering (just like NumPy!)',
+   code:`df = pd.DataFrame({"Name":["Amit","Riya","Sam"], "Marks":[85,90,55]})
+passed = df[df["Marks"] >= 40]
+toppers = df[(df["Marks"] >= 40) & (df["Marks"] >= 85)]
+
+print(passed)
+print(toppers["Name"].tolist())`,
+   points:[
+    `<code>df[condition]</code> keeps only rows where the condition is True — the exact same masking idea as NumPy arrays.`,
+    `Combine conditions with <code>&</code> (and) / <code>|</code> (or) — each condition needs its own parentheses.`
+   ],
+   out:`   Name  Marks
+0  Amit     85
+1  Riya     90
+2   Sam     55
+['Amit', 'Riya']`},
+  {title:'Sorting & apply()',
+   code:`df = pd.DataFrame({"Name":["Amit","Riya","Sam"], "Marks":[85,90,55]})
+sorted_df = df.sort_values("Marks", ascending=False)
+
+df["Grade"] = df["Marks"].apply(lambda m: "A" if m>=75 else "B")
+print(sorted_df)
+print(df)`,
+   points:[
+    `<code>.sort_values("col")</code> reorders the whole table by a column; <code>ascending=False</code> flips it to descending.`,
+    `<code>.apply(function)</code> runs a function on every value in a column — perfect for custom, row-by-row logic like assigning grades.`
+   ],
+   out:`   Name  Marks
+1  Riya     90
+0  Amit     85
+2   Sam     55
+   Name  Marks Grade
+0  Amit     85     A
+1  Riya     90     A
+2   Sam     55     B`}
+ ]},
+{id:'pd-group', cat:'pandas', title:'Merge & GroupBy',
+ blurb:'The single pattern that answers 90% of "summarise my data" questions.',
+ examples:[
+  {title:'merge() — joining two tables',
+   code:`students = pd.DataFrame({"ID":[1,2], "Name":["Amit","Riya"], "Branch":["IT","Mech"]})
+marks = pd.DataFrame({"ID":[1,2], "Marks":[85,90]})
+
+merged = pd.merge(students, marks, on="ID")
+print(merged)`,
+   points:[
+    `<code>merge()</code> joins two tables using a shared column (like a common <code>ID</code>) — like a VLOOKUP in Excel.`,
+    `Rows are matched up by the value in the "on" column, so both tables end up combined into one.`
+   ],
+   out:`   ID  Name Branch  Marks
+0   1  Amit     IT     85
+1   2  Riya   Mech     90`},
+  {title:'groupby() — summarise by category',
+   code:`merged = pd.DataFrame({"Branch":["IT","IT","Mech"], "Marks":[85,90,60]})
+avg = merged.groupby("Branch")["Marks"].mean()
+total = merged.groupby("Branch")["Marks"].sum()
+
+print(avg)
+print(total)`,
+   points:[
+    `<code>groupby("col")</code> buckets rows into categories — like "all IT students together."`,
+    `Then apply <code>.mean() / .sum() / .count()</code> on each bucket. Whenever someone asks "average X by category Y", the answer is <code>groupby(Y)[X].mean()</code>.`
+   ],
+   out:`Branch
+IT      87.5
+Mech    60.0
+Name: Marks, dtype: float64
+Branch
+IT      175
+Mech     60
+Name: Marks, dtype: int64`}
+ ]},
+{id:'mpl-line', cat:'matplotlib', title:'Line, Bar & Histogram',
+ blurb:'A picture beats a thousand numbers.',
+ examples:[
+  {title:'Line plot for trends',
+   code:`import matplotlib.pyplot as plt
+months = ["Jan","Feb","Mar","Apr"]
+sales = [200, 260, 240, 310]
+
+plt.plot(months, sales, marker="o", color="teal")
+plt.title("Monthly Sales")
+plt.xlabel("Month"); plt.ylabel("Sales")
+plt.show()`,
+   points:[
+    `<code>plot()</code> draws a connected line — perfect for trends <b>over time</b>.`,
+    `Always add <code>plt.xlabel()</code> and <code>plt.ylabel()</code> — an unlabelled chart tells only half a story.`
+   ],
+   out:`(a chart window opens showing an upward trending line)`},
+  {title:'Bar chart vs histogram',
+   code:`names = ["Amit","Riya","Sam"]
+marks = [85, 90, 55]
+data  = [12,15,12,18,25,30,12,20,22]
+
+plt.bar(names, marks, color="skyblue")
+plt.show()
+
+plt.hist(data, bins=6, edgecolor="black")
+plt.show()`,
+   points:[
+    `<code>bar()</code> compares separate <b>categories</b> side-by-side (e.g. one bar per student).`,
+    `<code>hist()</code> shows how <b>numeric values are distributed</b> across ranges (bins) — don't mix these two up, it's a classic exam trap!`
+   ],
+   out:`(a bar chart of 3 bars, then a histogram with 6 bins)`}
+ ]},
+{id:'mpl-scatter', cat:'matplotlib', title:'Scatter & Subplots',
+ blurb:'Spotting relationships, and showing several charts at once.',
+ examples:[
+  {title:'Scatter plot for relationships',
+   code:`hours = [1,2,3,4,5,6]
+marks = [35,40,50,55,70,85]
+
+plt.scatter(hours, marks, color="red")
+plt.xlabel("Study hours"); plt.ylabel("Marks")
+plt.title("Hours vs Marks")
+plt.show()`,
+   points:[
+    `Each point in a <b>scatter plot</b> is one (x, y) pair — ideal for spotting a relationship between two variables.`,
+    `Eyeball a scatter plot before building any regression model — does the cloud of points actually trend upward?`
+   ],
+   out:`(a chart showing points trending upward-right)`},
+  {title:'Multiple charts with subplots',
+   code:`x = [1,2,3,4]
+revenue = [10,15,13,20]
+profit = [2,4,3,6]
+
+fig, axes = plt.subplots(1, 2, figsize=(10,4))
+axes[0].plot(x, revenue)
+axes[0].set_title("Revenue")
+axes[1].bar(x, profit)
+axes[1].set_title("Profit")
+plt.tight_layout(); plt.show()`,
+   points:[
+    `<code>subplots(rows, cols)</code> creates a grid of mini-charts (<code>axes</code>) inside one figure.`,
+    `<code>tight_layout()</code> stops titles and labels from overlapping each other.`
+   ],
+   out:`(two mini-charts appear side by side: a line and a bar chart)`}
+ ]},
+{id:'mpl-pie-style', cat:'matplotlib', title:'Pie Charts & Styling',
+ blurb:'Showing proportions, and making any chart look presentation-ready.',
+ examples:[
+  {title:'Pie chart for proportions',
+   code:`labels = ["IT", "Mech", "Civil"]
+sizes = [50, 30, 20]
+
+plt.pie(sizes, labels=labels, autopct="%1.0f%%",
+        colors=["#8B7BFF","#2FCFA0","#FF7E9C"])
+plt.title("Branch-wise Students")
+plt.show()`,
+   points:[
+    `<code>pie()</code> shows each category as a <b>slice of a whole</b> — best used when the parts genuinely sum to 100%.`,
+    `<code>autopct="%1.0f%%"</code> auto-labels each slice with its percentage.`
+   ],
+   out:`(a pie chart with 3 coloured slices: 50%, 30%, 20%)`},
+  {title:'Styling: legend, grid & saving to file',
+   code:`x = [1,2,3,4]
+plt.plot(x, [1,4,9,16], label="squares")
+plt.plot(x, [1,2,3,4], label="linear")
+plt.legend()
+plt.grid(True)
+plt.savefig("chart.png")   # save instead of / as well as show
+plt.show()`,
+   points:[
+    `<code>label="..."</code> on each plot + <code>plt.legend()</code> shows which line is which.`,
+    `<code>plt.grid(True)</code> adds gridlines for readability; <code>plt.savefig("name.png")</code> exports the chart as an image file for reports.`
+   ],
+   out:`(two labelled lines with a legend and grid, saved as chart.png)`}
+ ]},
+];
+
+/* ================= LIBRARY REFERENCE DATA ================= */
+const LIBRARIES = [
+{id:'numpy', label:'🔢 NumPy', tagline:'Fast numeric arrays — the foundation everything else in data science sits on.',
+ groups:[
+  {name:'Creating Arrays', funcs:[
+    {name:'np.array(list)', desc:'Converts a Python list (or list of lists) into a NumPy array.',
+     code:`import numpy as np
+a = np.array([1,2,3])
+print(a, type(a))`, out:`[1 2 3] <class 'numpy.ndarray'>`},
+    {name:'np.arange(start,stop,step)', desc:'Like range(), but returns an array — supports decimal steps too.',
+     code:`print(np.arange(0,10,2))`, out:`[0 2 4 6 8]`},
+    {name:'np.linspace(start,stop,n)', desc:'Returns n evenly-spaced points between start and stop (inclusive).',
+     code:`print(np.linspace(0,1,5))`, out:`[0.   0.25 0.5  0.75 1.  ]`},
+    {name:'np.zeros(shape) / np.ones(shape)', desc:'Creates an array pre-filled with 0s or 1s of the given shape.',
+     code:`print(np.zeros((2,2)))
+print(np.ones(3))`, out:`[[0. 0.]
+ [0. 0.]]
+[1. 1. 1.]`},
+    {name:'np.eye(n)', desc:'Creates an n×n identity matrix (1s on the diagonal, 0s elsewhere).',
+     code:`print(np.eye(3))`, out:`[[1. 0. 0.]
+ [0. 1. 0.]
+ [0. 0. 1.]]`},
+  ]},
+  {name:'Inspecting Arrays', funcs:[
+    {name:'.shape / .ndim / .size', desc:'shape = dimensions as (rows,cols); ndim = number of dimensions; size = total element count.',
+     code:`a = np.array([[1,2,3],[4,5,6]])
+print(a.shape, a.ndim, a.size)`, out:`(2, 3) 2 6`},
+    {name:'.dtype', desc:'Shows the data type stored in the array (int64, float64, etc.) — every element shares ONE type.',
+     code:`print(np.array([1,2,3]).dtype)
+print(np.array([1.5,2]).dtype)`, out:`int64
+float64`},
+  ]},
+  {name:'Maths & Vectorization', funcs:[
+    {name:'+ - * / ** (element-wise)', desc:'Basic operators apply to every element automatically — no loop needed (vectorization).',
+     code:`a = np.array([1,2,3])
+print(a * 2, a ** 2)`, out:`[2 4 6] [1 4 9]`},
+    {name:'np.sqrt() / np.exp() / np.log()', desc:'Element-wise square root, exponential, and natural log — common transforms in stats/ML.',
+     code:`print(np.sqrt([1,4,9]))`, out:`[1. 2. 3.]`},
+    {name:'np.dot(A,B) / A @ B', desc:'True matrix multiplication (not element-wise) between two arrays.',
+     code:`A = np.array([[1,2],[3,4]])
+B = np.array([[5,6],[7,8]])
+print(np.dot(A,B))`, out:`[[19 22]
+ [43 50]]`},
+    {name:'np.where(cond, a, b)', desc:'Vectorized if-else: picks from a where cond is True, else from b.',
+     code:`x = np.array([1,-2,3,-4])
+print(np.where(x>0, x, 0))`, out:`[1 0 3 0]`},
+  ]},
+  {name:'Statistics', funcs:[
+    {name:'.mean() / .sum() / .std()', desc:'Average, total, and standard deviation of all elements in an array.',
+     code:`a = np.array([2,4,4,4,5,5,7,9])
+print(a.mean(), a.sum(), round(a.std(),2))`, out:`5.0 40 2.0`},
+    {name:'.min() / .max() / np.median()', desc:'Smallest value, largest value, and the middle value of a sorted array.',
+     code:`a = np.array([5,1,9,3])
+print(a.min(), a.max(), np.median(a))`, out:`1 9 4.0`},
+    {name:'np.random.randint() / .rand() / .seed()', desc:'Generate random integers / decimals; seed() makes randomness repeatable.',
+     code:`np.random.seed(1)
+print(np.random.randint(1,7,3))`, out:`[6 1 4]`},
+  ]},
+  {name:'Reshaping & Selecting', funcs:[
+    {name:'.reshape(rows,cols)', desc:'Reorganises the same data into new dimensions without changing values.',
+     code:`a = np.arange(6).reshape(2,3)
+print(a)`, out:`[[0 1 2]
+ [3 4 5]]`},
+    {name:'arr[condition] (boolean masking)', desc:'Filters an array, keeping only elements where the condition is True.',
+     code:`a = np.array([4,9,2,10])
+print(a[a>5])`, out:`[ 9 10]`},
+    {name:'.flatten() / .T', desc:'flatten() collapses to 1-D; .T transposes rows and columns.',
+     code:`a = np.array([[1,2],[3,4]])
+print(a.flatten())
+print(a.T)`, out:`[1 2 3 4]
+[[1 3]
+ [2 4]]`},
+  ]},
+ ]},
+{id:'pandas', label:'🐼 Pandas', tagline:'Spreadsheet-style tables inside Python — the workhorse of every data project.',
+ groups:[
+  {name:'Creating & Loading', funcs:[
+    {name:'pd.DataFrame(dict)', desc:'Builds a table from a dictionary — keys become column names.',
+     code:`import pandas as pd
+df = pd.DataFrame({"Name":["A","B"],"Marks":[80,90]})
+print(df)`, out:`  Name  Marks
+0    A     80
+1    B     90`},
+    {name:'pd.read_csv() / pd.read_excel()', desc:'Loads a CSV or Excel file straight into a DataFrame.',
+     code:`df = pd.read_csv("students.csv")`, out:`(loads the file into a DataFrame)`},
+    {name:'df.to_csv() / df.to_excel()', desc:'Saves a DataFrame back to disk as a CSV or Excel file.',
+     code:`df.to_csv("out.csv", index=False)`, out:`(writes out.csv to disk)`},
+  ]},
+  {name:'Inspecting Data', funcs:[
+    {name:'.head(n) / .tail(n)', desc:'Preview the first / last n rows — the first thing to run on any new dataset.',
+     code:`print(df.head(1))`, out:`  Name  Marks
+0    A     80`},
+    {name:'.shape / .columns / .info()', desc:'shape = (rows,cols); columns = column names; info() = types + null counts summary.',
+     code:`print(df.shape)
+print(df.columns.tolist())`, out:`(2, 2)
+['Name', 'Marks']`},
+    {name:'.describe()', desc:'Instant statistical summary (mean, std, min, max, quartiles) of numeric columns.',
+     code:`print(df["Marks"].describe())`, out:`count     2.0
+mean     85.0
+std       7.1
+min      80.0
+max      90.0
+Name: Marks, dtype: float64`},
+  ]},
+  {name:'Selecting & Filtering', funcs:[
+    {name:"df['col'] / df[['c1','c2']]", desc:'Select one column (returns a Series) or several columns (returns a DataFrame).',
+     code:`print(df["Name"])`, out:`0    A
+1    B
+Name: Name, dtype: object`},
+    {name:'df[condition]', desc:'Boolean filtering — keeps only rows where the condition is True.',
+     code:`print(df[df["Marks"]>=85])`, out:`  Name  Marks
+1    B     90`},
+    {name:'.loc[] / .iloc[]', desc:'.loc selects by label/condition; .iloc selects by integer position — both work on rows & columns.',
+     code:`print(df.iloc[0])
+print(df.loc[df["Marks"]>85, "Name"])`, out:`Name        A
+Marks      80
+Name: 0, dtype: object
+1    B
+Name: Name, dtype: object`},
+  ]},
+  {name:'Cleaning Data', funcs:[
+    {name:'.isnull() / .dropna() / .fillna()', desc:'Detect missing values, remove rows with gaps, or fill gaps with a chosen value.',
+     code:`import numpy as np
+d2 = pd.DataFrame({"x":[1,np.nan,3]})
+print(d2.fillna(0))`, out:`     x
+0  1.0
+1  0.0
+2  3.0`},
+    {name:'.drop_duplicates()', desc:'Removes exact duplicate rows from the DataFrame.',
+     code:`d3 = pd.DataFrame({"x":[1,1,2]})
+print(d3.drop_duplicates())`, out:`   x
+0  1
+1  2`},
+    {name:'.astype()', desc:'Converts a column to a different data type (e.g. string to int).',
+     code:`d4 = pd.DataFrame({"x":["1","2"]})
+print(d4["x"].astype(int).dtype)`, out:`int64`},
+  ]},
+  {name:'Transform & Aggregate', funcs:[
+    {name:'.apply(func)', desc:'Runs a custom function on every value in a column — for logic no built-in method covers.',
+     code:`print(df["Marks"].apply(lambda m: "A" if m>=85 else "B"))`, out:`0    B
+1    A
+Name: Marks, dtype: object`},
+    {name:'.sort_values("col")', desc:'Sorts the whole table by a column, ascending by default.',
+     code:`print(df.sort_values("Marks", ascending=False))`, out:`  Name  Marks
+1    B     90
+0    A     80`},
+    {name:'.groupby("col")', desc:'Buckets rows into categories so you can summarise each bucket with .mean()/.sum() etc.',
+     code:`d5 = pd.DataFrame({"Branch":["IT","IT","CE"],"Marks":[80,90,70]})
+print(d5.groupby("Branch")["Marks"].mean())`, out:`Branch
+CE    70.0
+IT    85.0
+Name: Marks, dtype: float64`},
+    {name:'pd.merge(df1,df2,on="key")', desc:'Joins two tables using a shared column, like a VLOOKUP.',
+     code:`a=pd.DataFrame({"id":[1,2],"name":["A","B"]})
+b=pd.DataFrame({"id":[1,2],"score":[10,20]})
+print(pd.merge(a,b,on="id"))`, out:`   id name  score
+0   1    A     10
+1   2    B     20`},
+  ]},
+ ]},
+{id:'matplotlib', label:'📊 Matplotlib', tagline:'Turns numbers into pictures — line, bar, scatter, histograms and more.',
+ groups:[
+  {name:'Basic Plots', funcs:[
+    {name:'plt.plot(x,y)', desc:'Draws a connected line — best for showing trends over time.',
+     code:`import matplotlib.pyplot as plt
+plt.plot([1,2,3],[10,20,15])
+plt.show()`, out:`(line chart window opens)`},
+    {name:'plt.bar(x,y)', desc:'Draws bars to compare separate categories side-by-side.',
+     code:`plt.bar(["A","B","C"],[5,9,3])
+plt.show()`, out:`(bar chart window opens)`},
+    {name:'plt.hist(data, bins=n)', desc:'Shows how numeric values are distributed across n ranges (bins).',
+     code:`plt.hist([1,2,2,3,3,3,4], bins=4)
+plt.show()`, out:`(histogram window opens)`},
+    {name:'plt.scatter(x,y)', desc:'Plots individual (x,y) points — ideal for spotting relationships between two variables.',
+     code:`plt.scatter([1,2,3],[3,1,4])
+plt.show()`, out:`(scatter chart window opens)`},
+    {name:'plt.pie(sizes, labels=...)', desc:'Shows each category as a slice of a whole (should sum to 100%).',
+     code:`plt.pie([50,30,20], labels=["IT","CE","ME"])
+plt.show()`, out:`(pie chart window opens)`},
+  ]},
+  {name:'Labels & Styling', funcs:[
+    {name:'plt.title() / .xlabel() / .ylabel()', desc:'Adds a chart title and axis labels — never ship an unlabelled chart!',
+     code:`plt.plot([1,2],[1,4])
+plt.title("Demo"); plt.xlabel("x"); plt.ylabel("y")
+plt.show()`, out:`(labelled line chart)`},
+    {name:'plt.legend()', desc:'Shows a key explaining which line/colour is which — needs label="..." on each plot() call.',
+     code:`plt.plot([1,2],[1,4], label="squares")
+plt.legend(); plt.show()`, out:`(chart with a legend box)`},
+    {name:'plt.grid(True)', desc:'Adds background gridlines for easier reading of values.',
+     code:`plt.plot([1,2],[1,2])
+plt.grid(True); plt.show()`, out:`(chart with gridlines)`},
+  ]},
+  {name:'Figures & Saving', funcs:[
+    {name:'plt.subplots(rows,cols)', desc:'Creates a grid of multiple mini-charts inside one figure.',
+     code:`fig, axes = plt.subplots(1,2)
+axes[0].plot([1,2],[1,2])
+axes[1].bar(["a"],[3])
+plt.show()`, out:`(two charts side by side)`},
+    {name:'plt.savefig("name.png")', desc:'Exports the current chart to an image file, useful for reports.',
+     code:`plt.plot([1,2],[1,2])
+plt.savefig("chart.png")`, out:`(chart.png saved to disk)`},
+  ]},
+ ]},
+{id:'stdlib', label:'📦 Other Standard Library', tagline:'math, random, statistics, datetime & functools — small built-in toolkits used constantly.',
+ groups:[
+  {name:'math', funcs:[
+    {name:'math.sqrt() / math.pow()', desc:'Square root and power — math versions work only on single numbers (not arrays).',
+     code:`import math
+print(math.sqrt(16), math.pow(2,3))`, out:`4.0 8.0`},
+    {name:'math.floor() / math.ceil()', desc:'Rounds a decimal down (floor) or up (ceil) to the nearest whole number.',
+     code:`print(math.floor(4.7), math.ceil(4.1))`, out:`4 5`},
+    {name:'math.pi / math.factorial()', desc:'pi is the constant 3.14159...; factorial(n) computes n!.',
+     code:`print(math.pi, math.factorial(5))`, out:`3.141592653589793 120`},
+  ]},
+  {name:'random', funcs:[
+    {name:'random.randint(a,b)', desc:'Random whole number between a and b, inclusive on both ends.',
+     code:`import random
+random.seed(0)
+print(random.randint(1,6))`, out:`4`},
+    {name:'random.choice(seq) / random.shuffle(list)', desc:'choice() picks one random item; shuffle() reorders a list randomly, in place.',
+     code:`print(random.choice(["A","B","C"]))`, out:`B`},
+  ]},
+  {name:'statistics', funcs:[
+    {name:'statistics.mean() / .median() / .mode()', desc:`Pure-Python versions of the classic averages — handy when NumPy isn't available.`,
+     code:`import statistics as st
+print(st.mean([1,2,2,3]), st.median([1,2,2,3]))`, out:`2.0 2.0`},
+    {name:'statistics.stdev()', desc:'Standard deviation of a sample — measures how spread out the values are.',
+     code:`print(st.stdev([2,4,4,4,5,5,7,9]))`, out:`2.138`},
+  ]},
+  {name:'datetime', funcs:[
+    {name:'datetime.date.today()', desc:`Returns today's date as a date object.`,
+     code:`import datetime
+today = datetime.date.today()
+print(today.year, today.month, today.day)`, out:`2026 7 13`},
+    {name:'datetime.timedelta()', desc:'Represents a duration — add/subtract it from dates to shift them.',
+     code:`d = today + datetime.timedelta(days=7)
+print(d)`, out:`2026-07-20`},
+  ]},
+  {name:'functools', funcs:[
+    {name:'functools.reduce(fn, seq)', desc:'Collapses a whole sequence down to one value by repeatedly combining pairs.',
+     code:`from functools import reduce
+print(reduce(lambda a,b: a*b, [1,2,3,4]))`, out:`24`},
+  ]},
+ ]},
+];
+
+
+/* ================= RENDER ================= */
+const seen = new Set();
+
+function renderPills(){
+  const bar = document.getElementById('pillbar');
+  bar.innerHTML = '<div class="pill active" data-cat="all">✨ All</div>' +
+    CATS.map(c=>`<div class="pill" data-cat="${c.id}">${c.label}</div>`).join('');
+  bar.querySelectorAll('.pill').forEach(p=>{
+    p.addEventListener('click', ()=>{
+      bar.querySelectorAll('.pill').forEach(x=>x.classList.remove('active'));
+      p.classList.add('active');
+      renderGrid(p.dataset.cat);
+    });
+  });
+}
+
+function renderGrid(filter='all'){
+  const grid = document.getElementById('grid');
+  const list = filter==='all' ? CONCEPTS : CONCEPTS.filter(c=>c.cat===filter);
+  grid.innerHTML = list.map(c=>{
+    const catMeta = CATS.find(x=>x.id===c.cat);
+    const exCount = (c.examples||[]).length;
+    return `<div class="card ${seen.has(c.id)?'seen':''}" data-id="${c.id}">
+      <div class="icon ${catMeta.cls}">${catMeta.icon}</div>
+      <div class="catlabel">${catMeta.label.replace(/^\S+\s/,'')}</div>
+      <h3>${c.title}</h3>
+      <p>${c.blurb}</p>
+      <div class="goto">${exCount} example${exCount!==1?'s':''} · Tap to explore →</div>
+    </div>`;
+  }).join('');
+  grid.querySelectorAll('.card').forEach(card=>{
+    card.addEventListener('click', ()=>openModal(card.dataset.id));
+  });
+}
+
+let currentConceptId = null;
+let currentExampleIdx = 0;
+
+function openModal(id){
+  const c = CONCEPTS.find(x=>x.id===id);
+  if(!c) return;
+  seen.add(id);
+  updateProgress();
+  currentConceptId = id;
+  currentExampleIdx = 0;
+  const catMeta = CATS.find(x=>x.id===c.cat);
+  document.getElementById('mTag').textContent = catMeta.label;
+  document.getElementById('mTitle').textContent = c.title;
+  document.getElementById('mBlurb').textContent = c.blurb;
+
+  const tabsWrap = document.getElementById('mTabs');
+  if(c.examples.length > 1){
+    tabsWrap.style.display = 'flex';
+    tabsWrap.innerHTML = c.examples.map((ex,i)=>
+      `<div class="ex-tab" data-i="${i}">Program ${i+1}<span class="ex-tab-name">${ex.title}</span></div>`
+    ).join('');
+    tabsWrap.querySelectorAll('.ex-tab').forEach(t=>{
+      t.addEventListener('click', ()=>renderExample(parseInt(t.dataset.i)));
+    });
+  } else {
+    tabsWrap.style.display = 'none';
+    tabsWrap.innerHTML = '';
+  }
+
+  renderExample(0);
+  document.getElementById('overlay').classList.add('show');
+  // refresh the card's "seen" mark in the grid behind
+  const activePill = document.querySelector('.pill.active');
+  renderGrid(activePill ? activePill.dataset.cat : 'all');
+}
+
+function renderExample(idx){
+  const c = CONCEPTS.find(x=>x.id===currentConceptId);
+  if(!c) return;
+  currentExampleIdx = idx;
+  const ex = c.examples[idx];
+
+  document.querySelectorAll('.ex-tab').forEach(t=>{
+    t.classList.toggle('active', parseInt(t.dataset.i)===idx);
+  });
+
+  document.getElementById('mExTitle').textContent = c.examples.length>1 ? ex.title : '';
+  document.getElementById('mCode').textContent = ex.code;
+  document.getElementById('mPoints').innerHTML = ex.points.map(p=>`<li>${p}</li>`).join('');
+  document.getElementById('mOut').textContent = ex.out;
+  const codeEl = document.getElementById('mCode');
+  codeEl.removeAttribute('data-highlighted');
+  codeEl.className = 'language-python';
+  hljs.highlightElement(codeEl);
+
+  document.querySelector('.modal').scrollTop = 0;
+}
+function closeModal(){
+  document.getElementById('overlay').classList.remove('show');
+}
+document.getElementById('overlay').addEventListener('click', e=>{
+  if(e.target.id==='overlay') closeModal();
+});
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeModal(); });
+
+function updateProgress(){
+  const pct = Math.round((seen.size / CONCEPTS.length) * 100);
+  document.getElementById('spine-fill').style.width = pct + '%';
+  document.getElementById('snake-rider').style.left = `calc(${pct}% - 12px)`;
+  document.getElementById('statSeen').textContent = seen.size;
+}
+
+/* ===== Quiz ===== */
+const QUIZ = [
+  {q:"What does // do that / doesn't?", a:"// is floor division — it divides then rounds DOWN to the nearest whole number. / always gives a decimal result."},
+  {q:"Why use a tuple instead of a list?", a:"Tuples are immutable (locked) — perfect for data that should never change, like fixed coordinates, and they're a touch faster too."},
+  {q:"What's the real difference between a bar chart and a histogram?", a:"A bar chart compares separate CATEGORIES side-by-side. A histogram shows how NUMERIC values are distributed across ranges (bins)."},
+  {q:"Why does NumPy avoid for-loops for maths?", a:"Because of vectorization — operations run element-by-element across the whole array internally, in optimized C code, making them dramatically faster than a Python loop."},
+  {q:"What does groupby() actually do?", a:"It buckets your rows into categories (like Branch), so you can then apply .mean(), .sum() etc. separately to each bucket — the classic 'summarise by category' move."},
+  {q:"What's the difference between break and continue?", a:"break exits the WHOLE loop immediately. continue only skips the rest of the CURRENT iteration and moves on to the next one — the loop keeps running either way."},
+  {q:"When does a loop's else: block actually run?", a:"Only if the loop finishes normally, with no break ever happening. It's mainly used for 'search completed, nothing found' logic."},
+  {q:"Why can't you use 'for' or 'class' as a variable name?", a:"They're reserved keywords — Python uses them internally for syntax (loops, class definitions, etc.), so assigning a value to them causes a SyntaxError."},
+];
+function renderQuiz(){
+  const wrap = document.getElementById('quizWrap');
+  wrap.innerHTML = QUIZ.map((item,i)=>`
+    <div class="quiz-card" data-i="${i}">
+      <div class="quiz-q"><span><span class="qnum">Q${i+1}.</span> ${item.q}</span><span class="chev">⌄</span></div>
+      <div class="quiz-a">${item.a}</div>
+    </div>`).join('');
+  wrap.querySelectorAll('.quiz-card').forEach(card=>{
+    card.addEventListener('click', ()=>card.classList.toggle('open'));
+  });
+}
+
+/* ===== Library Reference ===== */
+let currentLib = LIBRARIES[0].id;
+let currentLibSearch = '';
+
+function escHtml(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function renderLibPills(){
+  const bar = document.getElementById('libPillbar');
+  bar.innerHTML = LIBRARIES.map(l=>`<div class="pill ${l.id===currentLib?'active':''}" data-lib="${l.id}">${l.label}</div>`).join('');
+  bar.querySelectorAll('.pill').forEach(p=>{
+    p.addEventListener('click', ()=>{
+      currentLib = p.dataset.lib;
+      bar.querySelectorAll('.pill').forEach(x=>x.classList.remove('active'));
+      p.classList.add('active');
+      renderLibrary();
+    });
+  });
+}
+
+function renderLibrary(){
+  const wrap = document.getElementById('libWrap');
+  const lib = LIBRARIES.find(l=>l.id===currentLib);
+  const term = currentLibSearch.trim().toLowerCase();
+
+  const groups = lib.groups.map(g=>{
+    const funcs = term
+      ? g.funcs.filter(f=> f.name.toLowerCase().includes(term) || f.desc.toLowerCase().includes(term))
+      : g.funcs;
+    return {name:g.name, funcs};
+  }).filter(g=>g.funcs.length>0);
+
+  if(groups.length===0){
+    wrap.innerHTML = `<p class="lib-tagline">${lib.tagline}</p><div class="lib-no-results">No functions match "${currentLibSearch}" in ${lib.label}. Try another library or clear the search.</div>`;
+    return;
+  }
+
+  wrap.innerHTML = `<p class="lib-tagline">${lib.tagline}</p>` + groups.map(g=>`
+    <div class="lib-group">
+      <div class="lib-group-title">${g.name}</div>
+      ${g.funcs.map((f,i)=>`
+        <div class="lib-func" data-key="${g.name}-${i}">
+          <div class="lib-func-head">
+            <div>
+              <div class="lib-func-name">${escHtml(f.name)}</div>
+              <div class="lib-func-desc">${f.desc}</div>
+            </div>
+            <span class="chev">⌄</span>
+          </div>
+          <div class="lib-func-body">
+            <pre><code class="language-python">${escHtml(f.code)}</code></pre>
+            <div class="out-label">Sample output</div>
+            <div class="out">${escHtml(f.out)}</div>
+          </div>
+        </div>`).join('')}
+    </div>`).join('');
+
+  wrap.querySelectorAll('.lib-func').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      const wasOpen = el.classList.contains('open');
+      el.classList.toggle('open');
+      if(!wasOpen){
+        const codeEl = el.querySelector('code');
+        codeEl.removeAttribute('data-highlighted');
+        hljs.highlightElement(codeEl);
+      }
+    });
+  });
+}
+
+document.getElementById('libSearch').addEventListener('input', (e)=>{
+  currentLibSearch = e.target.value;
+  renderLibrary();
+});
+
+/* ===== Hero typing effect ===== */
+function typeHero(){
+  const text = `import pandas as pd\ndf = pd.read_csv("life.csv")\ndf.head()  # let's begin →`;
+  const el = document.getElementById('typeTarget');
+  let i=0;
+  function step(){
+    el.textContent = text.slice(0,i);
+    i++;
+    if(i<=text.length) setTimeout(step, 28);
+  }
+  step();
+}
+
+/* ===== Init ===== */
+document.getElementById('statTotal').textContent = CONCEPTS.length;
+document.getElementById('statZones').textContent = CATS.length;
+document.getElementById('statExamples').textContent = CONCEPTS.reduce((s,c)=>s+c.examples.length,0);
+renderPills();
+renderGrid('all');
+renderQuiz();
+renderLibPills();
+renderLibrary();
+typeHero();
+</script>
+</body>
+</html>
