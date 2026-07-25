@@ -155,6 +155,33 @@ body{
 .code-reveal{display:none;margin-top:16px;}
 .code-reveal.show{display:block;animation:popIn .3s ease;}
 .code-reveal h4{margin:0 0 8px;font-size:.95rem;}
+.io-mini{display:flex;gap:10px;margin:10px 0;flex-wrap:wrap;}
+.io-mini .io{flex:1;min-width:180px;}
+.run-btn{
+  margin-top:12px;border:none;background:linear-gradient(135deg,#34d399,#10b981);color:#fff;
+  padding:10px 20px;border-radius:24px;font-weight:800;cursor:pointer;font-size:.87rem;
+  box-shadow:0 4px 10px rgba(16,185,129,.35);transition:.15s;
+}
+.run-btn:hover{transform:scale(1.04);}
+.run-btn:disabled{opacity:.6;cursor:default;transform:none;}
+.terminal{
+  margin-top:12px;background:#0b0f19;border-radius:12px;overflow:hidden;
+  border:1px solid #2a3145; display:none;
+}
+.terminal.show{display:block;animation:popIn .25s ease;}
+.term-head{
+  background:#161b28;padding:8px 12px;display:flex;gap:6px;align-items:center;
+}
+.term-dot{width:10px;height:10px;border-radius:50%;display:inline-block;}
+.term-head span.fname{margin-left:8px;color:#8b93a7;font-size:.75rem;font-family:'Courier New',monospace;}
+.term-body{padding:12px 16px;min-height:34px;}
+.term-body pre{
+  margin:0;color:#7CFC9A;font-family:'Courier New',monospace;font-size:.82rem;white-space:pre-wrap;
+}
+.term-cursor{display:inline-block;width:7px;height:14px;background:#7CFC9A;margin-left:2px;
+  animation:blink 1s step-end infinite;vertical-align:middle;}
+@keyframes blink{50%{opacity:0;}}
+.term-status{color:#8b93a7;font-family:'Courier New',monospace;font-size:.78rem;margin-bottom:4px;}
 pre.code-box{
   background:#1e1b2e;color:#baffc9;padding:14px 16px;border-radius:12px;overflow-x:auto;
   font-family:'Courier New',monospace;font-size:.82rem;white-space:pre;margin:0;
@@ -271,6 +298,23 @@ canvas{width:100%;background:#0f172a;border-radius:10px;margin-top:8px;}
       <h4>🔓 Unlocked: The Real Code</h4>
       <pre class="code-box" id="codeBox"></pre>
       <button class="copy-btn" onclick="copyCode()">📋 Copy code</button>
+      <div class="io-mini">
+        <div class="io in"><b>📥 INPUT</b><span id="modalInput"></span></div>
+        <div class="io out"><b>📤 EXPECTED OUTPUT</b><span id="modalOutput"></span></div>
+      </div>
+      <button class="run-btn" id="runBtn" onclick="runCode()">▶ Run this code</button>
+      <div class="terminal" id="terminal">
+        <div class="term-head">
+          <span class="term-dot" style="background:#ff5f57"></span>
+          <span class="term-dot" style="background:#febc2e"></span>
+          <span class="term-dot" style="background:#28c840"></span>
+          <span class="fname">python3</span>
+        </div>
+        <div class="term-body">
+          <div class="term-status" id="termStatus"></div>
+          <pre id="termOutput"></pre>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -403,6 +447,11 @@ function openQuiz(id){
   document.getElementById('feedback').className='feedback';
   document.getElementById('feedback').textContent='';
   document.getElementById('codeReveal').className='code-reveal';
+  document.getElementById('terminal').className='terminal';
+  document.getElementById('termOutput').textContent='';
+  document.getElementById('termStatus').textContent='';
+  document.getElementById('runBtn').disabled=false;
+  document.getElementById('runBtn').textContent='▶ Run this code';
   document.getElementById('overlay').classList.add('show');
 }
 
@@ -417,8 +466,41 @@ function pickOption(idx){
   fb.className = 'feedback show';
   const cb = document.getElementById('codeReveal');
   document.getElementById('codeBox').textContent = currentProgram.code;
+  document.getElementById('modalInput').textContent = currentProgram.input;
+  document.getElementById('modalOutput').textContent = currentProgram.output;
   cb.className = 'code-reveal show';
   burstConfetti();
+}
+
+let runTimer = null;
+function runCode(){
+  const btn = document.getElementById('runBtn');
+  const term = document.getElementById('terminal');
+  const status = document.getElementById('termStatus');
+  const out = document.getElementById('termOutput');
+  if(runTimer) clearInterval(runTimer);
+  btn.disabled = true;
+  btn.textContent = '⏳ Running…';
+  term.className = 'terminal show';
+  status.textContent = '$ python3 ' + (currentProgram.num ? 'program_'+currentProgram.num+'.py' : 'program.py');
+  out.innerHTML = '<span class="term-cursor"></span>';
+
+  const fullText = currentProgram.output;
+  let i = 0;
+  setTimeout(()=>{
+    status.textContent += '   (running...)';
+    runTimer = setInterval(()=>{
+      i++;
+      out.innerHTML = esc(fullText.slice(0,i)) + '<span class="term-cursor"></span>';
+      if(i >= fullText.length){
+        clearInterval(runTimer);
+        out.innerHTML = esc(fullText);
+        status.textContent = status.textContent.replace('(running...)', '✅ done in '+(0.3+Math.random()*0.6).toFixed(2)+'s');
+        btn.disabled = false;
+        btn.textContent = '🔁 Run again';
+      }
+    }, Math.max(12, 900/fullText.length));
+  }, 450);
 }
 
 function closeModal(){
