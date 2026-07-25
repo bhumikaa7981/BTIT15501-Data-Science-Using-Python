@@ -1,1 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NumPy Everyday Arcade 🎮 — Statement, Steps &amp; Secret Code</title>
+<style>
+:root{
+  --bg:#fffaf0;
+  --ink:#26263a;
+  --card-bd:#f0e6d2;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  font-family:'Segoe UI', system-ui, -apple-system, Helvetica, Arial, sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  line-height:1.55;
+}
 
+/* ---------- Floating background blobs ---------- */
+.blob{
+  position:fixed; border-radius:50%; opacity:.35; filter:blur(40px); z-index:0;
+  animation:float 14s ease-in-out infinite;
+}
+.blob1{width:280px;height:280px;background:#ffd166;top:-60px;left:-60px;}
+.blob2{width:320px;height:320px;background:#7fd8ff;top:40%;right:-100px;animation-delay:2s;}
+.blob3{width:240px;height:240px;background:#ff9ecb;bottom:-60px;left:20%;animation-delay:4s;}
+@keyframes float{
+  0%,100%{transform:translateY(0) translateX(0);}
+  50%{transform:translateY(-30px) translateX(20px);}
+}
+
+/* ---------- HERO ---------- */
+.hero{
+  position:relative; z-index:1;
+  text-align:center;
+  padding:70px 20px 50px;
+  background:linear-gradient(135deg,#fff1c1,#ffe0ec 50%,#d6f5ff);
+  overflow:hidden;
+}
+.hero h1{
+  font-size:clamp(2.1rem,5vw,3.4rem);
+  margin:0 0 8px;
+  background:linear-gradient(90deg,#ff6b6b,#f7b733,#4ecdc4,#7b6cff);
+  background-size:300% 300%;
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+  animation:gradientShift 6s ease infinite;
+  font-weight:900;
+}
+@keyframes gradientShift{
+  0%{background-position:0% 50%;} 50%{background-position:100% 50%;} 100%{background-position:0% 50%;}
+}
+.hero p.sub{font-size:1.15rem;color:#4b5563;max-width:700px;margin:0 auto 18px;font-weight:600;}
+.hero .pitch{
+  display:inline-block;background:#111827;color:#fff;padding:10px 22px;border-radius:30px;
+  font-weight:700;font-size:.95rem;margin-top:6px;
+}
+.emoji-row{font-size:1.8rem;margin-top:18px;letter-spacing:14px;animation:wiggle 2.4s ease-in-out infinite;}
+@keyframes wiggle{0%,100%{transform:rotate(0deg);}25%{transform:rotate(-4deg);}75%{transform:rotate(4deg);}}
+
+/* ---------- NAV ---------- */
+.nav-wrap{position:sticky;top:0;z-index:50;background:rgba(255,250,240,.92);backdrop-filter:blur(6px);
+  border-bottom:2px solid var(--card-bd); padding:10px 14px;}
+.nav-scroll{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px;}
+.nav-pill{
+  flex-shrink:0;padding:8px 16px;border-radius:20px;font-weight:700;font-size:.82rem;cursor:pointer;
+  border:2px solid transparent;background:#f3f4f6;color:#374151;transition:.2s;white-space:nowrap;
+}
+.nav-pill:hover{transform:translateY(-2px);}
+.nav-pill.active{color:#fff;}
+
+/* ---------- CONTAINER ---------- */
+.container{max-width:980px;margin:0 auto;padding:30px 16px 80px;position:relative;z-index:1;}
+.intro-box{
+  background:#fff;border:2px solid var(--card-bd);border-radius:16px;padding:20px 24px;margin-bottom:34px;
+  box-shadow:0 4px 14px rgba(0,0,0,.05);
+}
+.intro-box h2{margin-top:0;font-size:1.3rem;}
+.howto{display:flex;gap:14px;flex-wrap:wrap;margin-top:14px;}
+.howto div{flex:1;min-width:150px;background:#fef9ee;border-radius:12px;padding:12px 14px;font-size:.87rem;font-weight:600;}
+
+/* ---------- TOPIC HEADER ---------- */
+.topic-header{
+  display:flex;align-items:center;gap:14px;margin:44px 0 18px;padding:16px 20px;border-radius:16px;
+  scroll-margin-top:70px;
+}
+.topic-num{
+  width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  color:#fff;font-weight:900;font-size:1.2rem;flex-shrink:0;box-shadow:0 3px 8px rgba(0,0,0,.15);
+}
+.topic-title{font-size:1.35rem;font-weight:900;margin:0;}
+.topic-fns{font-size:.75rem;font-family:'Courier New',monospace;color:#6b7280;margin-top:2px;}
+
+/* ---------- CARD ---------- */
+.card{
+  background:#fff;border:2px solid var(--card-bd);border-radius:16px;margin-bottom:18px;overflow:hidden;
+  box-shadow:0 3px 10px rgba(0,0,0,.05); transition:transform .2s, box-shadow .2s;
+}
+.card:hover{transform:translateY(-3px);box-shadow:0 10px 22px rgba(0,0,0,.09);}
+.card-head{padding:12px 18px;display:flex;gap:10px;align-items:center;font-weight:800;font-size:1.05rem;}
+.card-head .num-chip{
+  background:rgba(0,0,0,.12);padding:2px 10px;border-radius:10px;font-size:.8rem;
+}
+.card-body{padding:14px 20px 18px;}
+.field{display:flex;gap:10px;margin-top:8px;align-items:flex-start;font-size:.93rem;}
+.field b{min-width:120px;flex-shrink:0;font-size:.85rem;}
+.steps{margin:4px 0 0;padding-left:18px;}
+.steps li{margin-bottom:3px;font-size:.9rem;}
+.io-row{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap;}
+.io{flex:1;min-width:200px;border-radius:10px;padding:8px 12px;font-family:'Courier New',monospace;font-size:.82rem;}
+.io.in{background:#e9fdf3;border:2px solid #9ce8bf;}
+.io.out{background:#eaf3ff;border:2px solid #a9cbff;}
+.io b{display:block;font-family:'Segoe UI',sans-serif;font-size:.72rem;margin-bottom:3px;}
+
+.play-btn{
+  margin-top:14px;border:none;padding:11px 20px;border-radius:30px;font-weight:800;cursor:pointer;
+  color:#fff;font-size:.9rem;box-shadow:0 4px 10px rgba(0,0,0,.15); transition:.15s;
+}
+.play-btn:hover{transform:scale(1.04);}
+.play-btn:active{transform:scale(.97);}
+
+/* ---------- MODAL ---------- */
+.overlay{
+  position:fixed;inset:0;background:rgba(20,15,30,.55);display:none;align-items:center;justify-content:center;
+  z-index:200;padding:16px;
+}
+.overlay.show{display:flex;animation:fadeIn .2s ease;}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+.modal{
+  background:#fff;border-radius:20px;max-width:560px;width:100%;max-height:88vh;overflow-y:auto;
+  padding:26px 26px 22px;position:relative;animation:popIn .25s ease;
+}
+@keyframes popIn{from{transform:scale(.85);opacity:0;}to{transform:scale(1);opacity:1;}}
+.modal h3{margin-top:0;font-size:1.15rem;}
+.modal .close-x{
+  position:absolute;top:14px;right:16px;font-size:1.3rem;cursor:pointer;border:none;background:none;color:#888;
+}
+.quiz-q{font-weight:800;font-size:1.02rem;margin:6px 0 14px;}
+.quiz-opt{
+  display:block;width:100%;text-align:left;padding:12px 16px;margin-bottom:9px;border-radius:12px;
+  border:2px solid #e5e7eb;background:#fafafa;cursor:pointer;font-weight:600;font-size:.92rem;transition:.15s;
+}
+.quiz-opt:hover{border-color:#a5b4fc;background:#eef2ff;}
+.quiz-opt.picked{border-color:#34d399;background:#ecfdf5;}
+.feedback{
+  margin-top:8px;padding:12px 16px;border-radius:12px;background:#fff7e6;border:2px dashed #fbbf24;
+  font-weight:700;font-size:.92rem;display:none;
+}
+.feedback.show{display:block;animation:popIn .25s ease;}
+.code-reveal{display:none;margin-top:16px;}
+.code-reveal.show{display:block;animation:popIn .3s ease;}
+.code-reveal h4{margin:0 0 8px;font-size:.95rem;}
+pre.code-box{
+  background:#1e1b2e;color:#baffc9;padding:14px 16px;border-radius:12px;overflow-x:auto;
+  font-family:'Courier New',monospace;font-size:.82rem;white-space:pre;margin:0;
+}
+.copy-btn{
+  margin-top:10px;border:none;background:#111827;color:#fff;padding:8px 16px;border-radius:20px;
+  font-weight:700;font-size:.8rem;cursor:pointer;
+}
+.copy-btn:hover{opacity:.85;}
+
+/* ---------- CONFETTI ---------- */
+.confetti-piece{
+  position:fixed;top:-20px;width:9px;height:14px;z-index:999;pointer-events:none;
+  animation:fall linear forwards;
+}
+@keyframes fall{
+  to{transform:translateY(105vh) rotate(540deg);opacity:.2;}
+}
+
+/* ---------- PROJECT SECTION ---------- */
+.projects-title{text-align:center;margin:50px 0 20px;}
+.projects-title h1{font-size:1.9rem;color:#111827;font-weight:900;}
+.project-card .card-head{background:#111827 !important;color:#fff;}
+
+/* ---------- ARCADE ---------- */
+.arcade-title{text-align:center;margin:60px 0 10px;}
+.arcade-title h1{font-size:2rem;font-weight:900;
+  background:linear-gradient(90deg,#ff6b6b,#f7b733,#4ecdc4);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.arcade-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;margin-top:24px;}
+.app-card{
+  background:#fff;border:2px solid var(--card-bd);border-radius:18px;padding:20px;box-shadow:0 4px 14px rgba(0,0,0,.06);
+}
+.app-card h3{margin-top:0;font-size:1.05rem;}
+.app-card label{font-size:.82rem;font-weight:700;display:block;margin-top:10px;}
+.app-card input[type=range]{width:100%;}
+.app-card input[type=text]{width:100%;padding:8px 10px;border-radius:8px;border:2px solid #e5e7eb;font-size:.85rem;}
+.app-out{
+  margin-top:12px;background:#f8fafc;border-radius:10px;padding:10px 12px;font-family:'Courier New',monospace;
+  font-size:.82rem;min-height:20px;
+}
+.app-btn{margin-top:10px;border:none;background:#4f46e5;color:#fff;padding:8px 16px;border-radius:20px;font-weight:700;cursor:pointer;font-size:.82rem;}
+.badge-pill{display:inline-block;padding:3px 10px;border-radius:12px;font-weight:800;font-size:.78rem;margin-top:8px;}
+canvas{width:100%;background:#0f172a;border-radius:10px;margin-top:8px;}
+
+.footer-note{text-align:center;color:#8b8b8b;font-size:.85rem;margin-top:60px;padding-top:18px;border-top:2px solid var(--card-bd);}
+
+@media (max-width:600px){
+  .field{flex-direction:column;gap:2px;}
+  .field b{min-width:auto;}
+}
+</style>
+</head>
+<body>
+
+<div class="blob blob1"></div>
+<div class="blob blob2"></div>
+<div class="blob blob3"></div>
+
+<div class="hero">
+  <div class="emoji-row">🐍 📊 🎯 🎮 ✨</div>
+  <h1>The NumPy Everyday Arcade</h1>
+  <p class="sub">Steps, logic &amp; algorithms up front — the actual code stays locked behind a silly 1-question quiz. Answer anything. Code unlocks anyway. That's the whole joke.</p>
+  <div class="pitch">Unit 2 · Getting Started with Raw Data · BTIT15501</div>
+</div>
+
+<div class="nav-wrap">
+  <div class="nav-scroll" id="navScroll"></div>
+</div>
+
+<div class="container">
+
+  <div class="intro-box">
+    <h2>🧭 How this works</h2>
+    <p>Every practical shows you the <b>Statement</b>, the <b>Logic</b>, and the exact <b>Algorithm steps</b> — no code yet.
+    When you're ready, hit <b>Play &amp; Unlock Code</b>. You'll get one goofy question (zero relation to NumPy, pure vibes).
+    Pick literally any option — the real Python code unlocks either way, with a confetti reward. 🎉</p>
+    <div class="howto">
+      <div>🎯 Read the Statement + Logic first</div>
+      <div>🧭 Try writing the code yourself from the Algorithm</div>
+      <div>🎮 Then unlock &amp; compare with the real code</div>
+    </div>
+  </div>
+
+  <div id="topicsRoot"></div>
+
+  <div class="projects-title">
+    <h1>🚀 PART 3 — Integrative Mini-Dashboards</h1>
+    <p>5–7 functions chained into one relatable everyday project each.</p>
+  </div>
+  <div id="projectsRoot"></div>
+
+  <div class="arcade-title">
+    <h1>🕹️ Bonus: The NumPy Mini-Arcade</h1>
+    <p style="text-align:center;color:#6b7280;font-weight:600;">5 tiny live apps that run the exact same maths as the practicals above — just move the sliders.</p>
+  </div>
+  <div class="arcade-grid" id="arcadeRoot"></div>
+
+  <div class="footer-note">
+    45 everyday practicals + 5 dashboards + 5 arcade apps — all built on 9 NumPy topics.<br>
+    Made for students who'd rather play than memorise. 🎓
+  </div>
+
+</div>
+
+<!-- MODAL -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <button class="close-x" onclick="closeModal()">✕</button>
+    <h3 id="modalTitle">🎮 Quick Quiz</h3>
+    <div class="quiz-q" id="quizQ"></div>
+    <div id="quizOpts"></div>
+    <div class="feedback" id="feedback"></div>
+    <div class="code-reveal" id="codeReveal">
+      <h4>🔓 Unlocked: The Real Code</h4>
+      <pre class="code-box" id="codeBox"></pre>
+      <button class="copy-btn" onclick="copyCode()">📋 Copy code</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const DATA = {"topics": [{"num": "1", "title": "Creating an Array", "functions": "np.array() &middot; np.zeros() &middot; np.ones() &middot; np.arange() &middot; np.linspace() &middot; .shape / .ndim / .dtype", "programs": [{"num": "1.1", "title": "Weekly Step-Count Tracker", "statement": "Store a week of phone step-counts and inspect the array's structure.", "logic": "A week of Fitbit/Google-Fit numbers is just a list of 7 whole numbers. NumPy turns that plain list into a single fast object that remembers how many numbers it holds, what shape it has, and what type of number it stores.", "algorithm": ["Collect the 7 daily step values in a Python list.", "Convert the list into a NumPy array using np.array().", "Read the array's .shape to confirm it holds 7 values in one row.", "Read .dtype to confirm the numbers are stored as integers.", "Read .ndim to confirm it is a 1-D array."], "function_used": "np.array() -- converts any Python list/tuple into a NumPy array in one step.", "syntax": "arr = np.array([v1, v2, v3, ...])\narr.shape   # dimensions\narr.dtype   # data type\narr.ndim    # number of axes", "input": "7 daily step counts, e.g. 8500, 10200, 6300, 11500, 9800, 4200, 13000", "output": "Shape: (7,) | Dtype: int64 | Dimensions: 1", "code": "import numpy as np\nsteps = np.array([8500, 10200, 6300, 11500, 9800, 4200, 13000])\nprint(\"Steps:\", steps)\nprint(\"Shape:\", steps.shape, \"| Dtype:\", steps.dtype, \"| Dimensions:\", steps.ndim)", "quiz": 0}, {"num": "1.2", "title": "A Day's Temperature Curve", "statement": "Generate 8 evenly-spaced time points across a 24-hour day for a weather-app mockup.", "logic": "A graph needs sample points spread perfectly evenly across the day -- not spaced by trial and error. np.linspace() guarantees an exact count of points between a start and an end value.", "algorithm": ["Decide the start of the day (0) and the end of the day (24).", "Decide how many sample points are needed (8).", "Call np.linspace(start, end, count) to generate them.", "Round the values for a clean display."], "function_used": "np.linspace(start, stop, num) -- creates 'num' evenly spaced values between start and stop (inclusive).", "syntax": "hours = np.linspace(start, stop, num)\nnp.round(hours, decimals)", "input": "start = 0, stop = 24, num = 8", "output": "[0. 3.4 6.9 10.3 13.7 17.1 20.6 24.]", "code": "import numpy as np\nhours = np.linspace(0, 24, 8)\nprint(\"Sampled hours of the day:\", np.round(hours, 1))", "quiz": 1}, {"num": "1.3", "title": "Cricket Scoreboard Template", "statement": "Log runs scored per over and pre-allocate a blank scoreboard for a 5-over match.", "logic": "Real runs are known already, but a scoreboard display must exist as blanks (zeros) before the match starts. np.zeros() builds that empty placeholder instantly.", "algorithm": ["Store the actual runs scored per over as a normal array.", "Decide how many overs the blank scoreboard needs (5).", "Call np.zeros(5) to build an all-zero placeholder array.", "Print both arrays side by side."], "function_used": "np.zeros(n) -- creates an array of n zeros, useful as an empty placeholder before real data arrives.", "syntax": "runs = np.array([r1, r2, r3, ...])\nblank = np.zeros(n, dtype=int)", "input": "Runs per over: 6, 12, 4, 15, 9 | blank scoreboard size = 5", "output": "Runs per over: [6 12 4 15 9] | Blank scoreboard: [0 0 0 0 0]", "code": "import numpy as np\nruns_per_over = np.array([6, 12, 4, 15, 9])\nblank_scoreboard = np.zeros(5, dtype=int)\nprint(\"Runs per over:\", runs_per_over)\nprint(\"Blank scoreboard before match:\", blank_scoreboard)", "quiz": 2}, {"num": "1.4", "title": "Piggy-Bank Savings Plan", "statement": "Build a constant 'save Rs.500 every month' template and a list of due dates.", "logic": "Typing '500' twelve times is wasteful. np.ones() gives an array of 1s that, multiplied by a constant, instantly becomes twelve equal savings targets.", "algorithm": ["Build the list of due days using np.arange(1, 13).", "Build an array of 12 ones using np.ones(12).", "Multiply the ones-array by 500 to get the monthly saving plan.", "Sum the plan with .sum() to get the total yearly saving."], "function_used": "np.ones(n) with scalar multiplication -- quickly seeds a repeating constant across n slots.", "syntax": "due_day = np.arange(1, 13)\nplan = np.ones(12) * 500\nplan.sum()", "input": "12 months, Rs.500 saved per month", "output": "Planned savings: [500. 500. ... 500.] | Total for year: 6000.0", "code": "import numpy as np\ndue_day = np.arange(1, 13)          # 1 payment per month\nmonthly_saving = np.ones(12) * 500\nprint(\"Payment due on day of month:\", due_day)\nprint(\"Planned savings each month (Rs):\", monthly_saving)\nprint(\"Total planned savings for the year (Rs):\", monthly_saving.sum())", "quiz": 3}, {"num": "1.5", "title": "Netflix Watch-Hours Grid", "statement": "Represent two weeks of daily watch-hours as a 2-D array.", "logic": "A nested Python list (list of lists) naturally becomes a table -- one row per week, one column per day -- the moment it is wrapped in np.array().", "algorithm": ["Arrange week-1 hours as one list and week-2 hours as another list.", "Pass both lists together (a list of lists) into np.array().", "Check .shape to confirm rows = weeks and columns = days.", "Check .ndim to confirm it is now 2-D."], "function_used": "np.array() on nested lists -- builds a genuine 2-D grid instead of a flat 1-D list.", "syntax": "grid = np.array([[week1_values], [week2_values]])\ngrid.shape\ngrid.ndim", "input": "Week 1 and Week 2 daily watch-hours (7 values each)", "output": "Shape (weeks x days): (2, 7) | Dimensions: 2", "code": "import numpy as np\nwatch_hours = np.array([[1.5, 2.0, 0.5, 3.0, 4.5, 5.0, 2.5],\n                         [0.8, 1.2, 2.5, 0.0, 3.5, 4.0, 1.0]])\nprint(watch_hours)\nprint(\"Shape (weeks x days):\", watch_hours.shape, \"| Dimensions:\", watch_hours.ndim)", "quiz": 4}]}, {"num": "2", "title": "Mathematical Operations", "functions": "+ - * / (element-wise) &middot; broadcasting &middot; np.sqrt() &middot; np.exp() &middot; np.log() &middot; array.sum()", "programs": [{"num": "2.1", "title": "Grocery Bill Calculator", "statement": "Compute item-wise cost and the total grocery bill in one shot.", "logic": "Cost per item is simply price multiplied by quantity. Doing this for many items separately with a loop is unnecessary; NumPy multiplies matching positions together automatically (element-wise).", "algorithm": ["Store per-unit price of every item in one array.", "Store quantity purchased of every item in another array (same length).", "Multiply the two arrays directly (price * qty) to get item-wise cost.", "Call .sum() on the result to get the total bill."], "function_used": "Element-wise * operator -- multiplies two same-shaped arrays position by position.", "syntax": "cost = price * qty\ntotal = cost.sum()", "input": "price = [40, 60, 25, 120], qty = [2, 1, 5, 1]", "output": "Item costs: [80 60 125 120] | Total bill: 385", "code": "import numpy as np\nprice = np.array([40, 60, 25, 120])   # per unit\nqty = np.array([2, 1, 5, 1])\nitem_cost = price * qty\nprint(\"Item costs (Rs):\", item_cost)\nprint(\"Total bill (Rs):\", item_cost.sum())", "quiz": 5}, {"num": "2.2", "title": "Trip Currency Converter", "statement": "Convert a list of expenses in USD to INR using a single exchange rate.", "logic": "There is one exchange rate, but many expense values. Broadcasting lets NumPy 'stretch' the single rate across every element of the array automatically -- no repetition needed.", "algorithm": ["Store all USD expenses in an array.", "Store the single exchange rate as one plain number.", "Multiply the array by the single number (broadcasting applies it to every element).", "Round the result for a clean display."], "function_used": "Broadcasting -- lets a single scalar value combine with every element of an array without writing a loop.", "syntax": "expenses_inr = expenses_usd * rate\nnp.round(expenses_inr, 2)", "input": "expenses_usd = [20, 55, 8, 130, 42], rate = 83.2", "output": "[1664. 4576. 665.6 10816. 3494.4]", "code": "import numpy as np\nexpenses_usd = np.array([20, 55, 8, 130, 42])\nrate = 83.2\nexpenses_inr = expenses_usd * rate\nprint(\"Expenses in Rs:\", np.round(expenses_inr, 2))", "quiz": 6}, {"num": "2.3", "title": "Group BMI Check-Up", "statement": "Compute Body Mass Index for a group of friends using division and np.sqrt().", "logic": "BMI = weight / height-squared, applied to every friend at once. Since height and weight are both arrays of the same length, ordinary division and squaring compute all BMIs together.", "algorithm": ["Store each friend's weight (kg) in one array.", "Store each friend's height (m) in a matching array.", "Square the height array (height ** 2).", "Divide weight by squared-height to get BMI for everyone at once."], "function_used": "Element-wise division (/) combined with squaring (** 2) -- applies the BMI formula to a whole group simultaneously.", "syntax": "bmi = weight_kg / (height_m ** 2)", "input": "weight_kg = [65, 80, 55, 90], height_m = [1.70, 1.75, 1.60, 1.85]", "output": "BMI values: [22.5 26.1 21.5 26.3]", "code": "import numpy as np\nweight_kg = np.array([65, 80, 55, 90])\nheight_m = np.array([1.70, 1.75, 1.60, 1.85])\nbmi = weight_kg / (height_m ** 2)\nprint(\"BMI values:\", np.round(bmi, 1))", "quiz": 7}, {"num": "2.4", "title": "Savings Growth Simulator", "statement": "Project how a lump-sum saving grows over several years using np.exp().", "logic": "Continuous compound growth follows the formula P * e^(rate * time). np.exp() computes 'e raised to the power of' for every year value in one call.", "algorithm": ["Fix the principal amount and the growth rate.", "Store the years to project as an array, e.g. [1, 2, 5, 10].", "Multiply rate by the years array.", "Apply np.exp() to that result, then multiply by the principal."], "function_used": "np.exp(x) -- computes the exponential (e^x) of every element in an array.", "syntax": "future_value = principal * np.exp(rate * years)", "input": "principal = 10000, rate = 0.07, years = [1, 2, 5, 10]", "output": "[10725.08 11502.74 14190.68 20137.53]", "code": "import numpy as np\nprincipal = 10000\nrate = 0.07                # 7% continuous growth\nyears = np.array([1, 2, 5, 10])\nfuture_value = principal * np.exp(rate * years)\nprint(\"Future value (Rs):\", np.round(future_value, 2))", "quiz": 8}, {"num": "2.5", "title": "Music Volume in Decibels", "statement": "Convert sound-intensity ratios into decibels using np.log10().", "logic": "The decibel scale used by every volume slider is 10 times the base-10 logarithm of an intensity ratio. NumPy's log function applies this formula to a whole array of ratios instantly.", "algorithm": ["Store the raw intensity ratios in an array.", "Apply np.log10() to the array.", "Multiply the result by 10 to get decibels."], "function_used": "np.log10(x) -- computes the base-10 logarithm of every element.", "syntax": "decibels = 10 * np.log10(intensity_ratio)", "input": "intensity_ratio = [10, 100, 1000, 10000]", "output": "[10. 20. 30. 40.]", "code": "import numpy as np\nintensity_ratio = np.array([10, 100, 1000, 10000])\ndecibels = 10 * np.log10(intensity_ratio)\nprint(\"Loudness (dB):\", decibels)", "quiz": 9}]}, {"num": "3", "title": "Array Subtraction", "functions": "a - b &middot; broadcasting &middot; np.abs()", "programs": [{"num": "3.1", "title": "Monthly Budget vs Actual Spend", "statement": "Check whether spending in each category stayed within budget.", "logic": "Subtracting actual spend from the budgeted amount gives a signed number: positive means money left over, negative means overspending.", "algorithm": ["Store budgeted amounts per category in an array.", "Store actual amounts spent per category in a matching array.", "Subtract actual from budgeted (budgeted - actual).", "Read the sign of each result: + is surplus, - is deficit."], "function_used": "Element-wise subtraction (a - b) -- compares two matching arrays position by position.", "syntax": "diff = budgeted - actual", "input": "budgeted = [8000, 15000, 3000, 4000, 5000], actual = [8500, 15000, 4200, 3500, 4800]", "output": "[-500 0 -1200 500 200]", "code": "import numpy as np\nbudgeted = np.array([8000, 15000, 3000, 4000, 5000])\nactual = np.array([8500, 15000, 4200, 3500, 4800])\ndiff = budgeted - actual\nprint(\"Surplus(+) / Deficit(-):\", diff)", "quiz": 10}, {"num": "3.2", "title": "Weight-Loss Progress Tracker", "statement": "Track how far each week's weight is from a target goal.", "logic": "Subtracting a single goal value from a whole array of weekly readings (broadcasting) instantly shows the gap for every week.", "algorithm": ["Store weekly weight readings in an array.", "Fix the goal weight as a single number.", "Subtract the goal from the array (broadcasting spreads it to every week).", "Round the result for readability."], "function_used": "Broadcasting subtraction -- a single scalar is subtracted from every array element.", "syntax": "gap_to_goal = weekly_weight - goal", "input": "weekly_weight = [72, 71.2, 70.5, 70.0, 69.4], goal = 68", "output": "[4. 3.2 2.5 2. 1.4]", "code": "import numpy as np\nweekly_weight = np.array([72, 71.2, 70.5, 70.0, 69.4])\ngoal = 68\ngap_to_goal = weekly_weight - goal\nprint(\"Kg above goal each week:\", np.round(gap_to_goal, 1))", "quiz": 11}, {"num": "3.3", "title": "Who's Winning? Score Gap in a Game", "statement": "Compare two players' round-by-round scores and find the gap, ignoring direction too.", "logic": "Plain subtraction shows who led each round (sign tells direction). np.abs() then strips the sign to show the size of the gap regardless of who led.", "algorithm": ["Store Player A's scores per round in an array.", "Store Player B's scores per round in a matching array.", "Subtract B from A to get the signed gap.", "Apply np.abs() to get the unsigned (absolute) gap."], "function_used": "np.abs(x) -- converts every value to its non-negative (absolute) form.", "syntax": "gap = player_A - player_B\nabs_gap = np.abs(gap)", "input": "player_A = [15, 22, 30, 18], player_B = [20, 19, 25, 24]", "output": "Gap: [-5 3 5 -6] | Absolute gap: [5 3 5 6]", "code": "import numpy as np\nplayer_A = np.array([15, 22, 30, 18])\nplayer_B = np.array([20, 19, 25, 24])\ngap = player_A - player_B\nprint(\"Score gap per round (A - B):\", gap)\nprint(\"Absolute gap:\", np.abs(gap))", "quiz": 12}, {"num": "3.4", "title": "Temperature Difference Between Two Cities", "statement": "Decide 'should I pack a jacket?' by comparing home vs vacation temperatures over 5 days.", "logic": "Subtracting the vacation-city temperatures from the home-city temperatures, day by day, immediately tells how much cooler (or warmer) the destination is.", "algorithm": ["Store 5 days of home-city temperatures in an array.", "Store 5 days of vacation-city temperatures in a matching array.", "Subtract vacation temperatures from home temperatures."], "function_used": "Element-wise subtraction (a - b).", "syntax": "temp_gap = city_home - city_vacation", "input": "city_home = [31, 33, 30, 29, 32], city_vacation = [24, 22, 25, 23, 21]", "output": "[7 11 5 6 11]", "code": "import numpy as np\ncity_home = np.array([31, 33, 30, 29, 32])\ncity_vacation = np.array([24, 22, 25, 23, 21])\ntemp_gap = city_home - city_vacation\nprint(\"How much cooler is the vacation spot (C):\", temp_gap)", "quiz": 13}, {"num": "3.5", "title": "Screen-Time Before vs After a Digital Detox", "statement": "Turn a week of screen-time habit tracking into one motivating 'hours reclaimed' number.", "logic": "Subtracting after-detox hours from before-detox hours per day, then taking the absolute value and summing, gives a single total-hours-saved figure.", "algorithm": ["Store 'before' daily screen-time hours in an array.", "Store 'after' daily screen-time hours in a matching array.", "Subtract and wrap in np.abs() to get daily hours saved.", "Call .sum() to get the weekly total."], "function_used": "np.abs() plus .sum() -- turns daily differences into one cumulative total.", "syntax": "reduction = np.abs(before_hrs - after_hrs)\nreduction.sum()", "input": "before_hrs = [6.5, 7.0, 5.8, 8.2, 6.9], after_hrs = [4.0, 4.5, 3.8, 5.0, 4.2]", "output": "Hours saved per day: [2.5 2.5 2. 3.2 2.7] | Total: 12.9", "code": "import numpy as np\nbefore_hrs = np.array([6.5, 7.0, 5.8, 8.2, 6.9])\nafter_hrs = np.array([4.0, 4.5, 3.8, 5.0, 4.2])\nreduction = np.abs(before_hrs - after_hrs)\nprint(\"Hours saved per day:\", reduction)\nprint(\"Total hours saved in 5 days:\", reduction.sum())", "quiz": 14}]}, {"num": "4", "title": "Squaring an Array", "functions": "np.square() / a ** 2 &middot; array.mean() (combined for MSE / RMS / Variance / Std-Dev)", "programs": [{"num": "4.1", "title": "Quiz Guess vs Correct Answer Score", "statement": "Score how far off a set of guesses is from the correct answers (Mean Squared Error).", "logic": "Squaring the difference between a guess and the correct answer punishes big misses far more than small ones; averaging those squares gives one overall 'wrongness' score.", "algorithm": ["Store the guesses in an array and the correct answers in a matching array.", "Subtract to get the per-question error.", "Square every error using ** 2.", "Take the mean of the squared errors with .mean()."], "function_used": "Squaring (** 2) combined with .mean() -- the standard Mean Squared Error (MSE) formula.", "syntax": "mse = np.mean((guesses - correct) ** 2)", "input": "your_guesses = [7, 3, 9, 5, 2], correct_answers = [7, 5, 8, 5, 4]", "output": "MSE = 2.0", "code": "import numpy as np\nyour_guesses = np.array([7, 3, 9, 5, 2])\ncorrect_answers = np.array([7, 5, 8, 5, 4])\nmse = np.mean((your_guesses - correct_answers) ** 2)\nprint(\"How far off were your guesses (MSE):\", mse)", "quiz": 15}, {"num": "4.2", "title": "How Steady Are Your Daily Steps? (RMS)", "statement": "Measure how much a week of step-counts swings around its own average.", "logic": "Subtract the mean from every value, square the differences, average them, then take the square root -- this Root Mean Square (RMS) shows the typical size of day-to-day swings.", "algorithm": ["Store the week's step counts in an array.", "Compute the mean of the array.", "Subtract the mean from each value and square the result.", "Take the mean of the squared values, then apply np.sqrt()."], "function_used": "np.sqrt() combined with .mean() and squaring -- the RMS-variability formula.", "syntax": "rms = np.sqrt(np.mean((steps - steps.mean()) ** 2))", "input": "steps = [8500, 10200, 6300, 11500, 9800, 4200, 13000]", "output": "Average: 9071.43 | RMS variability: 2758.9", "code": "import numpy as np\nsteps = np.array([8500, 10200, 6300, 11500, 9800, 4200, 13000])\nrms_variation = np.sqrt(np.mean((steps - steps.mean()) ** 2))\nprint(\"Average steps:\", steps.mean())\nprint(\"Step-count variability (RMS):\", round(rms_variation, 1))", "quiz": 16}, {"num": "4.3", "title": "Exam Score Spread Among Friends", "statement": "Measure how widely a friend group's exam scores are spread (variance).", "logic": "Variance is the average of the squared distance of every score from the group's mean -- a bigger number means scores are more scattered.", "algorithm": ["Store all scores in an array.", "Compute the mean score.", "Subtract the mean from each score and square the result.", "Take the mean of those squared values -- this is the variance."], "function_used": "Squaring plus .mean() -- the variance formula.", "syntax": "variance = np.mean((scores - scores.mean()) ** 2)", "input": "scores = [78, 85, 62, 90, 74]", "output": "Average: 77.8 | Variance: 85.36", "code": "import numpy as np\nscores = np.array([78, 85, 62, 90, 74])\nmean_score = scores.mean()\nvariance = np.mean((scores - mean_score) ** 2)\nprint(\"Class average:\", mean_score, \"| Variance:\", round(variance, 2))", "quiz": 17}, {"num": "4.4", "title": "Batsman Consistency Rating", "statement": "Rate how consistent a batsman's scoring is (standard deviation).", "logic": "Standard deviation is simply the square root of variance -- it puts the 'spread' number back into the same units as the original runs, making it easy to compare players.", "algorithm": ["Store the batsman's runs across matches in an array.", "Compute the mean of the runs.", "Subtract mean from each value, square, and average (variance).", "Take the square root of the variance (standard deviation)."], "function_used": "np.sqrt() applied to variance -- the standard-deviation formula.", "syntax": "consistency = np.sqrt(np.mean((runs - runs.mean()) ** 2))", "input": "runs = [45, 60, 10, 80, 55]", "output": "Average: 50.0 | Consistency (std dev): 22.8", "code": "import numpy as np\nruns = np.array([45, 60, 10, 80, 55])\nconsistency = np.sqrt(np.mean((runs - runs.mean()) ** 2))\nprint(\"Average runs:\", runs.mean(), \"| Consistency (std dev):\", round(consistency, 1))", "quiz": 18}, {"num": "4.5", "title": "Electricity Bill Fluctuation Check", "statement": "Check how consistent (or erratic) monthly electricity bills have been.", "logic": "A large standard deviation on the bill amounts signals inconsistent usage worth investigating (AC in summer, guests, etc.).", "algorithm": ["Store monthly bill amounts in an array.", "Compute the mean bill.", "Subtract the mean, square the differences, and average them.", "Take the square root to get the standard deviation."], "function_used": "np.sqrt() + .mean() + squaring -- the standard-deviation formula applied to bills.", "syntax": "std_dev = np.sqrt(np.mean((bill - bill.mean()) ** 2))", "input": "monthly_bill = [1200, 1450, 1100, 1900, 1300, 1600]", "output": "Average: 1425.0 | Std Dev: 258.6", "code": "import numpy as np\nmonthly_bill = np.array([1200, 1450, 1100, 1900, 1300, 1600])\nstd_dev = np.sqrt(np.mean((monthly_bill - monthly_bill.mean()) ** 2))\nprint(\"Average bill (Rs):\", monthly_bill.mean(), \"| Std Dev (Rs):\", round(std_dev, 1))", "quiz": 19}]}, {"num": "5", "title": "Trigonometric Functions", "functions": "np.sin() &middot; np.cos() &middot; np.tan() &middot; np.radians() &middot; np.degrees()", "programs": [{"num": "5.1", "title": "Ferris Wheel Ride Height Over Time", "statement": "Model a Ferris-wheel seat rising and falling smoothly between 0 m and 10 m.", "logic": "A sine wave naturally moves up and down between a minimum and maximum. Shifting it upward by 5 and scaling it by 5 makes it swing between 0 and 10 -- exactly like a rotating wheel.", "algorithm": ["Generate evenly spaced time points using np.linspace().", "Multiply time by an angular-speed constant.", "Apply np.sin() to that value.", "Scale the sine result and shift it up so it stays between 0 and 10."], "function_used": "np.sin(x) -- computes the sine of each element (x given in radians).", "syntax": "height = 5 + 5 * np.sin(0.5 * t)", "input": "t = np.linspace(0, 10, 6)", "output": "[5. 6.2 9.44 9.98 6.65 3.34]", "code": "import numpy as np\nt = np.linspace(0, 10, 6)\nheight_m = 5 + 5 * np.sin(0.5 * t)\nprint(\"Seat height above ground (m):\", np.round(height_m, 2))", "quiz": 0}, {"num": "5.2", "title": "How Long Is Your Shadow?", "statement": "Compute shadow length for a fixed-height person at several sun angles.", "logic": "Shadow length = height / tan(angle). As the sun rises higher (bigger angle), the tangent grows and the shadow shrinks -- basic sundial geometry, done for many angles at once.", "algorithm": ["Fix the person's height.", "Store the sun's angle (in degrees) for several times of day in an array.", "Convert degrees to radians using np.radians().", "Divide height by np.tan() of the radians to get shadow length."], "function_used": "np.tan() with np.radians() -- converts angles to radians, then computes the tangent for every value.", "syntax": "angle_rad = np.radians(angle_deg)\nshadow = height / np.tan(angle_rad)", "input": "height = 1.7 m, sun_angle_deg = [10, 30, 45, 60, 80]", "output": "[9.64 2.94 1.7 0.98 0.3]", "code": "import numpy as np\nperson_height_m = 1.7\nsun_angle_deg = np.array([10, 30, 45, 60, 80])\nsun_angle_rad = np.radians(sun_angle_deg)\nshadow_length = person_height_m / np.tan(sun_angle_rad)\nprint(\"Shadow length (m):\", np.round(shadow_length, 2))", "quiz": 1}, {"num": "5.3", "title": "Clock Hand Tip Position", "statement": "Convert clock-face time directly into (x, y) coordinates of the hand-tip.", "logic": "Each hour represents a fixed angle around a circle. Once that angle is known, sine gives the horizontal (x) position and cosine gives the vertical (y) position of the hand's tip.", "algorithm": ["Store the hour values in an array.", "Convert each hour into a degree angle (hour / 12 * 360).", "Convert degrees to radians.", "Apply np.sin() for x and np.cos() for y."], "function_used": "np.sin() and np.cos() together -- convert an angle into x and y coordinates on a circle.", "syntax": "angle_rad = np.radians((hours / 12) * 360)\nx = length * np.sin(angle_rad)\ny = length * np.cos(angle_rad)", "input": "hour_hand_length = 4, hours = [12, 3, 6, 9]", "output": "x: [0. 4. 0. -4.] | y: [4. 0. -4. 0.]", "code": "import numpy as np\nhour_hand_length = 4\nhours = np.array([12, 3, 6, 9])\nangle_deg = (hours / 12) * 360\nangle_rad = np.radians(angle_deg)\nx = hour_hand_length * np.sin(angle_rad)\ny = hour_hand_length * np.cos(angle_rad)\nprint(\"Hand-tip X coordinates:\", np.round(x, 2))\nprint(\"Hand-tip Y coordinates:\", np.round(y, 2))", "quiz": 2}, {"num": "5.4", "title": "Park Swing / Pendulum Motion", "statement": "Simulate the back-and-forth swing angle of a playground swing over time.", "logic": "A cosine wave naturally oscillates back and forth around zero, which is exactly the back-and-forth motion of a pendulum.", "algorithm": ["Generate evenly spaced time points with np.linspace().", "Multiply time by an angular-speed constant.", "Apply np.cos() to that value.", "Scale the result by the maximum swing angle (amplitude)."], "function_used": "np.cos(x) -- computes the cosine of each element, modelling smooth oscillation.", "syntax": "swing_angle = amplitude * np.cos(speed * t)", "input": "t = np.linspace(0, 4, 8), amplitude = 30 degrees", "output": "[30. 17. -8.6 -27.6 -25.5 -1. 22.7 28.6]", "code": "import numpy as np\nt = np.linspace(0, 4, 8)\nswing_angle_deg = 30 * np.cos(1.5 * t)\nprint(\"Swing angle over time (degrees):\", np.round(swing_angle_deg, 1))", "quiz": 3}, {"num": "5.5", "title": "Kite Height from String Angle", "statement": "Find how high a kite is flying given string length and its angle from the ground.", "logic": "The kite's height is the vertical side of a right triangle, found by multiplying the string length (hypotenuse) by the sine of the angle it makes with the ground.", "algorithm": ["Store string lengths let out in an array.", "Store the corresponding angles in degrees.", "Convert degrees to radians.", "Multiply string length by np.sin() of the radians."], "function_used": "np.sin() with np.radians() -- converts angle and computes the vertical component of a triangle.", "syntax": "angle_rad = np.radians(angle_deg)\nheight = string_length * np.sin(angle_rad)", "input": "string_length_m = [20, 35, 50, 65], angle_deg = [30, 40, 55, 70]", "output": "[10. 22.5 40.96 61.08]", "code": "import numpy as np\nstring_length_m = np.array([20, 35, 50, 65])\nangle_deg = np.array([30, 40, 55, 70])\nangle_rad = np.radians(angle_deg)\nkite_height_m = string_length_m * np.sin(angle_rad)\nprint(\"Kite height (m):\", np.round(kite_height_m, 2))", "quiz": 4}]}, {"num": "6", "title": "Conditional Operations", "functions": "Boolean masking (array &gt; x) &middot; np.where() &middot; np.any() &middot; np.all()", "programs": [{"num": "6.1", "title": "Netflix Binge-Watch Alert", "statement": "Flag which days of the week counted as a 'binge-watch' day.", "logic": "Comparing an entire array to a threshold at once produces a matching array of True/False flags -- exactly the logic behind a screen-time notification.", "algorithm": ["Store daily watch-hours in an array.", "Compare the array to a threshold (> 4) to get True/False flags.", "Count the True values with .sum() (True counts as 1)."], "function_used": "Boolean masking (array > value) -- compares every element and returns True/False.", "syntax": "flags = watch_hours > 4\nflags.sum()", "input": "watch_hours = [1.5, 2.0, 4.5, 3.0, 5.5, 2.5, 6.0]", "output": "[False False True False True False True] | Count: 3", "code": "import numpy as np\nwatch_hours = np.array([1.5, 2.0, 4.5, 3.0, 5.5, 2.5, 6.0])\nbinge_days = watch_hours > 4\nprint(\"Binge day flags:\", binge_days)\nprint(\"How many binge days this week?\", binge_days.sum())", "quiz": 5}, {"num": "6.2", "title": "Pass/Fail List from Exam Marks", "statement": "Label an entire class's marks as Pass or Fail in one line.", "logic": "np.where() checks a condition for every element and picks one of two labels depending on whether it is True or False -- no loop or if-statement needed.", "algorithm": ["Store all marks in an array.", "Decide the passing threshold (e.g. 40).", "Call np.where(condition, value_if_true, value_if_false)."], "function_used": "np.where(condition, A, B) -- chooses A where the condition is True, B otherwise.", "syntax": "result = np.where(marks >= 40, \"Pass\", \"Fail\")", "input": "marks = [35, 78, 42, 90, 55]", "output": "['Fail' 'Pass' 'Pass' 'Pass' 'Pass']", "code": "import numpy as np\nmarks = np.array([35, 78, 42, 90, 55])\nresult = np.where(marks >= 40, \"Pass\", \"Fail\")\nprint(result)", "quiz": 6}, {"num": "6.3", "title": "Do I Need an Umbrella This Week?", "statement": "Collapse a week's rainfall forecast into one packing decision.", "logic": "np.any() answers 'did at least one day match?' while np.all() answers 'did every day match?' -- perfect for yes/no decisions across a whole array.", "algorithm": ["Store daily rainfall values in an array.", "Check which days had any rain with array > 0.", "Use np.any() to check if heavy rain occurred on any day.", "Use np.all() to check if it was dry every single day."], "function_used": "np.any() / np.all() -- collapse a whole boolean array into a single True/False answer.", "syntax": "np.any(rainfall_mm > 15)\nnp.all(rainfall_mm == 0)", "input": "rainfall_mm = [0, 5, 12, 0, 20, 3, 0]", "output": "Any heavy rain (>15mm)? True | Dry every day? False", "code": "import numpy as np\nrainfall_mm = np.array([0, 5, 12, 0, 20, 3, 0])\nprint(\"Rainy days?\", rainfall_mm > 0)\nprint(\"Any heavy rain (>15mm) this week?\", np.any(rainfall_mm > 15))\nprint(\"Was it dry every single day?\", np.all(rainfall_mm == 0))", "quiz": 7}, {"num": "6.4", "title": "Daily Step-Goal Tracker", "statement": "Award a 'Goal Met' or 'Keep Going' badge for every day of the week.", "logic": "This is the same fitness-app streak-badge rule as Program 6.2, applied to step counts against a daily goal.", "algorithm": ["Store the week's step counts in an array.", "Fix the daily goal (e.g. 10000).", "Call np.where() to label each day."], "function_used": "np.where(condition, A, B) -- vectorised labelling.", "syntax": "status = np.where(steps >= goal, \"Goal Met\", \"Keep Going\")", "input": "steps = [8500, 10200, 6300, 11500, 9800, 4200, 13000], goal = 10000", "output": "['Keep Going' 'Goal Met' 'Keep Going' 'Goal Met' 'Keep Going' 'Keep Going' 'Goal Met']", "code": "import numpy as np\nsteps = np.array([8500, 10200, 6300, 11500, 9800, 4200, 13000])\ngoal = 10000\nstatus = np.where(steps >= goal, \"Goal Met\", \"Keep Going\")\nprint(status)", "quiz": 8}, {"num": "6.5", "title": "Free Shipping Eligibility Checker", "statement": "Decide, for every order in a cart list, whether it qualifies for free shipping.", "logic": "The same vectorised threshold-and-label rule an e-commerce cart page uses to show its shipping banner.", "algorithm": ["Store cart values in an array.", "Fix the free-shipping threshold (e.g. 999).", "Call np.where() to label every cart."], "function_used": "np.where(condition, A, B).", "syntax": "labels = np.where(cart_value >= 999, \"Free Shipping\", \"Add to qualify\")", "input": "cart_value = [399, 899, 1500, 250, 2100]", "output": "['Add' 'Add' 'Free Shipping' 'Add' 'Free Shipping']", "code": "import numpy as np\ncart_value = np.array([399, 899, 1500, 250, 2100])\nfree_shipping = np.where(cart_value >= 999, \"Free Shipping\", \"Add to qualify\")\nprint(free_shipping)", "quiz": 9}]}, {"num": "7", "title": "Matrix Multiplication", "functions": "np.dot() &middot; @ operator", "programs": [{"num": "7.1", "title": "Total Shopping Cart Cost", "statement": "Compute the total value of a shopping cart from a quantity row and a price column.", "logic": "A (1x3) quantity row multiplied by a (3x1) price column, using matrix multiplication, sums quantity times price across all items automatically.", "algorithm": ["Arrange quantities as a 1-row matrix (1x3).", "Arrange prices as a 1-column matrix (3x1).", "Multiply the two using the @ operator.", "Read the single resulting number as the total cost."], "function_used": "@ operator / np.dot() -- performs true matrix multiplication (row-by-column sums), not element-wise multiplication.", "syntax": "total = qty @ price   # qty: 1x3, price: 3x1", "input": "qty = [[3, 2, 1]], price = [[50], [30], [120]]", "output": "[[330]]", "code": "import numpy as np\nqty = np.array([[3, 2, 1]])            # 1x3\nprice = np.array([[50], [30], [120]])  # 3x1\ntotal = qty @ price\nprint(\"Total cart value (Rs):\", total)", "quiz": 10}, {"num": "7.2", "title": "Rotating a Game Character's Direction", "statement": "Turn a 2-D facing direction by a given angle using a rotation matrix.", "logic": "Multiplying a direction vector by a specially built 2x2 rotation matrix (made from sine and cosine of the turn angle) produces the new facing direction -- the same trick used inside game engines.", "algorithm": ["Define the current facing direction as a 2-value vector.", "Convert the desired turn angle to radians.", "Build the 2x2 rotation matrix using cos and sin of that angle.", "Multiply the rotation matrix by the direction vector with @."], "function_used": "@ operator with a rotation matrix built from np.cos()/np.sin().", "syntax": "R = [[cos, -sin], [sin, cos]]\nnew_direction = R @ direction", "input": "direction = [1, 0] (east), theta = 90 degrees", "output": "[0. 1.]", "code": "import numpy as np\ndirection = np.array([1, 0])     # facing east\ntheta = np.radians(90)           # turn 90 degrees left\nR = np.array([[np.cos(theta), -np.sin(theta)],\n              [np.sin(theta),  np.cos(theta)]])\nnew_direction = R @ direction\nprint(\"New facing direction:\", np.round(new_direction, 2))", "quiz": 11}, {"num": "7.3", "title": "Scaling a Recipe for a Bigger Guest List", "statement": "Scale every ingredient of a recipe for two different serving sizes at once.", "logic": "A column of per-serving ingredient amounts multiplied by a row of target serving sizes produces a full table of scaled quantities in a single matrix multiply.", "algorithm": ["Arrange per-serving ingredient amounts as a column matrix.", "Arrange the target serving counts as a row matrix.", "Multiply the two with @ to get a full ingredients x servings table."], "function_used": "@ operator -- produces an outer-product-style table from a column and a row.", "syntax": "scaled = ingredients_per_serving @ servings", "input": "ingredients_per_serving = [[200],[50],[10]], servings = [[4, 8]]", "output": "[[800 1600] [200 400] [40 80]]", "code": "import numpy as np\ningredients_per_serving = np.array([[200], [50], [10]])  # rice, veg, oil\nservings = np.array([[4, 8]])\nscaled_amounts = ingredients_per_serving @ servings\nprint(\"Rice / Veg / Oil needed for 4 & 8 servings:\\n\", scaled_amounts)", "quiz": 12}, {"num": "7.4", "title": "Cab Fare Estimator", "statement": "Estimate ride fares that combine a distance-based charge and a time-based charge.", "logic": "Each trip has two stats (distance, time); each stat has its own rate. Matrix multiplication combines both stats with both rates for every trip in one shot.", "algorithm": ["Arrange each trip's [distance, time] as one row of a matrix.", "Arrange the [distance_rate, time_rate] as a column matrix.", "Multiply the trip matrix by the rate column with @.", "Flatten the result to a simple list of fares."], "function_used": "@ operator -- weighted-sum combination of multiple stats and multiple rates.", "syntax": "fare = trip_stats @ rate", "input": "trip_stats = [[5,12],[10,20]], rate = [[12],[1.5]]", "output": "[78. 150.]", "code": "import numpy as np\ntrip_stats = np.array([[5, 12], [10, 20]])\nrate = np.array([[12], [1.5]])\nfare = trip_stats @ rate\nprint(\"Estimated fares (Rs):\", fare.flatten())", "quiz": 13}, {"num": "7.5", "title": "Fantasy-League Points Predictor", "statement": "Score every player using a weighted combination of runs and wickets.", "logic": "Each player's [runs, wickets] row combined with a [points-per-run, points-per-wicket] column, via matrix multiplication, ranks every player with one operation.", "algorithm": ["Arrange each player's [runs, wickets] as one row of a matrix.", "Arrange the scoring weights as a column matrix.", "Multiply the two with @ to get fantasy points per player."], "function_used": "@ operator -- weighted-sum scoring.", "syntax": "fantasy_points = player_stats @ weights", "input": "player_stats = [[50,2],[30,0],[80,1]], weights = [[1],[20]]", "output": "[90 30 100]", "code": "import numpy as np\nplayer_stats = np.array([[50, 2], [30, 0], [80, 1]])\nweights = np.array([[1], [20]])\nfantasy_points = player_stats @ weights\nprint(\"Fantasy points:\", fantasy_points.flatten())", "quiz": 14}]}, {"num": "8", "title": "Indexing and Slicing", "functions": "array[i] &middot; array[row, col] &middot; array[a:b, c:d] &middot; fancy indexing array[[i,j,k]]", "programs": [{"num": "8.1", "title": "Pulling Out Today's Step Count", "statement": "Retrieve one specific day, and a range of days, from a week of step data.", "logic": "A single index picks out one exact element; a start:stop slice picks out a contiguous range -- both without touching the rest of the array.", "algorithm": ["Store the week's steps in an array.", "Use a single index (e.g. [2]) to grab one day.", "Use a slice (e.g. [5:7]) to grab a range of days."], "function_used": "Basic indexing array[i] and slicing array[a:b].", "syntax": "week_steps[2]\nweek_steps[5:7]", "input": "week_steps = [8500, 10200, 6300, 11500, 9800, 4200, 13000]", "output": "Wed: 6300 | Weekend: [4200 13000]", "code": "import numpy as np\nweek_steps = np.array([8500, 10200, 6300, 11500, 9800, 4200, 13000])\nprint(\"Wednesday's steps:\", week_steps[2])\nprint(\"Weekend steps (Sat & Sun):\", week_steps[5:7])", "quiz": 15}, {"num": "8.2", "title": "Grabbing Only Your Team's Derby Matches", "statement": "Pick out specific, non-adjacent match scores from a whole season.", "logic": "Fancy indexing takes a list of exact positions and returns exactly those elements, in any order, even if they are scattered across the array.", "algorithm": ["Store the season's match scores in an array.", "Build a list of the index positions that are 'derby' games.", "Pass that list of indices directly inside square brackets."], "function_used": "Fancy indexing array[[i, j, k]] -- selects multiple arbitrary positions at once.", "syntax": "season_scores[[1, 4, 6]]", "input": "season_scores = [45, 60, 30, 80, 55, 20, 90, 35], derby positions = [1, 4, 6]", "output": "[60 55 90]", "code": "import numpy as np\nseason_scores = np.array([45, 60, 30, 80, 55, 20, 90, 35])\nderby_match_days = [1, 4, 6]\nprint(\"Derby match scores:\", season_scores[derby_match_days])", "quiz": 16}, {"num": "8.3", "title": "Cropping a Photo (Pixel Grid)", "statement": "Crop the centre region out of a small pixel grid, just like a photo-editing app.", "logic": "2-D slicing selects a row-range and a column-range together, cutting a rectangular window out of a bigger grid.", "algorithm": ["Build a 5x5 grid representing a pretend grayscale photo.", "Choose the row range and column range to keep (e.g. 1:4, 1:4).", "Slice the 2-D array using both ranges together."], "function_used": "2-D slicing array[row_start:row_end, col_start:col_end].", "syntax": "cropped = photo[1:4, 1:4]", "input": "photo = np.arange(1, 26).reshape(5, 5)", "output": "[[7 8 9] [12 13 14] [17 18 19]]", "code": "import numpy as np\nphoto = np.arange(1, 26).reshape(5, 5)\ncropped = photo[1:4, 1:4]\nprint(\"Cropped photo region:\\n\", cropped)", "quiz": 17}, {"num": "8.4", "title": "Finding a Song in Your Playlist Library", "statement": "Retrieve one complete playlist record (row) from a small library table.", "logic": "Indexing a 2-D array with a single row number returns that whole row -- every column value for that record.", "algorithm": ["Build a 2-D array where each row is one playlist's [name, song, duration].", "Choose the row number of the playlist wanted.", "Index the array with that row number."], "function_used": "Row indexing array[row].", "syntax": "playlist_library[1]", "input": "playlist_library = rows of [Chill, Workout, Study] playlists", "output": "['Workout' 'SongB' '4:10']", "code": "import numpy as np\nplaylist_library = np.array([[\"Chill\", \"SongA\", \"3:45\"],\n                              [\"Workout\", \"SongB\", \"4:10\"],\n                              [\"Study\", \"SongC\", \"3:20\"]])\nworkout_playlist = playlist_library[1]\nprint(\"Workout playlist entry:\", workout_playlist)", "quiz": 18}, {"num": "8.5", "title": "Your Most Recent Bank Transaction", "statement": "Retrieve the newest transaction, and the last three, from a transaction list.", "logic": "Negative indices count backward from the end of the array -- [-1] is always the very last element, [-3:] is always the last three.", "algorithm": ["Store the transaction amounts in order in an array.", "Use index [-1] to grab the latest transaction.", "Use slice [-3:] to grab the last three transactions."], "function_used": "Negative indexing array[-1] and negative slicing array[-n:].", "syntax": "transactions[-1]\ntransactions[-3:]", "input": "transactions = [1200, -450, 3000, -200, 850]", "output": "Latest: 850 | Last 3: [3000 -200 850]", "code": "import numpy as np\ntransactions = np.array([1200, -450, 3000, -200, 850])\nprint(\"Latest transaction:\", transactions[-1])\nprint(\"Last 3 transactions:\", transactions[-3:])", "quiz": 19}]}, {"num": "9", "title": "Shape Manipulation", "functions": "array.reshape() &middot; array.flatten() / array.ravel() &middot; .T / array.transpose()", "programs": [{"num": "9.1", "title": "Turning a Flat Marksheet into a Grid", "statement": "Convert a single flat list of marks into a proper student x subject table.", "logic": "reshape() rearranges the exact same numbers into new row/column dimensions, as long as the total count of elements stays the same.", "algorithm": ["Generate a flat sequence of marks using np.arange().", "Decide the target rows (students) and columns (subjects).", "Call .reshape(rows, cols) on the flat array."], "function_used": "array.reshape(rows, cols) -- reorganises a flat array into a new grid shape.", "syntax": "marks_grid = flat_marks.reshape(3, 5)", "input": "flat_marks = np.arange(1, 16)", "output": "[[1..5] [6..10] [11..15]]  (3 rows x 5 cols)", "code": "import numpy as np\nflat_marks = np.arange(1, 16)\nmarks_grid = flat_marks.reshape(3, 5)\nprint(marks_grid)", "quiz": 0}, {"num": "9.2", "title": "Checking a Tic-Tac-Toe Board Quickly", "statement": "Flatten a 2-D game board into a simple 1-D list to make counting easy.", "logic": "flatten() collapses any multi-dimensional array into a single row, which makes simple checks like 'how many X marks exist' trivial with one comparison.", "algorithm": ["Build the 3x3 board as a 2-D array of symbols.", "Call .flatten() to turn it into a 1-D array.", "Compare the flat array to 'X' and sum the True values to count them."], "function_used": "array.flatten() -- converts any shape into a flat 1-D array.", "syntax": "flat_board = board.flatten()\nnp.sum(flat_board == \"X\")", "input": "board = 3x3 grid of X/O symbols", "output": "Flattened: ['X' 'O' 'X' ...] | X count: 5", "code": "import numpy as np\nboard = np.array([[\"X\",\"O\",\"X\"], [\"O\",\"X\",\"O\"], [\"X\",\"O\",\"X\"]])\nflat_board = board.flatten()\nprint(\"Flattened board:\", flat_board)\nprint(\"Number of X's:\", np.sum(flat_board == \"X\"))", "quiz": 1}, {"num": "9.3", "title": "Swapping Rows and Columns of a Seating Chart", "statement": "Swap the rows and columns of a seating arrangement.", "logic": ".T (transpose) flips a 2-D array along its diagonal, turning every row into a column and every column into a row -- useful when a chart needs to display the other way round.", "algorithm": ["Build the seating chart as a 2-D array (rows = groups).", "Call .T on the array.", "Compare the original .shape with the transposed .shape."], "function_used": "array.T / array.transpose() -- flips rows and columns.", "syntax": "swapped = seating.T", "input": "seating = 2x3 array of names", "output": "Original shape (2,3) -> Transposed shape (3,2)", "code": "import numpy as np\nseating = np.array([[\"Asha\",\"Rohit\",\"Meera\"], [\"Kabir\",\"Zara\",\"Dev\"]])\nswapped = seating.T\nprint(\"Original shape:\", seating.shape, \"-> Transposed shape:\", swapped.shape)\nprint(swapped)", "quiz": 2}, {"num": "9.4", "title": "Reorganising a Week of Hourly Temperatures", "statement": "Group a flat 24-hour temperature log into 4 blocks of 6 hours each and average each block.", "logic": "reshape() groups a flat hourly sequence into a 2-D shape of (blocks, hours-per-block), after which .mean(axis=1) averages each block's row separately.", "algorithm": ["Generate 24 hourly readings using np.arange().", "Reshape the flat array into 4 rows of 6 hours using .reshape(4, 6).", "Call .mean(axis=1) to average each row (block) separately."], "function_used": "array.reshape() combined with .mean(axis=1) -- groups data, then summarises each group.", "syntax": "temp_blocks = hourly_temp.reshape(4, 6)\ntemp_blocks.mean(axis=1)", "input": "hourly_temp = np.arange(0, 24)", "output": "[2.5 8.5 14.5 20.5]", "code": "import numpy as np\nhourly_temp = np.arange(0, 24)\ntemp_blocks = hourly_temp.reshape(4, 6)\nprint(\"Average temp per 6-hour block:\", temp_blocks.mean(axis=1))", "quiz": 3}, {"num": "9.5", "title": "Flattening a Weekly Grocery Cart", "statement": "Turn a category-wise grocery cart into one plain shopping list for a receipt.", "logic": "flatten() collapses a 2-D categorised cart into a single 1-D list, exactly the plain item order needed on a printed receipt.", "algorithm": ["Build the cart as a 2-D array grouped by category.", "Call .flatten() on the array.", "Print the resulting 1-D master list."], "function_used": "array.flatten().", "syntax": "master_list = grocery_cart.flatten()", "input": "grocery_cart = [[Milk,Bread],[Eggs,Butter],[Rice,Dal]]", "output": "['Milk' 'Bread' 'Eggs' 'Butter' 'Rice' 'Dal']", "code": "import numpy as np\ngrocery_cart = np.array([[\"Milk\",\"Bread\"], [\"Eggs\",\"Butter\"], [\"Rice\",\"Dal\"]])\nmaster_list = grocery_cart.flatten()\nprint(\"Master shopping list:\", master_list)", "quiz": 4}]}], "projects": [{"letter": "A", "title": "Personal Fitness Tracker Dashboard", "functions": "np.arange, np.array, * , sum(), - (subtraction), **2 + sqrt + mean (RMS), np.where, reshape", "statement": "Turn a week of step-counts into calories burned, goal-tracking, and a consistency score.", "logic": "This dashboard chains five ideas from earlier topics: multiplication for calories, subtraction for goal-gap, squaring+mean+sqrt for RMS consistency, np.where for daily status labels, and reshape for a weekly grid view.", "algorithm": ["Build the week's step-count array and a numbered days array with np.arange().", "Multiply steps by a calories-per-step constant to get daily calories, then sum for the week.", "Subtract the daily goal from steps to see the +/- gap each day.", "Compute RMS variability: square the deviations from the mean, average, then square-root.", "Use np.where() to label each day 'Goal Met' or 'Missed'.", "Reshape the 7-value array into a (1,7) grid to confirm its dashboard-ready shape."], "function_used": "A pipeline of: * , .sum(), - , **2+mean+sqrt, np.where(), .reshape().", "syntax": "calories = steps * 0.04\ndiff = steps - goal\nrms = np.sqrt(np.mean((steps-steps.mean())**2))\nstatus = np.where(steps>=goal, \"Goal Met\", \"Missed\")\nweek_grid = steps.reshape(1,7)", "input": "days = 1..7, steps = [8500,10200,6300,11500,9800,4200,13000], goal = 10000", "output": "Total weekly calories: 2540.0 | RMS variability: 2758.9 | Status per day shown; grid shape (1,7)", "num": "A", "title_full": "Project A — Personal Fitness Tracker Dashboard", "code": "import numpy as np\ndays = np.arange(1, 8)\nsteps = np.array([8500, 10200, 6300, 11500, 9800, 4200, 13000])\ngoal = 10000\ncalories = steps * 0.04\nprint(\"Calories burned per day:\", np.round(calories, 1))\nprint(\"Total weekly calories:\", round(calories.sum(), 1))\ndiff = steps - goal\nprint(\"Steps vs goal (+/-):\", diff)\nrms_variation = np.sqrt(np.mean((steps - steps.mean()) ** 2))\nprint(\"Step-count variability (RMS):\", round(rms_variation, 1))\nstatus = np.where(steps >= goal, \"Goal Met\", \"Missed\")\nprint(\"Daily status:\", status)\nweek_grid = steps.reshape(1, 7)\nprint(\"Weekly grid shape:\", week_grid.shape)", "quiz": 5}, {"letter": "B", "title": "Netflix / Screen-Time Analytics Dashboard", "functions": "np.array (2-D), sum(axis=), boolean masking, np.any/np.all, .flatten(), .mean()", "statement": "Analyse two weeks of watch-hours: weekly totals, binge-day flags, and an overall average.", "logic": "A 2-D grid (weeks x days) lets .sum(axis=1) total each week separately, a boolean mask flags binge days, np.any/np.all answer yes/no questions per week, and flatten()+mean() gives one overall figure.", "algorithm": ["Build a 2-D array: rows = weeks, columns = days.", "Call .sum(axis=1) to get the total hours for each week.", "Create a boolean mask (watch_hours > 4) to flag binge days.", "Use np.any() on one week's mask, and np.all() on a threshold check for another week.", "Flatten the whole grid and call .mean() for one overall average."], "function_used": "sum(axis=1) for row totals; boolean masking + np.any/np.all for yes/no checks; flatten()+mean() for an overall figure.", "syntax": "watch_hours.sum(axis=1)\nbinge_days = watch_hours > 4\nnp.any(binge_days[0])\nnp.all(watch_hours[1] < 5)\nwatch_hours.flatten().mean()", "input": "2 weeks x 7 days of watch-hours", "output": "Weekly totals: [19. 13.] | Binge day in week1? True | Overall avg: 1.75 hrs/day", "num": "B", "title_full": "Project B — Netflix / Screen-Time Analytics Dashboard", "code": "import numpy as np\nwatch_hours = np.array([[1.5, 2.0, 0.5, 3.0, 4.5, 5.0, 2.5],\n                         [0.8, 1.2, 2.5, 0.0, 3.5, 4.0, 1.0]])\nprint(\"Total hours per week:\", watch_hours.sum(axis=1))\nbinge_days = watch_hours > 4\nprint(\"Binge-day flags:\\n\", binge_days)\nprint(\"Any binge day in week 1?\", np.any(binge_days[0]))\nprint(\"All days under 5 hrs in week 2?\", np.all(watch_hours[1] < 5))\nflat = watch_hours.flatten()\nprint(\"Overall average watch time (hrs/day):\", round(flat.mean(), 2))", "quiz": 6}, {"letter": "C", "title": "Monthly Budget & Shopping Planner", "functions": "np.array, subtraction, np.where, @ (matrix multiply), **2 + mean + sqrt (std-dev)", "statement": "Compare budgeted vs actual spending, flag overspent categories, cost out sub-items, and check spending consistency.", "logic": "Subtraction plus np.where() flags which categories went over budget; a small matrix multiply prices out sub-item quantities; squaring+mean+sqrt measures how volatile the spending was.", "algorithm": ["Store category names, budgeted amounts, and actual amounts as arrays.", "Subtract actual from budgeted, then use np.where() to label 'Overspent' or 'On Track'.", "Arrange sub-item quantities as a matrix and rates as a column, then multiply with @.", "Compute the standard deviation of actual spend using **2 + mean + sqrt."], "function_used": "Subtraction + np.where() for flags; @ for matrix costing; sqrt(mean(diff**2)) for consistency.", "syntax": "status = np.where(budgeted-actual < 0, \"Overspent\", \"On Track\")\nsub_cost = qty @ rate\nstd_spend = np.sqrt(np.mean((actual-actual.mean())**2))", "input": "5 spending categories with budgeted vs actual values; sub-item qty/rate matrix", "output": "Category status list | Sub-category cost: [800 640] | Std dev: 4059.51", "num": "C", "title_full": "Project C — Monthly Budget & Shopping Planner", "code": "import numpy as np\ncategories = np.array([\"Groceries\", \"Rent\", \"Fun\", \"Travel\", \"Savings\"])\nbudgeted = np.array([8000, 15000, 3000, 4000, 5000])\nactual = np.array([8500, 15000, 4200, 3500, 4800])\ndiff = budgeted - actual\nstatus = np.where(diff < 0, \"Overspent\", \"On Track\")\nprint(\"Category status:\", status)\nqty = np.array([[10, 5], [3, 2]])\nrate = np.array([[40], [80]])\nsub_cost = qty @ rate\nprint(\"Sub-category cost (Rs):\", sub_cost.flatten())\nstd_spend = np.sqrt(np.mean((actual - actual.mean()) ** 2))\nprint(\"Spending consistency (std dev, Rs):\", round(std_spend, 2))", "quiz": 7}, {"letter": "D", "title": "Weekend Road-Trip Planner", "functions": "np.array, np.radians, np.sin/cos, / * (fuel cost), np.where", "statement": "Turn trip legs (distance + bearing) into displacement, fuel cost, and rest-stop advice.", "logic": "Each leg's distance and compass bearing become east/north displacement using sine and cosine; dividing distance by mileage and multiplying by fuel price gives cost; np.where() flags long legs that need a break.", "algorithm": ["Store each leg's distance (km) and bearing (degrees) in arrays.", "Convert bearing to radians with np.radians().", "Compute east displacement with sin() and north displacement with cos().", "Compute fuel cost per leg: (distance / mileage) * fuel_price.", "Use np.where() to flag legs longer than a threshold as 'Take a Break'."], "function_used": "np.sin()/np.cos() with np.radians() for displacement; arithmetic for fuel cost; np.where() for advice.", "syntax": "east = distance_km * np.sin(bearing_rad)\nnorth = distance_km * np.cos(bearing_rad)\nfuel_cost = (distance_km/mileage) * fuel_price\nrest = np.where(distance_km > 90, \"Take a Break\", \"Drive Through\")", "input": "distance_km = [120,85,60,95], bearing_deg = [45,100,200,320]", "output": "Fuel cost per leg: [800. 566.7 400. 633.3] | Total: 2400.0 | Rest advice per leg", "num": "D", "title_full": "Project D — Weekend Road-Trip Planner", "code": "import numpy as np\ndistance_km = np.array([120, 85, 60, 95])\nbearing_deg = np.array([45, 100, 200, 320])\nbearing_rad = np.radians(bearing_deg)\neast = distance_km * np.sin(bearing_rad)\nnorth = distance_km * np.cos(bearing_rad)\nprint(\"Eastward displacement (km):\", np.round(east, 1))\nprint(\"Northward displacement (km):\", np.round(north, 1))\nfuel_price = 100\nmileage = 15\nfuel_cost = (distance_km / mileage) * fuel_price\nprint(\"Fuel cost per leg (Rs):\", np.round(fuel_cost, 1))\nprint(\"Total trip fuel cost (Rs):\", round(fuel_cost.sum(), 1))\nrest_needed = np.where(distance_km > 90, \"Take a Break\", \"Drive Through\")\nprint(\"Rest-stop advice:\", rest_needed)", "quiz": 8}, {"letter": "E", "title": "Fantasy Cricket / Sports Score Analyzer", "functions": "np.array (2-D), .mean(axis=), **2+mean+sqrt (consistency), @ (weighted points), np.where, argmax", "statement": "Rate three players on average performance, consistency, and a weighted fantasy-points score; flag who is 'in form'.", "logic": "Row-wise mean gives each player's average; squaring+mean+sqrt (per row) gives consistency; stacking average and consistency into a matrix and multiplying by weights gives one fantasy-points score; np.where() tags form; argmax finds each player's best match.", "algorithm": ["Store each player's runs across matches as rows of a 2-D array.", "Compute per-player average with .mean(axis=1).", "Compute per-player consistency: sqrt(mean((runs-avg)**2, axis=1)).", "Stack average and consistency into one matrix and multiply by a weights column with @.", "Use np.where() to tag players above a threshold as 'In Form'.", "Use .argmax(axis=1) to find the index of each player's best match."], "function_used": ".mean(axis=1) for averages; sqrt(mean(diff**2, axis=1)) for consistency; @ for weighted scoring; np.where() for form tags; .argmax(axis=1) for best-match index.", "syntax": "avg = runs.mean(axis=1)\nconsistency = np.sqrt(np.mean((runs-avg.reshape(-1,1))**2, axis=1))\npoints = np.column_stack((avg, consistency)) @ weights\nform = np.where(avg > 50, \"In Form\", \"Needs Improvement\")\nruns.argmax(axis=1)", "input": "3 players x 5 matches of runs", "output": "Averages: [50. 30. 65.] | Fantasy points: [88.2 56.6 113.2] | Form: 2 need improvement, 1 in form", "num": "E", "title_full": "Project E — Fantasy Cricket / Sports Score Analyzer", "code": "import numpy as np\nplayers = np.array([\"Player A\", \"Player B\", \"Player C\"])\nruns = np.array([[45, 60, 10, 80, 55],\n                 [20, 35, 40, 25, 30],\n                 [90, 5, 70, 60, 100]])\navg_runs = runs.mean(axis=1)\nprint(\"Average runs:\", np.round(avg_runs, 1))\nconsistency = np.sqrt(np.mean((runs - avg_runs.reshape(-1, 1)) ** 2, axis=1))\nprint(\"Consistency (lower = steadier):\", np.round(consistency, 1))\nstats_matrix = np.column_stack((avg_runs, consistency))\nweights = np.array([[2], [-0.5]])\nfantasy_points = stats_matrix @ weights\nprint(\"Fantasy points:\", np.round(fantasy_points.flatten(), 1))\nform = np.where(avg_runs > 50, \"In Form\", \"Needs Improvement\")\nprint(\"Form status:\", form)\nbest_match_idx = runs.argmax(axis=1)\nprint(\"Best-match index per player:\", best_match_idx)", "quiz": 9}], "quizzes": [{"q": "A friend cancels plans last minute. Your gut reaction is:", "options": ["Secretly relieved, more snack time", "Mildly offended, will remember this", "Immediately reschedule, chaos avoided"], "correct": 0, "fun": ["Certified introvert energy. 10/10.", "Petty but valid. We respect the grudge.", "Certified planner brain unlocked."]}, {"q": "Pop quiz: what's heavier, a kg of steel or a kg of feathers?", "options": ["Steel, obviously", "Feathers, obviously", "They weigh the same, trick question"], "correct": 2, "fun": ["Bold guess! Gravity disagrees, but confidence counts.", "Feathers really said 'let me win one'.", "Big brain detected. NumPy respects you."]}, {"q": "Your code throws an error at 2am. You:", "options": ["Cry a little, then Google it", "Blame the semicolon that doesn't exist in Python", "Stare blankly until it fixes itself"], "correct": 1, "fun": ["Extremely relatable life choice.", "Classic misdirected rage. We've all been there.", "The 'blank stare debugging method' — patent pending."]}, {"q": "If NumPy were a personality trait, it would be:", "options": ["Annoyingly efficient", "Suspiciously fast", "All of the above, honestly"], "correct": 2, "fun": ["Correct-ish! NumPy contains multitudes.", "Fast AND annoying — the full package.", "You just described every senior dev ever."]}, {"q": "Emotional intelligence check: your friend is upset. You:", "options": ["Offer snacks immediately", "Give a motivational TED talk", "Sit quietly and just listen"], "correct": 2, "fun": ["Snacks fix 60% of problems, so this tracks.", "Bold. Hope they wanted a TED talk.", "Highest EQ answer available. Gold star."]}, {"q": "A number walks into a bar. It's -5. The bartender says:", "options": ["'We don't serve negatives here'", "'Take the abs() and come back'", "'On the house, you look down'"], "correct": 1, "fun": ["Bartender has zero chill.", "This is literally what np.abs() does. Nice.", "Underrated pun. Slow clap."]}, {"q": "How do you handle group projects?", "options": ["Do everything myself quietly", "Assign tasks like a tiny CEO", "Vibes-based leadership, it's fine"], "correct": 1, "fun": ["The silent hero of every project ever.", "Middle management energy, respect.", "Bold strategy, sometimes it works."]}, {"q": "Your array of feelings today looks like:", "options": ["[10, 2, 8, 1, 9] — wild swings", "[5, 5, 5, 5, 5] — suspiciously calm", "[NaN, NaN, NaN] — not computing today"], "correct": 1, "fun": ["High RMS variability detected. Breathe.", "Zero standard deviation. Icon behavior.", "Big same. Let's just look at the code."]}, {"q": "Quick! Sun or Moon: which one is technically a star?", "options": ["Sun", "Moon", "Both obviously, duh"], "correct": 0, "fun": ["Correct! Basic astronomy: still got it.", "Bold but wrong — the Moon is just... rocks.", "Enthusiastic, factually shaky, we love it."]}, {"q": "Someone says 'trust the process.' You:", "options": ["Nod, secretly panicking", "Actually trust it, weirdly calm", "Ask what process, specifically"], "correct": 2, "fun": ["Panic-nodding is a valid coping mechanism.", "Zen master unlocked.", "The most reasonable response, honestly."]}, {"q": "Which sounds like a real trigonometry function?", "options": ["np.cos()", "np.vibe()", "np.chaos()"], "correct": 0, "fun": ["Correct! The other two should exist though.", "np.vibe() would honestly break the internet.", "np.chaos() is basically every Monday."]}, {"q": "Your ideal Friday night involves:", "options": ["A spreadsheet, for fun", "Doing literally nothing, expertly", "Reorganising something unnecessarily"], "correct": 1, "fun": ["Certified data nerd. No judgement.", "Advanced-level relaxation achieved.", "The urge to reshape() everything, understood."]}, {"q": "A matrix and a vector fight. Who wins?", "options": ["Matrix, more dimensions", "Vector, more agile", "They multiply and become friends"], "correct": 2, "fun": ["Bold pick, matrices do hit different.", "Vectors: fast but outgunned.", "Wholesome answer. @ operator approved."]}, {"q": "You see a typo in your own code. Your reaction:", "options": ["Personal attack, offense taken", "Immediate fix, no feelings involved", "Ignore it, it's basically a feature now"], "correct": 1, "fun": ["Every typo is a tiny betrayal, valid.", "Efficient and unbothered. Respect.", "Bold. 'Not a bug, a feature' energy."]}, {"q": "If your mood were an output, it'd print as:", "options": ["[True True True] — all good", "[False] — one flag, not today", "['Needs Improvement'] — fair enough"], "correct": 0, "fun": ["np.all() approves this vibe.", "Valid. Some days are just False.", "Honest answer. Respect the self-awareness."]}, {"q": "Rate your patience level while waiting for code to run:", "options": ["Zen monk, no rush", "Refresh button, 40 times a minute", "Physically leaves the room"], "correct": 0, "fun": ["Suspiciously calm. Teach us your ways.", "We've all been there, click click click.", "The classic 'walk away and hope' strategy."]}, {"q": "Which is the better flex at a party?", "options": ["'I know the capital of France'", "'I can multiply matrices in my head'", "'I once fixed a bug by restarting'"], "correct": 1, "fun": ["Solid, if slightly niche, party trick.", "Nobody will believe you, but respect.", "The most honest answer in tech history."]}, {"q": "Someone asks 'quick question' at 5:58pm. You:", "options": ["Answer, it's fine, I have no boundaries", "Politely redirect to tomorrow", "Pretend to have already left"], "correct": 2, "fun": ["No boundaries, maximum chaos, understood.", "Healthy boundaries! Rare and beautiful.", "The oldest trick in the remote-work book."]}, {"q": "An array asks 'what's my shape?' You say:", "options": ["'However you feel today, valid'", "'Check .shape, don't overthink it'", "'Whatever np.reshape() says, no notes'"], "correct": 1, "fun": ["Deeply supportive, slightly unhelpful.", "The correct, boring, right answer.", "Trusting the reshape() blindly, bold."]}, {"q": "What's the vibe of a well-commented function?", "options": ["Chef's kiss, future-you says thanks", "Overkill, nobody reads comments", "Mysterious, comments lie half the time"], "correct": 0, "fun": ["Future-you is currently crying tears of joy.", "Bold and occasionally very true.", "Comments: the code's unreliable narrator."]}]};
+const THEME = [{"grad": "linear-gradient(135deg,#a1c4fd,#c2e9fb)", "accent": "#2563eb", "chip": "#dbeafe"}, {"grad": "linear-gradient(135deg,#d4a4ff,#e0c3fc)", "accent": "#8b5cf6", "chip": "#ede9fe"}, {"grad": "linear-gradient(135deg,#84fab0,#8fd3f4)", "accent": "#10b981", "chip": "#d1fae5"}, {"grad": "linear-gradient(135deg,#ff9a9e,#fecfef)", "accent": "#f43f5e", "chip": "#ffe4e6"}, {"grad": "linear-gradient(135deg,#fddb92,#d1fdff)", "accent": "#f59e0b", "chip": "#fef3c7"}, {"grad": "linear-gradient(135deg,#a6f3ff,#a1e8ff)", "accent": "#06b6d4", "chip": "#cffafe"}, {"grad": "linear-gradient(135deg,#ffd6e8,#ffb6d9)", "accent": "#ec4899", "chip": "#fce7f3"}, {"grad": "linear-gradient(135deg,#c3cfff,#e0e7ff)", "accent": "#6366f1", "chip": "#e0e7ff"}, {"grad": "linear-gradient(135deg,#b8f2b8,#d9ffd9)", "accent": "#22c55e", "chip": "#dcfce7"}];
+let currentProgram = null;
+let currentPickedIdx = null;
+
+function esc(s){
+  const d = document.createElement('div');
+  d.innerText = s;
+  return d.innerHTML;
+}
+
+function fieldsHTML(p, accent){
+  const steps = p.algorithm.map(s=>`<li>${esc(s)}</li>`).join('');
+  return `
+    <div class="field"><b style="color:${accent}">🎯 Statement</b><span>${esc(p.statement)}</span></div>
+    <div class="field"><b style="color:${accent}">💡 Logic</b><span>${esc(p.logic)}</span></div>
+    <div class="field"><b style="color:${accent}">🧭 Steps</b><ol class="steps">${steps}</ol></div>
+    <div class="field"><b style="color:${accent}">⚙️ Function</b><span>${esc(p.function_used)}</span></div>
+    <div class="io-row">
+      <div class="io in"><b>📥 INPUT</b>${esc(p.input)}</div>
+      <div class="io out"><b>📤 OUTPUT</b>${esc(p.output)}</div>
+    </div>
+  `;
+}
+
+function buildTopics(){
+  const root = document.getElementById('topicsRoot');
+  const nav = document.getElementById('navScroll');
+  DATA.topics.forEach((t,i)=>{
+    const theme = THEME[i % THEME.length];
+    const header = document.createElement('div');
+    header.className='topic-header';
+    header.id='topic-'+t.num;
+    header.style.background = theme.chip;
+    header.style.borderLeft = '8px solid '+theme.accent;
+    header.innerHTML = `
+      <div class="topic-num" style="background:${theme.accent}">${t.num}</div>
+      <div><div class="topic-title" style="color:${theme.accent}">${esc(t.title)}</div>
+      <div class="topic-fns">${t.functions}</div></div>`;
+    root.appendChild(header);
+
+    const pill = document.createElement('div');
+    pill.className='nav-pill';
+    pill.textContent = t.num+'. '+t.title.split(' ')[0];
+    pill.style.background = theme.chip;
+    pill.style.color = theme.accent;
+    pill.onclick = ()=>{document.getElementById('topic-'+t.num).scrollIntoView({behavior:'smooth',block:'start'});};
+    nav.appendChild(pill);
+
+    t.programs.forEach(p=>{
+      const card = document.createElement('div');
+      card.className='card';
+      card.innerHTML = `
+        <div class="card-head" style="background:${theme.chip};color:${theme.accent}">
+          <span class="num-chip">${p.num}</span><span>${esc(p.title)}</span>
+        </div>
+        <div class="card-body">
+          ${fieldsHTML(p, theme.accent)}
+          <button class="play-btn" style="background:${theme.accent}" onclick='openQuiz(${JSON.stringify(p.num)})'>🎮 Play &amp; Unlock Code</button>
+        </div>`;
+      root.appendChild(card);
+    });
+  });
+
+  // Projects nav pill + arcade pill
+  const pPill = document.createElement('div');
+  pPill.className='nav-pill'; pPill.style.background='#111827'; pPill.style.color='#fff';
+  pPill.textContent='🚀 Projects';
+  pPill.onclick = ()=>{document.querySelector('.projects-title').scrollIntoView({behavior:'smooth'});};
+  nav.appendChild(pPill);
+
+  const aPill = document.createElement('div');
+  aPill.className='nav-pill'; aPill.style.background='#f7b733'; aPill.style.color='#111827';
+  aPill.textContent='🕹️ Arcade';
+  aPill.onclick = ()=>{document.querySelector('.arcade-title').scrollIntoView({behavior:'smooth'});};
+  nav.appendChild(aPill);
+}
+
+function buildProjects(){
+  const root = document.getElementById('projectsRoot');
+  DATA.projects.forEach((pr,i)=>{
+    const card = document.createElement('div');
+    card.className='card project-card';
+    const steps = pr.algorithm.map(s=>`<li>${esc(s)}</li>`).join('');
+    card.innerHTML = `
+      <div class="card-head"><span class="num-chip">Project ${pr.letter}</span><span>${esc(pr.title)}</span></div>
+      <div class="card-body">
+        <div class="field"><b>🧩 Chains</b><span>${esc(pr.functions)}</span></div>
+        <div class="field"><b>🎯 Statement</b><span>${esc(pr.statement)}</span></div>
+        <div class="field"><b>💡 Logic</b><span>${esc(pr.logic)}</span></div>
+        <div class="field"><b>🧭 Steps</b><ol class="steps">${steps}</ol></div>
+        <div class="io-row">
+          <div class="io in"><b>📥 INPUT</b>${esc(pr.input)}</div>
+          <div class="io out"><b>📤 OUTPUT</b>${esc(pr.output)}</div>
+        </div>
+        <button class="play-btn" style="background:#111827" onclick='openQuiz(${JSON.stringify(pr.letter)})'>🎮 Play &amp; Unlock Code</button>
+      </div>`;
+    root.appendChild(card);
+  });
+}
+
+function findProgram(id){
+  for(const t of DATA.topics){
+    for(const p of t.programs){ if(p.num===id) return p; }
+  }
+  for(const pr of DATA.projects){ if(pr.letter===id) return pr; }
+  return null;
+}
+
+function openQuiz(id){
+  currentProgram = findProgram(id);
+  currentPickedIdx = null;
+  const quiz = DATA.quizzes[currentProgram.quiz];
+  document.getElementById('modalTitle').textContent = '🎮 Quick Quiz — Unlock ' + (currentProgram.num) ;
+  document.getElementById('quizQ').textContent = quiz.q;
+  const optsDiv = document.getElementById('quizOpts');
+  optsDiv.innerHTML='';
+  quiz.options.forEach((opt,idx)=>{
+    const b = document.createElement('button');
+    b.className='quiz-opt';
+    b.textContent = opt;
+    b.onclick = ()=>pickOption(idx);
+    optsDiv.appendChild(b);
+  });
+  document.getElementById('feedback').className='feedback';
+  document.getElementById('feedback').textContent='';
+  document.getElementById('codeReveal').className='code-reveal';
+  document.getElementById('overlay').classList.add('show');
+}
+
+function pickOption(idx){
+  currentPickedIdx = idx;
+  const quiz = DATA.quizzes[currentProgram.quiz];
+  document.querySelectorAll('.quiz-opt').forEach((el,i)=>{
+    el.classList.toggle('picked', i===idx);
+  });
+  const fb = document.getElementById('feedback');
+  fb.textContent = '😄 ' + quiz.fun[idx];
+  fb.className = 'feedback show';
+  const cb = document.getElementById('codeReveal');
+  document.getElementById('codeBox').textContent = currentProgram.code;
+  cb.className = 'code-reveal show';
+  burstConfetti();
+}
+
+function closeModal(){
+  document.getElementById('overlay').classList.remove('show');
+}
+document.getElementById('overlay').addEventListener('click', (e)=>{
+  if(e.target.id==='overlay') closeModal();
+});
+
+function copyCode(){
+  const text = document.getElementById('codeBox').textContent;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn = document.querySelector('.copy-btn');
+    const old = btn.textContent;
+    btn.textContent = '✅ Copied!';
+    setTimeout(()=>{btn.textContent = old;}, 1400);
+  });
+}
+
+function burstConfetti(){
+  const colors = ['#ff6b6b','#f7b733','#4ecdc4','#7b6cff','#ff9ecb','#34d399'];
+  for(let i=0;i<28;i++){
+    const el = document.createElement('div');
+    el.className='confetti-piece';
+    el.style.left = Math.random()*100+'vw';
+    el.style.background = colors[Math.floor(Math.random()*colors.length)];
+    el.style.animationDuration = (1.4+Math.random()*1.2)+'s';
+    el.style.opacity = 0.9;
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(), 2800);
+  }
+}
+
+/* keyboard escape closes modal */
+document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeModal(); });
+
+buildTopics();
+buildProjects();
+
+/* set first nav pill active on scroll (simple) */
+window.addEventListener('scroll', ()=>{
+  // no-op placeholder for potential future active-state highlighting
+});
+
+/* ========================= ARCADE MINI-APPS ========================= */
+const arcadeRoot = document.getElementById('arcadeRoot');
+
+// 1. Array Architect — live mean/std/sum
+const app1 = document.createElement('div');
+app1.className='app-card';
+app1.innerHTML = `
+  <h3>🧮 Array Architect</h3>
+  <p style="font-size:.85rem;color:#6b7280">Type any numbers — watch NumPy-style stats compute live (mean, std, sum, RMS).</p>
+  <label>Your numbers (comma separated)</label>
+  <input type="text" id="a1input" value="8500,10200,6300,11500,9800,4200,13000">
+  <button class="app-btn" onclick="runArrayArchitect()">Compute stats</button>
+  <div class="app-out" id="a1out">Waiting for input…</div>
+`;
+arcadeRoot.appendChild(app1);
+function runArrayArchitect(){
+  const raw = document.getElementById('a1input').value;
+  const nums = raw.split(',').map(x=>parseFloat(x.trim())).filter(x=>!isNaN(x));
+  if(nums.length===0){ document.getElementById('a1out').textContent='Give me some numbers!'; return; }
+  const sum = nums.reduce((a,b)=>a+b,0);
+  const mean = sum/nums.length;
+  const variance = nums.reduce((a,b)=>a+(b-mean)**2,0)/nums.length;
+  const std = Math.sqrt(variance);
+  document.getElementById('a1out').textContent =
+`arr = np.array([${nums.join(', ')}])
+arr.sum()   -> ${sum.toFixed(2)}
+arr.mean()  -> ${mean.toFixed(2)}
+arr.std()   -> ${std.toFixed(2)}   (RMS-style spread)`;
+}
+
+// 2. Matrix Rotator
+const app2 = document.createElement('div');
+app2.className='app-card';
+app2.innerHTML = `
+  <h3>🧭 Matrix Rotator</h3>
+  <p style="font-size:.85rem;color:#6b7280">Just like Program 7.2 — rotate a facing direction with a 2x2 rotation matrix.</p>
+  <label>Turn angle: <span id="a2val">90</span>°</label>
+  <input type="range" min="0" max="360" value="90" id="a2range" oninput="runRotator()">
+  <canvas id="a2canvas" height="160"></canvas>
+  <div class="app-out" id="a2out"></div>
+`;
+arcadeRoot.appendChild(app2);
+function runRotator(){
+  const deg = parseFloat(document.getElementById('a2range').value);
+  document.getElementById('a2val').textContent = deg;
+  const rad = deg*Math.PI/180;
+  const x = Math.cos(rad), y = Math.sin(rad);
+  const canvas = document.getElementById('a2canvas');
+  canvas.width = canvas.clientWidth;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  const cx = canvas.width/2, cy = canvas.height/2, r = 60;
+  ctx.strokeStyle='#334155'; ctx.beginPath(); ctx.arc(cx,cy,r,0,2*Math.PI); ctx.stroke();
+  ctx.strokeStyle='#4ecdc4'; ctx.lineWidth=4;
+  ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(cx+x*r, cy-y*r); ctx.stroke();
+  ctx.fillStyle='#ff6b6b'; ctx.beginPath(); ctx.arc(cx+x*r,cy-y*r,6,0,2*Math.PI); ctx.fill();
+  document.getElementById('a2out').textContent =
+`theta = np.radians(${deg})
+R = [[cos, -sin], [sin, cos]]
+new_direction = R @ [1, 0]  -> [${x.toFixed(2)}, ${y.toFixed(2)}]`;
+}
+
+// 3. Step Goal Simulator
+const app3 = document.createElement('div');
+app3.className='app-card';
+app3.innerHTML = `
+  <h3>👟 Step Goal Simulator</h3>
+  <p style="font-size:.85rem;color:#6b7280">Same logic as Program 6.4 + Project A — np.where() decides your badge.</p>
+  <label>Steps today: <span id="a3val">8000</span></label>
+  <input type="range" min="0" max="15000" step="100" value="8000" id="a3range" oninput="runStepSim()">
+  <div class="app-out" id="a3out"></div>
+  <div class="badge-pill" id="a3badge"></div>
+`;
+arcadeRoot.appendChild(app3);
+function runStepSim(){
+  const steps = parseFloat(document.getElementById('a3range').value);
+  document.getElementById('a3val').textContent = steps;
+  const goal = 10000;
+  const calories = steps*0.04;
+  const met = steps>=goal;
+  document.getElementById('a3out').textContent =
+`steps = ${steps}
+calories = steps * 0.04  -> ${calories.toFixed(1)} kcal
+status = np.where(steps>=goal, "Goal Met","Keep Going")`;
+  const b = document.getElementById('a3badge');
+  b.textContent = met ? '🎉 Goal Met!' : '🚶 Keep Going';
+  b.style.background = met ? '#d1fae5' : '#fee2e2';
+  b.style.color = met ? '#047857' : '#b91c1c';
+}
+
+// 4. BMI Quick Check
+const app4 = document.createElement('div');
+app4.className='app-card';
+app4.innerHTML = `
+  <h3>⚖️ BMI Quick Check</h3>
+  <p style="font-size:.85rem;color:#6b7280">Same formula as Program 2.3 — weight / height².</p>
+  <label>Weight: <span id="a4wval">70</span> kg</label>
+  <input type="range" min="30" max="150" value="70" id="a4w" oninput="runBMI()">
+  <label>Height: <span id="a4hval">1.70</span> m</label>
+  <input type="range" min="1.2" max="2.2" step="0.01" value="1.70" id="a4h" oninput="runBMI()">
+  <div class="app-out" id="a4out"></div>
+  <div class="badge-pill" id="a4badge"></div>
+`;
+arcadeRoot.appendChild(app4);
+function runBMI(){
+  const w = parseFloat(document.getElementById('a4w').value);
+  const h = parseFloat(document.getElementById('a4h').value);
+  document.getElementById('a4wval').textContent = w;
+  document.getElementById('a4hval').textContent = h.toFixed(2);
+  const bmi = w/(h*h);
+  document.getElementById('a4out').textContent =
+`bmi = weight_kg / (height_m ** 2)
+bmi -> ${bmi.toFixed(1)}`;
+  let cat='Normal', color='#d1fae5', tc='#047857';
+  if(bmi<18.5){cat='Underweight';color='#dbeafe';tc='#1d4ed8';}
+  else if(bmi>=25 && bmi<30){cat='Overweight';color='#fef3c7';tc='#b45309';}
+  else if(bmi>=30){cat='Obese';color='#fee2e2';tc='#b91c1c';}
+  const b = document.getElementById('a4badge');
+  b.textContent = cat; b.style.background=color; b.style.color=tc;
+}
+
+// 5. Trig Wave Playground
+const app5 = document.createElement('div');
+app5.className='app-card';
+app5.innerHTML = `
+  <h3>🎡 Trig Wave Playground</h3>
+  <p style="font-size:.85rem;color:#6b7280">Same np.sin() logic as the Ferris Wheel &amp; Swing programs — live animated wave.</p>
+  <label>Amplitude: <span id="a5aval">5</span></label>
+  <input type="range" min="1" max="10" value="5" id="a5amp" oninput="setWaveParams()">
+  <label>Speed: <span id="a5sval">0.5</span></label>
+  <input type="range" min="0.1" max="2" step="0.1" value="0.5" id="a5speed" oninput="setWaveParams()">
+  <canvas id="a5canvas" height="120"></canvas>
+`;
+arcadeRoot.appendChild(app5);
+let waveAmp=5, waveSpeed=0.5, waveT=0;
+function setWaveParams(){
+  waveAmp = parseFloat(document.getElementById('a5amp').value);
+  waveSpeed = parseFloat(document.getElementById('a5speed').value);
+  document.getElementById('a5aval').textContent = waveAmp;
+  document.getElementById('a5sval').textContent = waveSpeed;
+}
+function animateWave(){
+  const canvas = document.getElementById('a5canvas');
+  if(canvas){
+    canvas.width = canvas.clientWidth;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.strokeStyle='#4ecdc4'; ctx.lineWidth=3; ctx.beginPath();
+    const midY = canvas.height/2;
+    for(let px=0; px<canvas.width; px++){
+      const x = px/canvas.width * 10;
+      const y = midY - waveAmp*8*Math.sin(waveSpeed*x + waveT);
+      if(px===0) ctx.moveTo(px,y); else ctx.lineTo(px,y);
+    }
+    ctx.stroke();
+  }
+  waveT += 0.05;
+  requestAnimationFrame(animateWave);
+}
+
+/* init arcade defaults */
+runArrayArchitect();
+runRotator();
+runStepSim();
+runBMI();
+setWaveParams();
+requestAnimationFrame(animateWave);
+</script>
+</body>
+</html>
