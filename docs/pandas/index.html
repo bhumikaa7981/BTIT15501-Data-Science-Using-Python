@@ -1,1 +1,1590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mastering Pandas — The Story of the Messy Sales Sheet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bamboo:#1f9d6d;
+    --bamboo-dark:#0f7a52;
+    --bamboo-light:#e3f8ee;
+    --bamboo-pale:#f2fdf8;
+    --sun:#ffc93c;
+    --sun-deep:#f5a623;
+    --coral:#ff6b6b;
+    --coral-deep:#e14e4e;
+    --sky:#3fa9e0;
+    --sky-deep:#2b8fc2;
+    --lavender:#9b7ede;
+    --ink:#20242a;
+    --ink-soft:#4a5261;
+    --paper:#ffffff;
+    --bg:#fbfdfc;
+    --line:#e6ede9;
+    --shadow: 0 10px 30px rgba(31,157,109,0.12);
+    --radius: 20px;
+    --mono: 'JetBrains Mono', monospace;
+    --display: 'Baloo 2', sans-serif;
+    --body: 'Poppins', sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family: var(--body);
+    background: var(--bg);
+    color: var(--ink);
+    overflow-x:hidden;
+    line-height:1.55;
+    font-size:17px;
+  }
+  h1,h2,h3,h4{font-family:var(--display); color:var(--ink); line-height:1.15;}
+  a{color:inherit;}
+  img{max-width:100%; display:block;}
+  .container{max-width:1180px; margin:0 auto; padding:0 32px;}
+  ::selection{background:var(--sun); color:var(--ink);}
 
+  /* ---------- scrollbar & progress ---------- */
+  #progressBar{
+    position:fixed; top:0; left:0; height:5px; width:0%;
+    background:linear-gradient(90deg, var(--bamboo), var(--sun), var(--coral));
+    z-index:9999; transition:width .1s ease-out;
+  }
+
+  /* ---------- floating leaves (decoration) ---------- */
+  .leaf{
+    position:absolute; font-size:28px; opacity:.55; pointer-events:none;
+    animation: floaty 9s ease-in-out infinite;
+    filter: drop-shadow(0 6px 10px rgba(0,0,0,.08));
+  }
+  @keyframes floaty{
+    0%{transform:translateY(0px) rotate(0deg);}
+    50%{transform:translateY(-26px) rotate(8deg);}
+    100%{transform:translateY(0px) rotate(0deg);}
+  }
+  @keyframes drift{
+    0%{transform:translateX(0) translateY(0) rotate(0deg);}
+    100%{transform:translateX(40px) translateY(-60px) rotate(15deg);}
+  }
+
+  /* ---------- top nav ---------- */
+  header.nav{
+    position:sticky; top:0; z-index:500;
+    background:rgba(251,253,252,.88); backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{
+    max-width:1180px; margin:0 auto; padding:14px 32px;
+    display:flex; align-items:center; justify-content:space-between; gap:18px;
+  }
+  .brand{display:flex; align-items:center; gap:10px; font-family:var(--display); font-weight:700; font-size:20px;}
+  .brand .panda{font-size:26px;}
+  nav.links{display:flex; gap:6px; flex-wrap:wrap;}
+  nav.links a{
+    font-size:13.5px; font-weight:600; padding:8px 14px; border-radius:100px;
+    color:var(--ink-soft); text-decoration:none; white-space:nowrap;
+    transition:all .25s ease;
+  }
+  nav.links a:hover{background:var(--bamboo-light); color:var(--bamboo-dark);}
+
+  /* ---------- hero ---------- */
+  .hero{
+    position:relative; padding:110px 32px 90px; text-align:center;
+    overflow:hidden;
+    background:
+      radial-gradient(circle at 15% 20%, rgba(255,201,60,.18), transparent 45%),
+      radial-gradient(circle at 85% 15%, rgba(63,169,224,.16), transparent 40%),
+      radial-gradient(circle at 50% 90%, rgba(31,157,109,.14), transparent 50%);
+  }
+  .hero .eyebrow{
+    display:inline-flex; align-items:center; gap:8px; font-weight:700; font-size:14px;
+    background:var(--paper); border:2px solid var(--bamboo-light); color:var(--bamboo-dark);
+    padding:8px 18px; border-radius:100px; box-shadow:var(--shadow);
+    animation: floaty 6s ease-in-out infinite;
+  }
+  .hero h1{
+    font-size:clamp(40px, 6vw, 78px); font-weight:800; margin:26px auto 18px; max-width:900px;
+    letter-spacing:-1.5px;
+  }
+  .hero h1 .hl{
+    background:linear-gradient(100deg, var(--bamboo) 10%, var(--sky) 55%, var(--coral) 100%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .hero p.sub{
+    font-size:clamp(17px,2.2vw,22px); color:var(--ink-soft); max-width:680px; margin:0 auto 40px; font-weight:500;
+  }
+  .hero-panda{font-size:100px; margin-bottom:6px; display:inline-block; animation: floaty 5s ease-in-out infinite;}
+  .hero-stats{display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-top:10px;}
+  .stat-chip{
+    background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:14px 22px;
+    box-shadow:var(--shadow); font-weight:700; font-size:14px; display:flex; flex-direction:column; gap:2px; min-width:120px;
+  }
+  .stat-chip b{font-family:var(--display); font-size:26px; color:var(--bamboo-dark);}
+  .stat-chip span{color:var(--ink-soft); font-weight:600; font-size:12.5px;}
+
+  /* ---------- generic section wrapper ---------- */
+  section{padding:90px 0; position:relative;}
+  .section-head{max-width:760px; margin:0 auto 54px; text-align:center;}
+  .section-head .kicker{
+    font-weight:700; color:var(--bamboo-dark); text-transform:uppercase; letter-spacing:2px; font-size:13px;
+    display:inline-block; margin-bottom:14px;
+  }
+  .section-head h2{font-size:clamp(30px,4vw,46px); margin-bottom:14px;}
+  .section-head p{color:var(--ink-soft); font-size:17.5px;}
+
+  /* reveal-on-scroll */
+  .reveal{opacity:0; transform:translateY(36px); transition:opacity .7s ease, transform .7s ease;}
+  .reveal.in{opacity:1; transform:translateY(0);}
+  .reveal-left{opacity:0; transform:translateX(-50px); transition:opacity .7s ease, transform .7s ease;}
+  .reveal-left.in{opacity:1; transform:translateX(0);}
+  .reveal-right{opacity:0; transform:translateX(50px); transition:opacity .7s ease, transform .7s ease;}
+  .reveal-right.in{opacity:1; transform:translateX(0);}
+
+  /* ---------- story / case-file card ---------- */
+  .case-file{
+    background:var(--paper); border-radius:28px; box-shadow:var(--shadow);
+    border:2px dashed var(--sun-deep); padding:44px; position:relative; max-width:980px; margin:0 auto;
+  }
+  .case-file::before{
+    content:"📋 CASE FILE"; position:absolute; top:-18px; left:40px; background:var(--sun);
+    color:var(--ink); font-family:var(--display); font-weight:700; padding:6px 18px; border-radius:100px;
+    font-size:13px; letter-spacing:1px; box-shadow:0 6px 14px rgba(245,166,35,.35);
+  }
+  .case-file h3{font-size:26px; margin-bottom:14px;}
+  .case-file p{color:var(--ink-soft); margin-bottom:10px;}
+  .problem-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(240px,1fr)); gap:16px; margin-top:26px;}
+  .problem-card{
+    background:var(--bamboo-pale); border:1px solid var(--bamboo-light); border-radius:16px; padding:18px 20px;
+    transition:transform .25s ease, box-shadow .25s ease;
+  }
+  .problem-card:hover{transform:translateY(-6px); box-shadow:var(--shadow);}
+  .problem-card .q{font-weight:700; font-size:15px; margin-bottom:8px;}
+  .problem-card code{
+    display:inline-block; background:var(--ink); color:#a6f5d0; font-family:var(--mono); font-size:13px;
+    padding:4px 10px; border-radius:8px; margin-bottom:10px;
+  }
+  .problem-card .trouble{
+    font-size:13.5px; color:var(--coral-deep); font-weight:600; display:flex; gap:6px; align-items:flex-start;
+  }
+
+  /* ---------- industry cards ---------- */
+  .industry-scroll{
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:18px;
+  }
+  .industry-card{
+    background:var(--paper); border-radius:20px; padding:26px 22px; border:1px solid var(--line);
+    box-shadow:0 6px 18px rgba(20,30,25,.05);
+    transition:transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+  }
+  .industry-card:hover{transform:translateY(-8px) rotate(-1deg); box-shadow:var(--shadow); border-color:var(--bamboo-light);}
+  .industry-card .emoji{font-size:34px; margin-bottom:12px; display:inline-block;}
+  .industry-card h4{font-size:17px; margin-bottom:8px;}
+  .industry-card p{font-size:13.5px; color:var(--ink-soft);}
+
+  /* ---------- section divider (chapter banner) ---------- */
+  .chapter{
+    margin:40px auto 0; max-width:1180px; padding:0 32px;
+  }
+  .chapter-banner{
+    border-radius:28px; padding:50px 46px; color:#fff; position:relative; overflow:hidden;
+    box-shadow:var(--shadow);
+  }
+  .chapter-banner .num{
+    font-family:var(--display); font-size:15px; font-weight:700; letter-spacing:2px;
+    background:rgba(255,255,255,.22); display:inline-block; padding:6px 16px; border-radius:100px; margin-bottom:18px;
+  }
+  .chapter-banner h2{color:#fff; font-size:clamp(28px,4vw,44px); margin-bottom:10px;}
+  .chapter-banner p{color:rgba(255,255,255,.92); font-size:16.5px; max-width:640px;}
+  .chapter-banner .deco{
+    position:absolute; font-size:160px; opacity:.16; right:-10px; bottom:-40px; transform:rotate(-8deg);
+  }
+  .chapter1 .chapter-banner{background:linear-gradient(120deg, var(--bamboo) 0%, var(--bamboo-dark) 100%);}
+  .chapter2 .chapter-banner{background:linear-gradient(120deg, var(--sky) 0%, var(--sky-deep) 100%);}
+  .chapter3 .chapter-banner{background:linear-gradient(120deg, var(--coral) 0%, #c23f6d 100%);}
+
+  /* ---------- topic block ---------- */
+  .topic{padding:70px 0; border-bottom:1px solid var(--line);}
+  .topic:last-child{border-bottom:none;}
+  .topic-head{display:flex; align-items:flex-start; gap:20px; margin-bottom:36px; flex-wrap:wrap;}
+  .topic-badge{
+    font-size:42px; width:78px; height:78px; border-radius:22px; display:flex; align-items:center; justify-content:center;
+    background:var(--bamboo-light); flex-shrink:0; box-shadow: inset 0 0 0 2px rgba(31,157,109,.15);
+  }
+  .topic-title h3{font-size:clamp(24px,3vw,34px);}
+  .topic-title p{color:var(--ink-soft); font-size:16px; margin-top:6px; font-weight:500;}
+
+  .two-col{display:grid; grid-template-columns:1fr 1fr; gap:22px; margin-bottom:30px;}
+  @media(max-width:780px){.two-col{grid-template-columns:1fr;}}
+  .panel{
+    border-radius:20px; padding:26px 28px; box-shadow:var(--shadow);
+  }
+  .panel.why{background:var(--bamboo-pale); border:1px solid var(--bamboo-light);}
+  .panel.real{background:#fff8ea; border:1px solid #ffe6a8;}
+  .panel .tag{font-weight:700; font-size:13px; text-transform:uppercase; letter-spacing:1.5px; margin-bottom:12px; display:flex; align-items:center; gap:8px;}
+  .panel.why .tag{color:var(--bamboo-dark);}
+  .panel.real .tag{color:var(--sun-deep);}
+  .panel p{color:var(--ink-soft); font-size:15.5px;}
+
+  .syntax-block{
+    background:var(--ink); border-radius:18px; padding:22px 26px; margin-bottom:34px;
+    box-shadow:var(--shadow); position:relative;
+  }
+  .syntax-block .tag{color:#8fe3c0; font-weight:700; font-size:12.5px; letter-spacing:1.5px; margin-bottom:12px; text-transform:uppercase;}
+  .syntax-block pre{color:#eafff5; font-family:var(--mono); font-size:14.5px; white-space:pre-wrap; line-height:1.7;}
+  .syntax-block pre .kw{color:#ffd479;}
+  .syntax-block pre .fn{color:#7fd9ff;}
+  .syntax-block pre .str{color:#a6f5d0;}
+  .syntax-block pre .cm{color:#8a93a6;}
+
+  /* ---------- program cards ---------- */
+  .program{
+    background:var(--paper); border-radius:22px; border:1px solid var(--line); box-shadow:0 6px 20px rgba(20,30,25,.06);
+    margin-bottom:26px; overflow:hidden; transition:transform .3s ease, box-shadow .3s ease;
+  }
+  .program:hover{transform:translateY(-4px); box-shadow:var(--shadow);}
+  .program-head{
+    display:flex; align-items:center; justify-content:space-between; padding:16px 24px;
+    background:linear-gradient(90deg, var(--bamboo-light), transparent);
+    border-bottom:1px solid var(--line);
+  }
+  .program-head h4{font-size:16.5px;}
+  .program-head .pill{
+    font-family:var(--mono); font-size:12px; font-weight:600; background:var(--ink); color:#a6f5d0;
+    padding:4px 12px; border-radius:100px;
+  }
+  .program-body{display:grid; grid-template-columns:1.1fr .9fr; gap:0;}
+  @media(max-width:780px){.program-body{grid-template-columns:1fr;}}
+  .code-side{background:#1b1e24; padding:22px 24px; position:relative;}
+  .code-side .dots{display:flex; gap:6px; margin-bottom:14px;}
+  .code-side .dots span{width:10px; height:10px; border-radius:50%; display:inline-block;}
+  .code-side .dots span:nth-child(1){background:#ff5f56;}
+  .code-side .dots span:nth-child(2){background:#ffbd2e;}
+  .code-side .dots span:nth-child(3){background:#27c93f;}
+  .code-side pre{font-family:var(--mono); font-size:13.8px; color:#eafff5; white-space:pre-wrap; line-height:1.75;}
+  .code-side pre .kw{color:#ffd479;} .code-side pre .fn{color:#7fd9ff;} .code-side pre .str{color:#a6f5d0;} .code-side pre .cm{color:#7a8494;} .code-side pre .num{color:#ffb3e6;}
+  .output-side{padding:22px 24px; background:var(--bamboo-pale); display:flex; flex-direction:column;}
+  .output-side .lbl{font-weight:700; font-size:12px; letter-spacing:1.5px; text-transform:uppercase; color:var(--bamboo-dark); margin-bottom:12px; display:flex; align-items:center; gap:6px;}
+  .output-side pre{font-family:var(--mono); font-size:13.6px; color:var(--ink); white-space:pre-wrap; line-height:1.7;}
+  .why-strip{
+    padding:16px 24px; background:#fff8ea; border-top:1px dashed #ffe0a0; font-size:14.5px; color:#7a5a12; display:flex; gap:10px;
+  }
+  .why-strip b{color:var(--sun-deep); flex-shrink:0;}
+
+  /* ---------- excel table ---------- */
+  .excel-wrap{overflow-x:auto; margin:18px 0 6px; border-radius:14px; box-shadow:0 4px 14px rgba(20,30,25,.08);}
+  table.excel{border-collapse:collapse; width:100%; font-family:var(--mono); font-size:13.5px; min-width:420px;}
+  table.excel th{
+    background:#2f6f52; color:#fff; padding:9px 14px; text-align:left; font-weight:600; border:1px solid #1f5a3f;
+    position:sticky; top:0;
+  }
+  table.excel td{padding:9px 14px; border:1px solid #dfeee6; background:#fff; color:var(--ink);}
+  table.excel tr:nth-child(even) td{background:#f4fbf7;}
+  table.excel td.hl-green{background:#c9f7de !important; font-weight:700; color:#0f7a45; box-shadow:inset 0 0 0 2px #1f9d6d;}
+  table.excel td.hl-yellow{background:#fff1bd !important; font-weight:700; color:#8a6400; box-shadow:inset 0 0 0 2px var(--sun-deep);}
+  table.excel td.hl-red{background:#ffd7d7 !important; font-weight:700; color:#b23131; text-decoration:line-through; box-shadow:inset 0 0 0 2px var(--coral-deep);}
+  table.excel td.hl-blue{background:#d8f0fd !important; font-weight:700; color:#1a6ea3; box-shadow:inset 0 0 0 2px var(--sky-deep);}
+  table.excel tr.row-out{opacity:.4;}
+  .excel-caption{font-size:12.5px; color:var(--ink-soft); margin-top:8px; font-style:italic;}
+
+  /* ---------- trace steps (nested / graphical tracing) ---------- */
+  .trace{
+    background:var(--paper); border:2px solid var(--bamboo-light); border-radius:20px; padding:28px 30px; margin:26px 0;
+    box-shadow:var(--shadow);
+  }
+  .trace .trace-title{font-family:var(--display); font-weight:700; font-size:18px; margin-bottom:18px; display:flex; align-items:center; gap:10px; color:var(--bamboo-dark);}
+  .trace-steps{display:flex; flex-direction:column; gap:0;}
+  .trace-step{display:flex; gap:18px; align-items:flex-start; position:relative; padding-bottom:26px;}
+  .trace-step:last-child{padding-bottom:0;}
+  .trace-step::before{
+    content:''; position:absolute; left:17px; top:38px; bottom:0; width:2px; background:repeating-linear-gradient(to bottom, var(--bamboo-light) 0 6px, transparent 6px 12px);
+  }
+  .trace-step:last-child::before{display:none;}
+  .step-num{
+    width:36px; height:36px; border-radius:50%; background:var(--bamboo); color:#fff; display:flex; align-items:center; justify-content:center;
+    font-family:var(--display); font-weight:700; flex-shrink:0; box-shadow:0 4px 10px rgba(31,157,109,.35);
+  }
+  .step-content{flex:1; padding-top:4px;}
+  .step-content .step-label{font-weight:700; margin-bottom:8px; font-size:15px;}
+  .step-content .step-desc{color:var(--ink-soft); font-size:14.5px; margin-bottom:10px;}
+
+  /* ---------- witty callout ---------- */
+  .witty{
+    background:linear-gradient(100deg, #fff, var(--bamboo-pale)); border-left:5px solid var(--bamboo);
+    padding:16px 22px; border-radius:0 16px 16px 0; font-size:15px; font-weight:500; color:var(--ink); margin:18px 0;
+  }
+  .witty b{color:var(--bamboo-dark);}
+
+  /* ---------- cheat sheet ---------- */
+  .cheat-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:16px;}
+  .cheat-card{
+    background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:20px 22px;
+    transition:transform .25s ease, box-shadow .25s ease;
+  }
+  .cheat-card:hover{transform:translateY(-5px) scale(1.02); box-shadow:var(--shadow); border-color:var(--bamboo-light);}
+  .cheat-card .t{font-weight:700; font-size:14.5px; margin-bottom:8px; display:flex; gap:8px; align-items:center;}
+  .cheat-card code{font-family:var(--mono); background:var(--ink); color:#a6f5d0; padding:6px 10px; border-radius:8px; font-size:12.8px; display:inline-block;}
+
+  /* ---------- footer ---------- */
+  footer{
+    background:var(--ink); color:#dfe6e2; padding:60px 32px 34px; text-align:center; margin-top:40px;
+  }
+  footer .panda{font-size:52px; margin-bottom:14px; display:inline-block; animation:floaty 5s ease-in-out infinite;}
+  footer h3{color:#fff; font-size:26px; margin-bottom:10px;}
+  footer p{color:#9aa5a0; font-size:14.5px;}
+  footer .credit{margin-top:26px; font-size:12.5px; color:#6a746f;}
+
+  /* ---------- back to top ---------- */
+  #toTop{
+    position:fixed; bottom:26px; right:26px; width:52px; height:52px; border-radius:50%;
+    background:var(--bamboo); color:#fff; display:flex; align-items:center; justify-content:center;
+    font-size:22px; box-shadow:0 8px 20px rgba(31,157,109,.4); cursor:pointer; z-index:400;
+    opacity:0; pointer-events:none; transition:opacity .3s ease, transform .3s ease;
+  }
+  #toTop.show{opacity:1; pointer-events:auto;}
+  #toTop:hover{transform:translateY(-4px);}
+
+  ::-webkit-scrollbar{width:10px;}
+  ::-webkit-scrollbar-track{background:var(--bg);}
+  ::-webkit-scrollbar-thumb{background:var(--bamboo-light); border-radius:10px;}
+
+  @media(max-width:640px){
+    nav.links{display:none;}
+    .program-body{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<div id="progressBar"></div>
+
+<header class="nav">
+  <div class="nav-inner">
+    <div class="brand"><span class="panda">🐼</span> Mastering Pandas</div>
+    <nav class="links">
+      <a href="#story">The Case</a>
+      <a href="#foundations">Foundations</a>
+      <a href="#io">Data In/Out</a>
+      <a href="#cleaning">Select & Clean</a>
+      <a href="#cheatsheet">Cheat Sheet</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ======================= HERO ======================= -->
+<section class="hero" id="top">
+  <span class="leaf" style="top:12%; left:8%;">🎋</span>
+  <span class="leaf" style="top:24%; left:88%; animation-delay:1.5s;">🍃</span>
+  <span class="leaf" style="top:70%; left:14%; animation-delay:3s;">🎋</span>
+  <span class="leaf" style="top:65%; left:82%; animation-delay:2s;">🍃</span>
+  <span class="leaf" style="top:8%; left:48%; animation-delay:.8s;">🍃</span>
+
+  <div class="hero-panda">🐼</div>
+  <div class="eyebrow">✨ Unit 2 · Data Science using Python</div>
+  <h1>Excel had a baby with <span class="hl">Python</span>.<br>Meet Pandas.</h1>
+  <p class="sub">A messy sales sheet, a confused analyst (you), and eight superpowers that turn chaos into clean, trustworthy answers — explained like a story, not a manual.</p>
+  <div class="hero-stats">
+    <div class="stat-chip"><b>8</b><span>Core Functions</span></div>
+    <div class="stat-chip"><b>24+</b><span>Practice Programs</span></div>
+    <div class="stat-chip"><b>1</b><span>Runaway Sales Sheet</span></div>
+  </div>
+</section>
+
+<!-- ======================= THE STORY / CASE FILE ======================= -->
+<section id="story">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="kicker">Chapter Zero</span>
+      <h2>You just got promoted to Data Analyst.</h2>
+      <p>Congratulations! Your manager hands you a sales spreadsheet and four "simple" questions. Here's the twist — every single answer is a trap, unless you know Pandas.</p>
+    </div>
+
+    <div class="case-file reveal">
+      <h3>🕵️ The Scenario</h3>
+      <p>You work at an e-commerce company. Sales data lands on your desk and your manager wants answers <b>right now</b>. Can you trust an answer you calculate in ten seconds? Let's find out — question by question.</p>
+
+      <div class="problem-grid">
+        <div class="problem-card">
+          <div class="q">Which city placed the most orders?</div>
+          <code>df["City"].value_counts()</code>
+          <div class="trouble">⚠️ Some cities are missing from the data entirely.</div>
+        </div>
+        <div class="problem-card">
+          <div class="q">How many orders do we have in total?</div>
+          <code>len(df)</code>
+          <div class="trouble">⚠️ If duplicate orders exist, this number lies to you.</div>
+        </div>
+        <div class="problem-card">
+          <div class="q">What is our total revenue?</div>
+          <code>Revenue = Quantity × Price</code>
+          <div class="trouble">⚠️ Price has NaN gaps, Quantity has a sneaky <b>-1</b>.</div>
+        </div>
+        <div class="problem-card">
+          <div class="q">What is the average customer age?</div>
+          <code>df["Age"].mean()</code>
+          <div class="trouble">⚠️ Age contains "N/A", NaN, and even <b>-5</b>.</div>
+        </div>
+      </div>
+
+      <div class="witty" style="margin-top:28px;">
+        😅 <b>Plot twist:</b> Pandas can't calculate anything correctly until the data is <i>explored</i>, <i>loaded properly</i>, <i>selected precisely</i>, and <i>cleaned</i>. That's exactly the order we're about to learn it in — like assembling a detective kit before solving the case.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= WHERE PANDAS LIVES ======================= -->
+<section style="background:var(--bamboo-pale);">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="kicker">Why Bother Learning This?</span>
+      <h2>Pandas isn't a classroom toy. It runs the world.</h2>
+      <p>Same eight functions you're about to meet — reused everywhere, on every kind of data, by every kind of company.</p>
+    </div>
+
+    <div class="industry-scroll reveal">
+      <div class="industry-card">
+        <span class="emoji">🛒</span>
+        <h4>E-commerce</h4>
+        <p>Amazon, Flipkart & Myntra find best-sellers, track inventory and calculate daily revenue.</p>
+      </div>
+      <div class="industry-card">
+        <span class="emoji">🏦</span>
+        <h4>Banking & Finance</h4>
+        <p>Millions of transactions analyzed daily to detect fraud and generate financial reports.</p>
+      </div>
+      <div class="industry-card">
+        <span class="emoji">🏥</span>
+        <h4>Healthcare</h4>
+        <p>Patient records, disease trends and recovery statistics, summarised in seconds.</p>
+      </div>
+      <div class="industry-card">
+        <span class="emoji">🎓</span>
+        <h4>Education</h4>
+        <p>Attendance, marks and toppers — the exact story you'll build in this lesson.</p>
+      </div>
+      <div class="industry-card">
+        <span class="emoji">📱</span>
+        <h4>Social Media</h4>
+        <p>Instagram & Facebook rank trending posts by likes, shares and engagement.</p>
+      </div>
+      <div class="industry-card">
+        <span class="emoji">📈</span>
+        <h4>+ Stock Markets, HR, AI/ML</h4>
+        <p>Wherever there's a table of numbers, Pandas is the tool doing the thinking.</p>
+      </div>
+    </div>
+
+    <div class="witty reveal" style="margin-top:36px; background:#fff;">
+      🧰 <b>The 3-second definition:</b> Pandas = Excel + Python's automation muscle. Read files, explore them, pick exact cells, patch the holes — repeatably, on datasets Excel would choke on.
+    </div>
+  </div>
+</section>
+
+<!-- ======================= CHAPTER 1 BANNER ======================= -->
+<div class="chapter chapter1 reveal" id="foundations">
+  <div class="chapter-banner">
+    <span class="deco">🐼</span>
+    <span class="num">SECTION 1 OF 3</span>
+    <h2>Foundations of Pandas</h2>
+    <p>The two building blocks every Pandas program starts with — and the six commands that let you "meet" any new dataset in under a minute.</p>
+  </div>
+</div>
+
+<!-- ======================= TOPIC: SERIES & DATAFRAME ======================= -->
+<section class="topic" id="series-dataframe">
+  <div class="container">
+    <div class="topic-head reveal">
+      <div class="topic-badge">🐼</div>
+      <div class="topic-title">
+        <h3>Series &amp; DataFrame</h3>
+        <p>Pandas' two core objects — a labelled column, and a labelled table</p>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="panel why reveal-left">
+        <div class="tag">💡 Why this exists</div>
+        <p>A plain Python list only knows position — item 0, item 1... A <b>Series</b> is a list that also knows <i>names</i> (an index), so you can ask for "Banana" instead of "item 1". A <b>DataFrame</b> is just several Series glued side-by-side into a full table. Every row and column carries a label — that's the whole magic of Pandas in one sentence.</p>
+      </div>
+      <div class="panel real reveal-right">
+        <div class="tag">🌍 Real-world picture</div>
+        <p>Open Excel in your head. One column of numbers labelled by row — that's a <b>Series</b>. The entire sheet, Name column + Marks column + Grade column together — that's a <b>DataFrame</b>. You've been using these ideas for years without a Python name for them.</p>
+      </div>
+    </div>
+
+    <div class="syntax-block reveal">
+      <div class="tag">🧠 Syntax Pattern</div>
+      <pre><span class="fn">pd.Series</span>([10, 20, 30])
+<span class="fn">pd.DataFrame</span>({"name": [...], "marks": [...]})</pre>
+    </div>
+
+    <!-- Program 1 -->
+    <div class="program reveal">
+      <div class="program-head">
+        <h4>Program 1 — Creating a Series</h4>
+        <span class="pill">1 / 3</span>
+      </div>
+      <div class="program-body">
+        <div class="code-side">
+          <div class="dots"><span></span><span></span><span></span></div>
+          <pre><span class="kw">import</span> pandas <span class="kw">as</span> pd
+
+marks = pd.Series([45, 67, 89, 32])
+<span class="fn">print</span>(marks)</pre>
+        </div>
+        <div class="output-side">
+          <div class="lbl">▶ Output</div>
+          <pre>0    45
+1    67
+2    89
+3    32
+dtype: int64</pre>
+        </div>
+      </div>
+      <div class="why-strip"><b>Why:</b> Pandas silently generates index labels 0,1,2,3 next to every value — you never asked for them, but you get them for free.</div>
+    </div>
+
+    <!-- Program 2 -->
+    <div class="program reveal">
+      <div class="program-head">
+        <h4>Program 2 — Series with a custom index</h4>
+        <span class="pill">2 / 3</span>
+      </div>
+      <div class="program-body">
+        <div class="code-side">
+          <div class="dots"><span></span><span></span><span></span></div>
+          <pre>fruits = pd.Series(
+    [120, 90, 75],
+    index=[<span class="str">"Apple"</span>, <span class="str">"Banana"</span>, <span class="str">"Mango"</span>]
+)
+<span class="fn">print</span>(fruits[<span class="str">"Banana"</span>])</pre>
+        </div>
+        <div class="output-side">
+          <div class="lbl">▶ Output</div>
+          <pre>90</pre>
+        </div>
+      </div>
+      <div class="why-strip"><b>Why:</b> A custom index lets you fetch a value by a meaningful name instead of remembering "it was the 2nd item".</div>
+    </div>
+
+    <div class="trace reveal">
+      <div class="trace-title">🔎 Graphical Trace — how <code>fruits["Banana"]</code> actually resolves</div>
+      <div class="trace-steps">
+        <div class="trace-step">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <div class="step-label">Pandas builds the labelled Series</div>
+            <div class="step-desc">Values <code>[120, 90, 75]</code> are paired one-to-one with labels <code>["Apple","Banana","Mango"]</code>.</div>
+            <div class="excel-wrap"><table class="excel">
+              <tr><th>Index (Label)</th><th>Value</th></tr>
+              <tr><td>Apple</td><td>120</td></tr>
+              <tr><td class="hl-blue">Banana</td><td>90</td></tr>
+              <tr><td>Mango</td><td>75</td></tr>
+            </table></div>
+          </div>
+        </div>
+        <div class="trace-step">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <div class="step-label">Pandas looks up the label "Banana"</div>
+            <div class="step-desc">Not position 1 — the actual text label. It scans the index column for a match.</div>
+          </div>
+        </div>
+        <div class="trace-step">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <div class="step-label">Returns the matching value</div>
+            <div class="excel-wrap"><table class="excel">
+              <tr><th>Index (Label)</th><th>Value</th></tr>
+              <tr><td>Apple</td><td>120</td></tr>
+              <tr><td class="hl-blue">Banana</td><td class="hl-green">90</td></tr>
+              <tr><td>Mango</td><td>75</td></tr>
+            </table></div>
+            <div class="excel-caption">Highlighted in green: the value handed back to you.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Program 3 -->
+    <div class="program reveal">
+      <div class="program-head">
+        <h4>Program 3 — Creating a DataFrame</h4>
+        <span class="pill">3 / 3</span>
+      </div>
+      <div class="program-body">
+        <div class="code-side">
+          <div class="dots"><span></span><span></span><span></span></div>
+          <pre>data = {<span class="str">"Name"</span>: [<span class="str">"Riya"</span>,<span class="str">"Aman"</span>,<span class="str">"Zoya"</span>],
+        <span class="str">"Marks"</span>: [88, 72, 95]}
+df = pd.DataFrame(data)
+<span class="fn">print</span>(df)</pre>
+        </div>
+        <div class="output-side">
+          <div class="lbl">▶ Output</div>
+          <pre>   Name  Marks
+0  Riya     88
+1  Aman     72
+2  Zoya     95</pre>
+        </div>
+      </div>
+      <div class="why-strip"><b>Why:</b> A dictionary of lists becomes a full table — each dictionary <i>key</i> becomes a column <i>name</i>, each list becomes that column's values.</div>
+    </div>
+
+    <div class="witty reveal">
+      🐼 <b>Witty takeaway:</b> Series = one Excel column with name-tags on every row. DataFrame = the whole sheet. Master this pair, and every function from here on is just "something you do to a Series or a DataFrame."
+    </div>
+  </div>
+</section>
+
+<!-- ======================= TOPIC: EXPLORING A DATAFRAME ======================= -->
+<section class="topic" style="background:var(--bamboo-pale);" id="exploring">
+  <div class="container">
+    <div class="topic-head reveal">
+      <div class="topic-badge">🔍</div>
+      <div class="topic-title">
+        <h3>Exploring a DataFrame</h3>
+        <p>head(), tail(), info(), describe(), shape, columns, dtypes</p>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="panel why reveal-left">
+        <div class="tag">💡 Why this exists</div>
+        <p>You would never build a formula on an Excel sheet you haven't scrolled through first. These six commands are your "scroll through" — a 30-second health check that tells you the size, the column names, the data types, and whether anything's obviously broken, <i>before</i> you calculate a single thing.</p>
+      </div>
+      <div class="panel real reveal-right">
+        <div class="tag">🌍 Real-world picture</div>
+        <p>Before analysing a new spreadsheet, you skim the top rows and check for weird or missing values. <code>head()</code> and <code>info()</code> do exactly that, in one line each — no more scrolling for ten minutes.</p>
+      </div>
+    </div>
+
+    <div class="syntax-block reveal">
+      <div class="tag">🧠 Syntax Pattern</div>
+      <pre>df.<span class="fn">head</span>(n)          df.<span class="fn">tail</span>(n)
+df.<span class="fn">info</span>()           df.<span class="fn">describe</span>()
+df.shape   df.columns   df.dtypes</pre>
+    </div>
+
+    <!-- Program 1 -->
+    <div class="program reveal">
+      <div class="program-head"><h4>Program 1 — Previewing rows with head()</h4><span class="pill">1 / 3</span></div>
+      <div class="program-body">
+        <div class="code-side">
+          <div class="dots"><span></span><span></span><span></span></div>
+          <pre>df = pd.read_csv(<span class="str">"students.csv"</span>)
+<span class="fn">print</span>(df.head(3))  <span class="cm"># default is 5 rows</span></pre>
+        </div>
+        <div class="output-side">
+          <div class="lbl">▶ Output</div>
+          <div class="excel-wrap"><table class="excel">
+            <tr><th>roll</th><th>name</th><th>age</th><th>city</th></tr>
+            <tr><td>1</td><td>aaa</td><td>33</td><td>a</td></tr>
+            <tr><td>2</td><td>sss</td><td>44</td><td>s</td></tr>
+            <tr><td>3</td><td>ddd</td><td>22</td><td>d</td></tr>
+          </table></div>
+        </div>
+      </div>
+      <div class="why-strip"><b>Why:</b> <code>head(3)</code> previews just the first 3 rows out of however many exist — a lifesaver on files with 50,000 rows.</div>
+    </div>
+
+    <!-- Program 2 -->
+    <div class="program reveal">
+      <div class="program-head"><h4>Program 2 — Checking size &amp; column names</h4><span class="pill">2 / 3</span></div>
+      <div class="program-body">
+        <div class="code-side">
+          <div class="dots"><span></span><span></span><span></span></div>
+          <pre><span class="fn">print</span>(df.shape)
+<span class="fn">print</span>(df.columns.tolist())</pre>
+        </div>
+        <div class="output-side">
+          <div class="lbl">▶ Output</div>
+          <pre>(50, 4)
+['Name', 'Marks', 'Branch', 'City']</pre>
+        </div>
+      </div>
+      <div class="why-strip"><b>Why:</b> <code>shape</code> = (rows, columns) at a glance; <code>columns.tolist()</code> lists every column name — handy when a dataset has 40 columns and you can't remember one.</div>
+    </div>
+
+    <!-- Program 3 -->
+    <div class="program reveal">
+      <div class="program-head"><h4>Program 3 — The full health check: info() + describe()</h4><span class="pill">3 / 3</span></div>
+      <div class="program-body">
+        <div class="code-side">
+          <div class="dots"><span></span><span></span><span></span></div>
+          <pre><span class="fn">print</span>(df.info())
+<span class="fn">print</span>(df.describe())</pre>
+        </div>
+        <div class="output-side">
+          <div class="lbl">▶ Output</div>
+          <pre>column dtypes + non-null counts,
+then a mean/std/min/max table</pre>
+        </div>
+      </div>
+      <div class="why-strip"><b>Why:</b> <code>info()</code> flags missing data early; <code>describe()</code> gives instant statistics for every numeric column — no formulas needed.</div>
+    </div>
+
+    <div class="trace reveal">
+      <div class="trace-title">🔎 Reading real df.info() output, piece by piece</div>
+      <p style="color:var(--ink-soft); font-size:14.5px; margin-bottom:16px;">Take this tiny table of 3 students:</p>
+      <div class="excel-wrap"><table class="excel">
+        <tr><th></th><th>Name</th><th>Age</th><th>Marks</th></tr>
+        <tr><td>0</td><td>John</td><td>20</td><td>85</td></tr>
+        <tr><td>1</td><td>Alice</td><td>22</td><td>90</td></tr>
+        <tr><td>2</td><td>Bob</td><td>21</td><td>78</td></tr>
+      </table></div>
+      <div class="trace-steps" style="margin-top:20px;">
+        <div class="trace-step">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <div class="step-label"><code>df.info()</code> output</div>
+            <div class="code-side" style="border-radius:14px;">
+              <pre>&lt;class 'pandas.core.frame.DataFrame'&gt;
+RangeIndex: 3 entries, 0 to 2
+Data columns (total 3 columns):
+ #   Column  Non-Null Count  Dtype
+---  ------  --------------  -----
+ 0   Name    3 non-null      object
+ 1   Age     3 non-null      int64
+ 2   Marks   3 non-null      int64
+dtypes: int64(2), object(1)
+memory usage: 200.0+ bytes</pre>
+            </div>
+          </div>
+        </div>
+        <div class="trace-step">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <div class="step-label">What each part actually means</div>
+            <div class="excel-wrap"><table class="excel">
+              <tr><th>Part</th><th>Meaning</th></tr>
+              <tr><td>RangeIndex: 3 entries</td><td>There are 3 rows</td></tr>
+              <tr><td>Data columns: 3</td><td>There are 3 columns</td></tr>
+              <tr><td>3 non-null</td><td>No missing values in that column</td></tr>
+              <tr><td>object</td><td>Text (string) data</td></tr>
+              <tr><td>int64</td><td>Whole-number data</td></tr>
+            </table></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="trace reveal">
+      <div class="trace-title">🔎 Reading real df.describe() output</div>
+      <div class="two-col" style="margin-bottom:0;">
+        <div>
+          <div class="excel-wrap"><table class="excel">
+            <tr><th></th><th>Age</th><th>Marks</th></tr>
+            <tr><td>count</td><td>3</td><td>3</td></tr>
+            <tr><td>mean</td><td class="hl-green">21.0</td><td class="hl-green">84.33</td></tr>
+            <tr><td>std</td><td>1.0</td><td>6.02</td></tr>
+            <tr><td>min</td><td>20</td><td>78</td></tr>
+            <tr><td>50% (median)</td><td>21</td><td>85</td></tr>
+            <tr><td>max</td><td>22</td><td>90</td></tr>
+          </table></div>
+        </div>
+        <div>
+          <table class="excel" style="width:100%;">
+            <tr><th>Row</th><th>Meaning</th></tr>
+            <tr><td>count</td><td>Number of values</td></tr>
+            <tr><td>mean</td><td>Average value</td></tr>
+            <tr><td>std</td><td>How spread out the values are</td></tr>
+            <tr><td>25% / 50% / 75%</td><td>Quartiles — 50% is the median</td></tr>
+            <tr><td>min / max</td><td>Smallest / largest value</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="witty reveal">
+      🕵️ <b>Witty takeaway:</b> Before touching a single formula, run <code>head()</code>, <code>shape</code>, and <code>info()</code>. Ninety percent of "why is my answer wrong" bugs are caught right here, before they ever happen.
+    </div>
+  </div>
+</section>
+
+<!-- ======================= CHAPTER 2 BANNER ======================= -->
+<div class="chapter chapter2 reveal" id="io">
+  <div class="chapter-banner">
+    <span class="deco">📂</span>
+    <span class="num">SECTION 2 OF 3</span>
+    <h2>Getting Data In &amp; Out</h2>
+    <p>Loading real files into Python, and saving your cleaned results back out — the very first and very last line of almost every Pandas program.</p>
+  </div>
+</div>
+
+<!-- ======================= TOPIC: READING DATA ======================= -->
+<section class="topic" id="reading">
+  <div class="container">
+    <div class="topic-head reveal">
+      <div class="topic-badge">📥</div>
+      <div class="topic-title">
+        <h3>Import &amp; Export — Reading Data</h3>
+        <p>How your real project data gets into Python</p>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="panel why reveal-left">
+        <div class="tag">💡 Why this exists</div>
+        <p>Nobody types their dataset by hand. Someone hands you a <code>.csv</code> or a <code>.xlsx</code> file, and you need it as a working DataFrame in one line — not fifty. <code>read_csv()</code> and <code>read_excel()</code> are that one line.</p>
+      </div>
+      <div class="panel real reveal-right">
+        <div class="tag">🌍 Real-world picture</div>
+        <p>Every real project starts with loading a sales report or an attendance sheet. This is always the very first working line of code you write.</p>
+      </div>
+    </div>
+
+    <div class="syntax-block reveal">
+      <div class="tag">🧠 Syntax Pattern</div>
+      <pre>pd.<span class="fn">read_csv</span>(<span class="str">"file.csv"</span>)
+pd.<span class="fn">read_excel</span>(<span class="str">"file.xlsx"</span>, sheet_name=<span class="str">"Sheet1"</span>)</pre>
+    </div>
+
+    <div class="program reveal">
+      <div class="program-head"><h4>Program 1 — Reading a CSV file</h4><span class="pill">1 / 3</span></div>
+      <div class="program-body">
+        <div class="code-side">
+          <div class="dots"><span></span><span></span><span></span></div>
+          <pre>df = pd.read_csv(<span class="str">"students.csv"</span>)
+<span class="fn">print</span>(df.shape)</pre>
+        </div>
+        <div class="output-side"><div class="lbl">▶ Output</div><pre>(50, 4)</pre></div>
+      </div>
+      <div class="why-strip"><b>Why:</b> Checking <code>.shape</code> right after loading instantly confirms the file actually came in correctly.</div>
+    </div>
+
+    <div class="program reveal">
+      <div class="program-head"><h4>Program 2 — Reading a specific Excel sheet</h4><span class="pill">2 / 3</span></div>
+      <div class="program-body">
+        <div class="code-side">
+          <div class="dots"><span></span><span></span><span></span></div>
+          <pre>df2 = pd.read_excel(
+    <span class="str">"marks.xlsx"</span>, sheet_name=<span class="str">"Sheet1"</span>
+)
+<span class="cm"># no sheet_name? defaults to Sheet1</span>
+<span class="fn">print</span>(df2.columns.tolist())</pre>
+        </div>
+        <div class="output-side"><div class="lbl">▶ Output</div><pre>['Name', 'Marks', 'Grade']</pre></div>
+      </div>
+      <div class="why-strip"><b>Why:</b> <code>sheet_name</code> picks exactly which sheet to load out of a multi-sheet workbook.</div>
+    </div>
+
+    <div class="program reveal">
+      <div class="program-head"><h4>Program 3 — Loading only the columns you need</h4><span class="pill">3 / 3</span></div>
+      <div class="program-body">
+        <div class="code-side">
+          <div class="dots"><span></span><span></span><span></span></div>
+          <pre>sales = pd.read_csv(
+    <span class="str">"sales.csv"</span>, usecols=[<span class="str">"Date"</span>,<span class="str">"Amount"</span>]
+)
+<span class="fn">print</span>(sales.head(2))</pre>
+        </div>
+        <div class="output-side">
+          <div class="lbl">▶ Output</div>
+          <div class="excel-wrap"><table class="excel">
+            <tr><th>Date</th><th>Amount</th></tr>
+            <tr><td>01-Jan</td><td>1200</td></tr>
+            <tr><td>02-Jan</td><td>950</td></tr>
+          </table></div>
+        </div>
+      </div>
+      <div class="why-strip"><b>Why:</b> <code>usecols</code> loads just the columns you actually need — much faster on huge files with 40+ columns.</div>
+    </div>
+
+    <div class="trace reveal">
+      <div class="trace-title">🔎 The "Where's my file?" trace — 3 ways to point to a CSV</div>
+      <div class="trace-steps">
+        <div class="trace-step">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <div class="step-label">Same folder as your script</div>
+            <div class="step-desc">Python looks in the current folder first — simplest option.</div>
+            <div class="code-side" style="border-radius:14px;"><pre>df = pd.read_csv(<span class="str">"student.csv"</span>)</pre></div>
+          </div>
+        </div>
+        <div class="trace-step">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <div class="step-label">A different folder — use the full path</div>
+            <div class="step-desc">Prefix with <code>r</code> so Windows-style backslashes aren't misread as escape codes (<code>\n</code> would otherwise become a newline!).</div>
+            <div class="code-side" style="border-radius:14px;"><pre>df = pd.read_csv(
+  r<span class="str">"C:\Users\Bhumika\Documents\Data\student.csv"</span>
+)</pre></div>
+          </div>
+        </div>
+        <div class="trace-step">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <div class="step-label">Working in Google Colab</div>
+            <div class="step-desc">Upload the file into the session first, then read it exactly like a local file.</div>
+            <div class="code-side" style="border-radius:14px;"><pre><span class="kw">from</span> google.colab <span class="kw">import</span> files
+uploaded = files.upload()
+df = pd.read_csv(<span class="str">"student.csv"</span>)</pre></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="witty reveal">
+      📎 <b>Witty takeaway:</b> 90% of "FileNotFoundError" panic is just a path problem. Same folder → plain name. Different folder → full path with <code>r</code>. Colab → upload first.
+    </div>
+  </div>
+</section>
+
+<!-- ======================= TOPIC: SAVING DATA ======================= -->
+<section class="topic" style="background:var(--bamboo-pale);" id="saving">
+  <div class="container">
+    <div class="topic-head reveal">
+      <div class="topic-badge">📤</div>
+      <div class="topic-title">
+        <h3>Import &amp; Export — Saving Data</h3>
+        <p>How your cleaned results get back out of Python</p>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="panel why reveal-left">
+        <div class="tag">💡 Why this exists</div>
+        <p>Cleaning data inside Python is pointless if nobody else can use the result. <code>to_csv()</code> / <code>to_excel()</code> hand your work back as an ordinary file anyone can open — in Excel, Google Sheets, or another script.</p>
+      </div>
+      <div class="panel real reveal-right">
+        <div class="tag">🌍 Real-world picture</div>
+        <p>After removing duplicate customer records, you export the cleaned list so it can be emailed to the sales team as a proper, ready-to-open spreadsheet.</p>
+      </div>
+    </div>
+
+    <div class="syntax-block reveal">
+      <div class="tag">🧠 Syntax Pattern</div>
+      <pre>df.<span class="fn">to_csv</span>(<span class="str">"out.csv"</span>, index=<span class="kw">False</span>)
+df.<span class="fn">to_excel</span>(<span class="str">"out.xlsx"</span>, sheet_name=<span class="str">"Report"</span>, index=<span class="kw">False</span>)</pre>
+    </div>
+
+    <div class="program reveal">
+      <div class="program-head"><h4>Program 1 — Saving a cleaned CSV</h4><span class="pill">1 / 3</span></div>
+      <div class="program-body">
+        <div class="code-side">
+          <div class="dots"><span></span><span></span><span></span></div>
+          <pre>df.to_csv(<span class="str">"clean_students.csv"</span>, index=<span class="kw">False</span>)
+<span class="fn">print</span>(<span class="str">"Saved!"</span>)</pre>
+        </div>
+        <div class="output-side"><div class="lbl">▶ Output</div><pre>Saved!
+(file written to disk)</pre></div>
+      </div>
+      <div class="why-strip"><b>Why:</b> <code>index=False</code> keeps the output file clean — no stray, meaningless "0,1,2..." column tacked onto the front.</div>
+    </div>
+
+    <div class="program reveal">
+      <div class="program-head"><h4>Program 2 — Exporting a filtered subset</h4><span class="pill">2 / 3</span></div>
+      <div class="program-body">
+        <div class="code-side">
+          <div class="dots"><span></span><span></span><span></span></div>
+          <pre>toppers = df[df[<span class="str">"Marks"</span>] > 85]
+toppers.to_csv(<span class="str">"toppers.csv"</span>, index=<span class="kw">False</span>)</pre>
+        </div>
+        <div class="output-side"><div class="lbl">▶ Output</div><pre>file "toppers.csv" created,
+containing only high scorers</pre></div>
+      </div>
+      <div class="why-strip"><b>Why:</b> You can export any filtered slice of your data, not just the whole table.</div>
+    </div>
+
+    <div class="trace reveal">
+      <div class="trace-title">🔎 Trace — how "only toppers" gets saved</div>
+      <div class="trace-steps">
+        <div class="trace-step">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <div class="step-label">Start with the full table</div>
+            <div class="excel-wrap"><table class="excel">
+              <tr><th>Roll</th><th>Name</th><th>Marks</th></tr>
+              <tr><td>1</td><td>John</td><td class="hl-green">90</td></tr>
+              <tr><td>2</td><td>Alice</td><td>75</td></tr>
+              <tr><td>3</td><td>Bob</td><td class="hl-green">88</td></tr>
+              <tr><td>4</td><td>David</td><td>60</td></tr>
+            </table></div>
+          </div>
+        </div>
+        <div class="trace-step">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <div class="step-label">Apply the condition <code>df["Marks"] &gt; 85</code></div>
+            <div class="excel-wrap"><table class="excel">
+              <tr><th>Roll</th><th>Marks</th><th>Condition</th></tr>
+              <tr><td>1</td><td>90</td><td class="hl-green">True</td></tr>
+              <tr><td>2</td><td>75</td><td class="hl-red">False</td></tr>
+              <tr><td>3</td><td>88</td><td class="hl-green">True</td></tr>
+              <tr><td>4</td><td>60</td><td class="hl-red">False</td></tr>
+            </table></div>
+          </div>
+        </div>
+        <div class="trace-step">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <div class="step-label">Only <code>True</code> rows survive into <code>toppers</code></div>
+            <div class="excel-wrap"><table class="excel">
+              <tr><th>Roll</th><th>Name</th><th>Marks</th></tr>
+              <tr><td>1</td><td>John</td><td class="hl-green">90</td></tr>
+              <tr><td>3</td><td>Bob</td><td class="hl-green">88</td></tr>
+            </table></div>
+            <div class="excel-caption">This is exactly what lands inside toppers.csv.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="program reveal">
+      <div class="program-head"><h4>Program 3 — Saving to Excel</h4><span class="pill">3 / 3</span></div>
+      <div class="program-body">
+        <div class="code-side">
+          <div class="dots"><span></span><span></span><span></span></div>
+          <pre>df.to_excel(
+    <span class="str">"report.xlsx"</span>, sheet_name=<span class="str">"FinalReport"</span>, index=<span class="kw">False</span>
+)
+<span class="fn">print</span>(<span class="str">"Excel ready"</span>)</pre>
+        </div>
+        <div class="output-side"><div class="lbl">▶ Output</div><pre>Excel ready</pre></div>
+      </div>
+      <div class="why-strip"><b>Why:</b> <code>to_excel()</code> needs the same <code>openpyxl</code> package installed as <code>read_excel()</code>.</div>
+    </div>
+
+    <div class="witty reveal">
+      💾 <b>Witty takeaway:</b> Reading gets data in; saving gets your <i>work</i> back out. Always set <code>index=False</code> unless you specifically want that extra numbering column in the file.
+    </div>
+  </div>
+</section>
+
+<!-- ======================= CHAPTER 3 BANNER ======================= -->
+<div class="chapter chapter3 reveal" id="cleaning">
+  <div class="chapter-banner">
+    <span class="deco">🧹</span>
+    <span class="num">SECTION 3 OF 3</span>
+    <h2>Selecting &amp; Cleaning Data</h2>
+    <p>Picking exact cells like a surgeon, then handling the gaps that real-world data always, always has.</p>
+  </div>
+</div>
+
+<!-- ======================= TOPIC: LOC / ILOC / AT / IAT ======================= -->
+<section class="topic" id="loc-iloc">
+  <div class="container">
+    <div class="topic-head reveal">
+      <div class="topic-badge">🎯</div>
+      <div class="topic-title">
+        <h3>Selecting Data — loc, iloc, at, iat</h3>
+        <p>Picking exact rows, columns and cells out of a table</p>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="panel why reveal-left">
+        <div class="tag">💡 Why this exists</div>
+        <p><code>loc</code> selects by <b>LABEL</b> (the name); <code>iloc</code> selects by <b>POSITION</b> (the number), exactly like list slicing. <code>at</code>/<code>iat</code> are their turbo-charged cousins, built for grabbing just one single cell fast.</p>
+      </div>
+      <div class="panel real reveal-right">
+        <div class="tag">🌍 Real-world picture</div>
+        <p>"Give me Aman's marks" is a label lookup — <code>loc</code>. "Give me the 3rd row" is a position lookup — <code>iloc</code>. Like referencing an Excel cell by name (B5) versus counting rows down manually.</p>
+      </div>
+    </div>
+
+    <div class="syntax-block reveal">
+      <div class="tag">🧠 Syntax Pattern</div>
+      <pre>df.loc[row_label, col_label]
+df.iloc[row_position, col_position]
+df.at[row_label, col_label]     df.iat[row_pos, col_pos]</pre>
+    </div>
+
+    <p class="reveal" style="text-align:center; color:var(--ink-soft); margin-bottom:26px;">Our running example table for this whole topic:</p>
+    <div class="excel-wrap reveal" style="max-width:520px; margin-left:auto; margin-right:auto;">
+      <table class="excel">
+        <tr><th>Index</th><th>Name</th><th>Marks</th><th>City</th></tr>
+        <tr><td>S1</td><td>Alice</td><td>85</td><td>Surat</td></tr>
+        <tr><td>S2</td><td>Bob</td><td>90</td><td>Mumbai</td></tr>
+        <tr><td>S3</td><td>Charlie</td><td>78</td><td>Delhi</td></tr>
+      </table>
+    </div>
+
+    <div class="trace reveal">
+      <div class="trace-title">🔎 loc vs. iloc — same answer, two totally different routes</div>
+      <div class="two-col" style="margin-bottom:0;">
+        <div>
+          <div class="step-label" style="margin-bottom:10px;">🏷️ <code>df.loc["S2", "Marks"]</code> — by LABEL</div>
+          <div class="excel-wrap"><table class="excel">
+            <tr><th>Index</th><th>Name</th><th>Marks</th><th>City</th></tr>
+            <tr><td>S1</td><td>Alice</td><td>85</td><td>Surat</td></tr>
+            <tr><td class="hl-blue">S2</td><td>Bob</td><td class="hl-green">90</td><td>Mumbai</td></tr>
+            <tr><td>S3</td><td>Charlie</td><td>78</td><td>Delhi</td></tr>
+          </table></div>
+          <div class="excel-caption">Row label = "S2", Column label = "Marks" → 90</div>
+        </div>
+        <div>
+          <div class="step-label" style="margin-bottom:10px;">🔢 <code>df.iloc[1, 1]</code> — by POSITION</div>
+          <div class="excel-wrap"><table class="excel">
+            <tr><th>#0</th><th>Name (0)</th><th>Marks (1)</th><th>City (2)</th></tr>
+            <tr><td>row 0</td><td>Alice</td><td>85</td><td>Surat</td></tr>
+            <tr><td class="hl-blue">row 1</td><td>Bob</td><td class="hl-green">90</td><td>Mumbai</td></tr>
+            <tr><td>row 2</td><td>Charlie</td><td>78</td><td>Delhi</td></tr>
+          </table></div>
+          <div class="excel-caption">Row position 1, column position 1 (counting from 0) → 90</div>
+        </div>
+      </div>
+      <div class="witty" style="margin-top:20px;">⚡ Same cell, same value — <code>loc</code> got there by reading names, <code>iloc</code> got there by counting. Big difference: with <code>loc</code>, a range like <code>"S1":"S2"</code> <b>includes</b> the last label; with <code>iloc</code>, <code>0:2</code> <b>excludes</b> position 2 — just like normal Python slicing.</div>
+    </div>
+
+    <div class="program reveal">
+      <div class="program-head"><h4>Program 1 — Selecting by label with loc</h4><span class="pill">1 / 3</span></div>
+      <div class="program-body">
+        <div class="code-side"><div class="dots"><span></span><span></span><span></span></div>
+          <pre><span class="fn">print</span>(df.loc[2, <span class="str">"Name"</span>])</pre></div>
+        <div class="output-side"><div class="lbl">▶ Output</div><pre>'Zoya'</pre></div>
+      </div>
+      <div class="why-strip"><b>Why:</b> <code>loc[2, "Name"]</code> reads the row <i>labelled</i> 2, in the column <i>labelled</i> "Name".</div>
+    </div>
+
+    <div class="program reveal">
+      <div class="program-head"><h4>Program 2 — Selecting by position with iloc</h4><span class="pill">2 / 3</span></div>
+      <div class="program-body">
+        <div class="code-side"><div class="dots"><span></span><span></span><span></span></div>
+          <pre><span class="fn">print</span>(df.iloc[0:3, 0:2])</pre></div>
+        <div class="output-side"><div class="lbl">▶ Output</div><pre>first 3 rows,
+first 2 columns</pre></div>
+      </div>
+      <div class="why-strip"><b>Why:</b> <code>iloc</code> uses pure position — exactly like Python list slicing, end excluded.</div>
+    </div>
+
+    <div class="program reveal">
+      <div class="program-head"><h4>Program 3 — Reading/updating one cell with at</h4><span class="pill">3 / 3</span></div>
+      <div class="program-body">
+        <div class="code-side"><div class="dots"><span></span><span></span><span></span></div>
+          <pre>df.at[1, <span class="str">"Marks"</span>] = 100
+<span class="fn">print</span>(df.at[1, <span class="str">"Marks"</span>])</pre></div>
+        <div class="output-side"><div class="lbl">▶ Output</div><pre>100</pre></div>
+      </div>
+      <div class="why-strip"><b>Why:</b> <code>at[]</code> (and its position-based twin <code>iat[]</code>) is the fastest way to read <i>or update</i> a single cell in a huge table.</div>
+    </div>
+
+    <div class="witty reveal">
+      🎯 <b>Witty takeaway:</b> Name in mind → <code>loc</code>. Number in mind → <code>iloc</code>. Just one cell, need for speed → <code>at</code>/<code>iat</code>.
+    </div>
+  </div>
+</section>
+
+<!-- ======================= TOPIC: DETECTING MISSING VALUES ======================= -->
+<section class="topic" style="background:var(--bamboo-pale);" id="detecting">
+  <div class="container">
+    <div class="topic-head reveal">
+      <div class="topic-badge">❓</div>
+      <div class="topic-title">
+        <h3>Handling Missing Values — Detecting</h3>
+        <p>Real-world data is messy. Finding the gaps comes before fixing them.</p>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="panel why reveal-left">
+        <div class="tag">💡 Why this exists</div>
+        <p><code>isnull()</code> flags every missing (NaN) cell as <b>True</b>; <code>notnull()</code> is the exact opposite. Chain <code>.sum()</code> straight after to turn a giant grid of True/False into a simple per-column count.</p>
+      </div>
+      <div class="panel real reveal-right">
+        <div class="tag">🌍 Real-world picture</div>
+        <p>Before analysing an attendance sheet, you must first know exactly which student rows have a missing "Marks" entry — this is that check, automated.</p>
+      </div>
+    </div>
+
+    <div class="syntax-block reveal">
+      <div class="tag">🧠 Syntax Pattern</div>
+      <pre>df.<span class="fn">isnull</span>()      df.<span class="fn">isna</span>()
+df.<span class="fn">notnull</span>()
+df.isnull().<span class="fn">sum</span>()</pre>
+    </div>
+
+    <p class="reveal" style="text-align:center; color:var(--ink-soft); margin-bottom:10px;">Our messy starting table:</p>
+    <div class="excel-wrap reveal" style="max-width:560px; margin:0 auto 30px;">
+      <table class="excel">
+        <tr><th></th><th>Name</th><th>Marks</th><th>City</th></tr>
+        <tr><td>0</td><td>Alice</td><td>85</td><td>Surat</td></tr>
+        <tr><td>1</td><td>Bob</td><td class="hl-red">NaN</td><td>Mumbai</td></tr>
+        <tr><td>2</td><td class="hl-red">None</td><td>78</td><td class="hl-red">None</td></tr>
+        <tr><td>3</td><td>David</td><td>92</td><td>Delhi</td></tr>
+      </table>
+    </div>
+
+    <div class="trace reveal">
+      <div class="trace-title">🔎 Nested trace — <code>df.isnull().sum()</code> step by step</div>
+      <div class="trace-steps">
+        <div class="trace-step">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <div class="step-label">Step 1 — <code>df.isnull()</code> scans every cell</div>
+            <div class="step-desc">Each cell becomes True (missing) or False (present).</div>
+            <div class="excel-wrap"><table class="excel">
+              <tr><th></th><th>Name</th><th>Marks</th><th>City</th></tr>
+              <tr><td>0</td><td>False</td><td>False</td><td>False</td></tr>
+              <tr><td>1</td><td>False</td><td class="hl-yellow">True</td><td>False</td></tr>
+              <tr><td>2</td><td class="hl-yellow">True</td><td>False</td><td class="hl-yellow">True</td></tr>
+              <tr><td>3</td><td>False</td><td>False</td><td>False</td></tr>
+            </table></div>
+          </div>
+        </div>
+        <div class="trace-step">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <div class="step-label">Step 2 — <code>.sum()</code> adds each column top-to-bottom</div>
+            <div class="step-desc">Pandas treats True as 1 and False as 0, then totals every column.</div>
+            <div class="excel-wrap"><table class="excel">
+              <tr><th>Name</th><th>Marks</th><th>City</th></tr>
+              <tr><td class="hl-green">1</td><td class="hl-green">1</td><td class="hl-green">1</td></tr>
+            </table></div>
+            <div class="excel-caption">Final printed result: Name 1, Marks 1, City 1 — one gap in each column.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="program reveal">
+      <div class="program-head"><h4>Program 1 — Counting missing values per column</h4><span class="pill">1 / 3</span></div>
+      <div class="program-body">
+        <div class="code-side"><div class="dots"><span></span><span></span><span></span></div>
+          <pre><span class="fn">print</span>(df.isnull().sum())</pre></div>
+        <div class="output-side"><div class="lbl">▶ Output</div><pre>Name      0
+Marks     3
+Branch    1
+dtype: int64</pre></div>
+      </div>
+      <div class="why-strip"><b>Why:</b> Shows the missing-value count for every column at a single glance.</div>
+    </div>
+
+    <div class="program reveal">
+      <div class="program-head"><h4>Program 2 — Viewing only the problem rows</h4><span class="pill">2 / 3</span></div>
+      <div class="program-body">
+        <div class="code-side"><div class="dots"><span></span><span></span><span></span></div>
+          <pre><span class="fn">print</span>(df[df[<span class="str">"Marks"</span>].isnull()])</pre></div>
+        <div class="output-side"><div class="lbl">▶ Output</div><pre>only the rows where
+Marks is missing</pre></div>
+      </div>
+      <div class="why-strip"><b>Why:</b> Combining <code>isnull()</code> with filtering shows you the <i>exact</i> rows causing trouble — not just a count.</div>
+    </div>
+
+    <div class="program reveal">
+      <div class="program-head"><h4>Program 3 — Counting valid (non-missing) entries</h4><span class="pill">3 / 3</span></div>
+      <div class="program-body">
+        <div class="code-side"><div class="dots"><span></span><span></span><span></span></div>
+          <pre><span class="fn">print</span>(df.notnull().sum())</pre></div>
+        <div class="output-side"><div class="lbl">▶ Output</div><pre>Name      50
+Marks     47
+Branch    49
+dtype: int64</pre></div>
+      </div>
+      <div class="why-strip"><b>Why:</b> <code>notnull()</code> is the mirror image of <code>isnull()</code> — confirms exactly how many complete entries exist.</div>
+    </div>
+
+    <div class="witty reveal">
+      🔍 <b>Witty takeaway:</b> <code>isnull()</code> and <code>isna()</code> are identical twins — literally the same function under two names. Detect first, decide later (fill it, or drop it — next up!).
+    </div>
+  </div>
+</section>
+
+<!-- ======================= TOPIC: FILLING MISSING VALUES ======================= -->
+<section class="topic" id="filling">
+  <div class="container">
+    <div class="topic-head reveal">
+      <div class="topic-badge">🩹</div>
+      <div class="topic-title">
+        <h3>Handling Missing Values — Filling</h3>
+        <p>Replacing gaps with a sensible value instead of leaving them blank</p>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="panel why reveal-left">
+        <div class="tag">💡 Why this exists</div>
+        <p><code>fillna()</code> can patch gaps with a fixed value, the column's mean/median, or simply the previous row's value (forward-fill). Picking the <i>right</i> strategy matters — fill wrong, and you quietly bias every calculation that follows.</p>
+      </div>
+      <div class="panel real reveal-right">
+        <div class="tag">🌍 Real-world picture</div>
+        <p>If 3 students didn't report their marks, filling with the class average is far fairer than leaving the cell blank or forcing it to zero (which would tank the whole class's average).</p>
+      </div>
+    </div>
+
+    <div class="syntax-block reveal">
+      <div class="tag">🧠 Syntax Pattern</div>
+      <pre>df.<span class="fn">fillna</span>(value)
+df[<span class="str">"col"</span>].fillna(df[<span class="str">"col"</span>].mean())
+df.fillna(method=<span class="str">"ffill"</span>)</pre>
+    </div>
+
+    <div class="trace reveal">
+      <div class="trace-title">🔎 Nested trace — <code>df["Marks"].fillna(df["Marks"].mean())</code></div>
+      <div class="trace-steps">
+        <div class="trace-step">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <div class="step-label">Start: Marks column has gaps</div>
+            <div class="excel-wrap" style="max-width:260px;"><table class="excel">
+              <tr><th>Name</th><th>Marks</th></tr>
+              <tr><td>Alice</td><td>85</td></tr>
+              <tr><td>Bob</td><td class="hl-red">NaN</td></tr>
+              <tr><td>Charlie</td><td>78</td></tr>
+              <tr><td>David</td><td class="hl-red">NaN</td></tr>
+            </table></div>
+          </div>
+        </div>
+        <div class="trace-step">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <div class="step-label">Inner call first: <code>df["Marks"].mean()</code></div>
+            <div class="step-desc">Pandas ignores the NaNs and averages what's actually there: (85 + 78) ÷ 2 = <b>81.5</b></div>
+          </div>
+        </div>
+        <div class="trace-step">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <div class="step-label">Outer call: every NaN becomes 81.5</div>
+            <div class="excel-wrap" style="max-width:260px;"><table class="excel">
+              <tr><th>Name</th><th>Marks</th></tr>
+              <tr><td>Alice</td><td>85</td></tr>
+              <tr><td>Bob</td><td class="hl-green">81.5</td></tr>
+              <tr><td>Charlie</td><td>78</td></tr>
+              <tr><td>David</td><td class="hl-green">81.5</td></tr>
+            </table></div>
+            <div class="excel-caption">Filling with the mean preserves the overall distribution — filling with 0 would have wrecked it.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="program reveal">
+      <div class="program-head"><h4>Program 1 — Filling with the column mean</h4><span class="pill">1 / 3</span></div>
+      <div class="program-body">
+        <div class="code-side"><div class="dots"><span></span><span></span><span></span></div>
+          <pre>df[<span class="str">"Marks"</span>] = df[<span class="str">"Marks"</span>].fillna(
+    df[<span class="str">"Marks"</span>].mean()
+)
+<span class="fn">print</span>(df[<span class="str">"Marks"</span>].isnull().sum())</pre></div>
+        <div class="output-side"><div class="lbl">▶ Output</div><pre>0</pre></div>
+      </div>
+      <div class="why-strip"><b>Why:</b> NaNs get replaced by the column average, so zero missing values remain afterward.</div>
+    </div>
+
+    <div class="program reveal">
+      <div class="program-head"><h4>Program 2 — Filling text columns with a label</h4><span class="pill">2 / 3</span></div>
+      <div class="program-body">
+        <div class="code-side"><div class="dots"><span></span><span></span><span></span></div>
+          <pre>df[<span class="str">"Branch"</span>] = df[<span class="str">"Branch"</span>].fillna(<span class="str">"Unknown"</span>)
+<span class="fn">print</span>(df[<span class="str">"Branch"</span>].unique())</pre></div>
+        <div class="output-side"><div class="lbl">▶ Output</div><pre>array(['IT', 'CE', 'Unknown'], dtype=object)</pre></div>
+      </div>
+      <div class="why-strip"><b>Why:</b> Text columns usually get a placeholder label instead of a number — "Unknown" is honest about the gap.</div>
+    </div>
+
+    <div class="program reveal">
+      <div class="program-head"><h4>Program 3 — Forward-filling from the previous row</h4><span class="pill">3 / 3</span></div>
+      <div class="program-body">
+        <div class="code-side"><div class="dots"><span></span><span></span><span></span></div>
+          <pre>df_filled = df.fillna(method=<span class="str">"ffill"</span>)
+<span class="fn">print</span>(df_filled.head())</pre></div>
+        <div class="output-side">
+          <div class="lbl">▶ Output</div>
+          <div class="excel-wrap"><table class="excel">
+            <tr><th>Day</th><th>Temp (before)</th><th>Temp (ffill)</th></tr>
+            <tr><td>Mon</td><td>30</td><td>30</td></tr>
+            <tr><td>Tue</td><td class="hl-red">NaN</td><td class="hl-green">30</td></tr>
+            <tr><td>Wed</td><td class="hl-red">NaN</td><td class="hl-green">30</td></tr>
+            <tr><td>Thu</td><td>32</td><td>32</td></tr>
+          </table></div>
+        </div>
+      </div>
+      <div class="why-strip"><b>Why:</b> Forward-fill copies the last known value downward — ideal for time-series like a daily temperature or attendance log.</div>
+    </div>
+
+    <div class="witty reveal">
+      🩹 <b>Witty takeaway:</b> Number gap → usually mean. Text gap → a clear label like "Unknown". Data over time → forward-fill. Choose on purpose, never by accident.
+    </div>
+  </div>
+</section>
+
+<!-- ======================= TOPIC: DROPPING MISSING VALUES ======================= -->
+<section class="topic" style="background:var(--bamboo-pale);" id="dropping">
+  <div class="container">
+    <div class="topic-head reveal">
+      <div class="topic-badge">🗑️</div>
+      <div class="topic-title">
+        <h3>Handling Missing Values — Dropping</h3>
+        <p>Sometimes the safest option is to remove incomplete data entirely</p>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="panel why reveal-left">
+        <div class="tag">💡 Why this exists</div>
+        <p><code>dropna()</code> deletes rows (or columns) that contain gaps, instead of guessing a replacement value. <code>axis=0</code> (default) drops rows; <code>axis=1</code> drops columns; <code>subset=[...]</code> only checks the columns you name.</p>
+      </div>
+      <div class="panel real reveal-right">
+        <div class="tag">🌍 Real-world picture</div>
+        <p>If a student's entire record — both Name <i>and</i> Marks — is missing, it's safer to drop that row than to guess and fill it with a fake identity.</p>
+      </div>
+    </div>
+
+    <div class="syntax-block reveal">
+      <div class="tag">🧠 Syntax Pattern</div>
+      <pre>df.<span class="fn">dropna</span>()
+df.dropna(axis=1)
+df.dropna(subset=[<span class="str">"col"</span>])</pre>
+    </div>
+
+    <p class="reveal" style="text-align:center; color:var(--ink-soft); margin-bottom:10px;">Our starting table:</p>
+    <div class="excel-wrap reveal" style="max-width:520px; margin:0 auto 30px;">
+      <table class="excel">
+        <tr><th></th><th>Name</th><th>Marks</th><th>City</th></tr>
+        <tr><td>0</td><td>Alice</td><td>85</td><td>Surat</td></tr>
+        <tr><td>1</td><td>Bob</td><td class="hl-red">NaN</td><td>Mumbai</td></tr>
+        <tr><td>2</td><td>Charlie</td><td>78</td><td class="hl-red">NaN</td></tr>
+        <tr><td>3</td><td class="hl-red">NaN</td><td>90</td><td>Delhi</td></tr>
+      </table>
+    </div>
+
+    <div class="trace reveal">
+      <div class="trace-title">🔎 Three ways dropna() cuts the exact same table</div>
+      <div class="trace-steps">
+        <div class="trace-step">
+          <div class="step-num">A</div>
+          <div class="step-content">
+            <div class="step-label"><code>df.dropna()</code> — any gap, row gone</div>
+            <div class="excel-wrap"><table class="excel">
+              <tr><th></th><th>Name</th><th>Marks</th><th>City</th></tr>
+              <tr><td>0</td><td>Alice</td><td>85</td><td>Surat</td></tr>
+              <tr class="row-out"><td>1</td><td>Bob</td><td class="hl-red">NaN</td><td>Mumbai</td></tr>
+              <tr class="row-out"><td>2</td><td>Charlie</td><td>78</td><td class="hl-red">NaN</td></tr>
+              <tr class="row-out"><td>3</td><td class="hl-red">NaN</td><td>90</td><td>Delhi</td></tr>
+            </table></div>
+            <div class="excel-caption">Only row 0 survives — every other row had at least one gap somewhere.</div>
+          </div>
+        </div>
+        <div class="trace-step">
+          <div class="step-num">B</div>
+          <div class="step-content">
+            <div class="step-label"><code>df.dropna(axis=1)</code> — any gap, whole column gone</div>
+            <div class="witty" style="margin:8px 0 0;">Every single column here has at least one NaN somewhere — so <code>axis=1</code> wipes out <b>all three</b>, leaving an empty DataFrame. Ouch. This is why <code>axis=1</code> is used carefully, usually only on wide, mostly-clean tables.</div>
+          </div>
+        </div>
+        <div class="trace-step">
+          <div class="step-num">C</div>
+          <div class="step-content">
+            <div class="step-label"><code>df.dropna(subset=["Marks"])</code> — only check ONE column</div>
+            <div class="excel-wrap"><table class="excel">
+              <tr><th></th><th>Name</th><th>Marks</th><th>City</th></tr>
+              <tr><td>0</td><td>Alice</td><td>85</td><td>Surat</td></tr>
+              <tr class="row-out"><td>1</td><td>Bob</td><td class="hl-red">NaN</td><td>Mumbai</td></tr>
+              <tr><td>2</td><td>Charlie</td><td>78</td><td class="hl-yellow">NaN (ignored)</td></tr>
+              <tr><td>3</td><td class="hl-yellow">NaN (ignored)</td><td>90</td><td>Delhi</td></tr>
+            </table></div>
+            <div class="excel-caption">Only row 1 is removed — because only "Marks" was checked. Charlie's missing City and the missing Name in row 3 are ignored entirely.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="program reveal">
+      <div class="program-head"><h4>Program 1 — Dropping all incomplete rows</h4><span class="pill">1 / 3</span></div>
+      <div class="program-body">
+        <div class="code-side"><div class="dots"><span></span><span></span><span></span></div>
+          <pre>df_clean = df.dropna()
+<span class="fn">print</span>(df_clean.shape)</pre></div>
+        <div class="output-side"><div class="lbl">▶ Output</div><pre>(46, 4)</pre></div>
+      </div>
+      <div class="why-strip"><b>Why:</b> Any row with even one missing value is removed — the row count naturally shrinks from 50 to 46.</div>
+    </div>
+
+    <div class="program reveal">
+      <div class="program-head"><h4>Program 2 — Dropping based on one column only</h4><span class="pill">2 / 3</span></div>
+      <div class="program-body">
+        <div class="code-side"><div class="dots"><span></span><span></span><span></span></div>
+          <pre>df_clean2 = df.dropna(subset=[<span class="str">"Marks"</span>])
+<span class="fn">print</span>(df_clean2.shape)</pre></div>
+        <div class="output-side"><div class="lbl">▶ Output</div><pre>(47, 4)</pre></div>
+      </div>
+      <div class="why-strip"><b>Why:</b> Only rows missing "Marks" specifically get dropped — gaps in other columns are ignored, so fewer rows are lost.</div>
+    </div>
+
+    <div class="program reveal">
+      <div class="program-head"><h4>Program 3 — Dropping incomplete columns</h4><span class="pill">3 / 3</span></div>
+      <div class="program-body">
+        <div class="code-side"><div class="dots"><span></span><span></span><span></span></div>
+          <pre>df_clean3 = df.dropna(axis=1)
+<span class="fn">print</span>(df_clean3.columns.tolist())</pre></div>
+        <div class="output-side"><div class="lbl">▶ Output</div><pre>['Name', 'Branch']</pre></div>
+      </div>
+      <div class="why-strip"><b>Why:</b> <code>axis=1</code> removes entire columns that contain even a single missing value — here, "Marks" and "City" got wiped, but "Name" and "Branch" happened to be complete.</div>
+    </div>
+
+    <div class="witty reveal">
+      🗑️ <b>Witty takeaway:</b> <code>dropna()</code> is the nuclear option — powerful, but it deletes data forever. Always check <code>.shape</code> before and after so you know exactly how much you just threw away.
+    </div>
+  </div>
+</section>
+
+<!-- ======================= CHEAT SHEET ======================= -->
+<section id="cheatsheet">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="kicker">Quick Reference</span>
+      <h2>📋 Your pocket cheat sheet</h2>
+      <p>Everything from Foundations through Selecting &amp; Cleaning — one line each.</p>
+    </div>
+    <div class="cheat-grid reveal">
+      <div class="cheat-card"><div class="t">🐼 Series &amp; DataFrame</div><code>pd.Series([10,20,30])</code></div>
+      <div class="cheat-card"><div class="t">🔍 Exploring</div><code>df.head(n) / df.info()</code></div>
+      <div class="cheat-card"><div class="t">📥 Reading Data</div><code>pd.read_csv("file.csv")</code></div>
+      <div class="cheat-card"><div class="t">📤 Saving Data</div><code>df.to_csv("out.csv", index=False)</code></div>
+      <div class="cheat-card"><div class="t">🎯 loc / iloc / at / iat</div><code>df.loc[row, col]</code></div>
+      <div class="cheat-card"><div class="t">❓ Detecting gaps</div><code>df.isnull().sum()</code></div>
+      <div class="cheat-card"><div class="t">🩹 Filling gaps</div><code>df.fillna(value)</code></div>
+      <div class="cheat-card"><div class="t">🗑️ Dropping gaps</div><code>df.dropna()</code></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span class="panda">🐼</span>
+  <h3>You now speak (some) Pandas.</h3>
+  <p>8 core functions mastered · 24 practice programs · 1 sales sheet finally under control</p>
+  <div class="credit">BTIT15501 · Data Science using Python · Prof. Bhumika — Foundations through Selecting &amp; Cleaning Data</div>
+</footer>
+
+<div id="toTop">↑</div>
+
+<script>
+  // progress bar
+  const bar = document.getElementById('progressBar');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+    bar.style.width = scrolled + '%';
+
+    const toTop = document.getElementById('toTop');
+    if(h.scrollTop > 500){ toTop.classList.add('show'); } else { toTop.classList.remove('show'); }
+  });
+
+  document.getElementById('toTop').addEventListener('click', () => {
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+
+  // scroll reveal
+  const revealEls = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        entry.target.classList.add('in');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+  revealEls.forEach(el => io.observe(el));
+
+  // floating leaves drift randomization
+  document.querySelectorAll('.leaf').forEach((leaf, i) => {
+    leaf.style.animationDuration = (7 + i*1.3) + 's';
+  });
+</script>
+
+</body>
+</html>
