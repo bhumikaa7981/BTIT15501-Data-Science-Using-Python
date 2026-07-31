@@ -353,6 +353,74 @@
     nav.links{display:none;}
     .program-body{grid-template-columns:1fr;}
   }
+  /* ---------- ANIMATED PROGRAM RUNNER ---------- */
+  .runner-group{display:flex; flex-direction:column; gap:28px; margin-bottom:10px;}
+  .runner{
+    background:var(--paper); border-radius:22px; border:1px solid var(--line); box-shadow:0 6px 20px rgba(20,30,25,.06);
+    overflow:hidden;
+  }
+  .runner-top{
+    display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap;
+    padding:16px 24px; background:linear-gradient(90deg, var(--bamboo-light), transparent); border-bottom:1px solid var(--line);
+  }
+  .runner-top .rt-left{display:flex; align-items:center; gap:12px; flex-wrap:wrap;}
+  .runner-top h4{font-size:16.5px;}
+  .runner-top .usecase{
+    font-size:12px; font-weight:700; background:#fff8ea; color:var(--sun-deep); border:1px solid #ffe0a0;
+    padding:4px 12px; border-radius:100px;
+  }
+  .run-btn{
+    display:flex; align-items:center; gap:7px; background:var(--bamboo); color:#fff; border:none; cursor:pointer;
+    font-family:var(--body); font-weight:700; font-size:13px; padding:9px 18px; border-radius:100px;
+    box-shadow:0 4px 12px rgba(31,157,109,.35); transition:transform .2s ease, background .2s ease;
+  }
+  .run-btn:hover{transform:translateY(-2px); background:var(--bamboo-dark);}
+  .run-btn.playing{background:var(--sun-deep);}
+  .run-btn .icon{font-size:12px;}
+
+  .runner-flow{padding:22px 24px 26px; display:flex; flex-direction:column; gap:20px;}
+
+  .flow-block{border-radius:16px; overflow:hidden; border:1px solid var(--line);}
+  .flow-label{
+    font-weight:700; font-size:11.5px; letter-spacing:1.5px; text-transform:uppercase; padding:9px 16px;
+    display:flex; align-items:center; gap:7px;
+  }
+  .flow-input .flow-label{background:#eef7f2; color:var(--bamboo-dark);}
+  .flow-code .flow-label{background:#1b1e24; color:#8fe3c0;}
+  .flow-output .flow-label{background:var(--bamboo-pale); color:var(--bamboo-dark);}
+
+  .flow-input .fname{margin-left:auto; font-family:var(--mono); font-size:11px; font-weight:600; color:var(--ink-soft); background:#fff; padding:2px 10px; border-radius:100px;}
+
+  .runner-code-body{background:#1b1e24; padding:16px 0;}
+  .cline{
+    display:flex; gap:14px; padding:5px 22px; font-family:var(--mono); font-size:13.6px; color:#dfe6e2;
+    border-left:3px solid transparent; transition:background .3s ease, border-color .3s ease; white-space:pre-wrap; line-height:1.7;
+  }
+  .cline .ln{color:#565f6e; width:18px; flex-shrink:0; text-align:right; user-select:none;}
+  .cline .txt{flex:1;}
+  .cline.active{background:rgba(31,157,109,.22); border-left-color:var(--sun);}
+  .cline.active .ln{color:var(--sun);}
+  .cline.done{opacity:.72;}
+  .cline .kw{color:#ffd479;} .cline .fn{color:#7fd9ff;} .cline .str{color:#a6f5d0;} .cline .cm{color:#7a8494;} .cline .num{color:#ffb3e6;}
+
+  .runner-output-body{background:var(--bamboo-pale); padding:14px 20px; min-height:52px; display:flex; flex-direction:column; gap:4px;}
+  .runner-output-body .placeholder{color:#8fa89b; font-size:13px; font-style:italic;}
+  .oline{
+    font-family:var(--mono); font-size:13.4px; color:var(--ink); opacity:0; transform:translateY(8px);
+    transition:opacity .4s ease, transform .4s ease; white-space:pre-wrap;
+  }
+  .oline.show{opacity:1; transform:translateY(0);}
+  .oline.tbl{width:100%; overflow-x:auto;}
+
+  .runner-why{
+    padding:14px 24px; background:#fff8ea; border-top:1px dashed #ffe0a0; font-size:14px; color:#7a5a12; display:flex; gap:9px;
+  }
+  .runner-why b{color:var(--sun-deep); flex-shrink:0;}
+
+  .progress-dots{display:flex; gap:5px; align-items:center;}
+  .progress-dots .d{width:7px; height:7px; border-radius:50%; background:#d8e6de; transition:background .25s ease, transform .25s ease;}
+  .progress-dots .d.on{background:var(--bamboo); transform:scale(1.3);}
+
 </style>
 </head>
 <body>
@@ -386,7 +454,7 @@
   <p class="sub">A messy sales sheet, a confused analyst (you), and eight superpowers that turn chaos into clean, trustworthy answers — explained like a story, not a manual.</p>
   <div class="hero-stats">
     <div class="stat-chip"><b>8</b><span>Core Functions</span></div>
-    <div class="stat-chip"><b>24+</b><span>Practice Programs</span></div>
+    <div class="stat-chip"><b>40</b><span>Practice Programs</span></div>
     <div class="stat-chip"><b>1</b><span>Runaway Sales Sheet</span></div>
   </div>
 </section>
@@ -595,64 +663,11 @@
 df.<span class="fn">info</span>()           df.<span class="fn">describe</span>()
 df.shape   df.columns   df.dtypes</pre>
     </div>
+    <div class="runner-group" id="runners-exploring"></div>
 
-    <!-- Program 1 -->
-    <div class="program reveal">
-      <div class="program-head"><h4>Program 1 — Previewing rows with head()</h4><span class="pill">1 / 3</span></div>
-      <div class="program-body">
-        <div class="code-side">
-          <div class="dots"><span></span><span></span><span></span></div>
-          <pre>df = pd.read_csv(<span class="str">"students.csv"</span>)
-<span class="fn">print</span>(df.head(3))  <span class="cm"># default is 5 rows</span></pre>
-        </div>
-        <div class="output-side">
-          <div class="lbl">▶ Output</div>
-          <div class="excel-wrap"><table class="excel">
-            <tr><th>roll</th><th>name</th><th>age</th><th>city</th></tr>
-            <tr><td>1</td><td>aaa</td><td>33</td><td>a</td></tr>
-            <tr><td>2</td><td>sss</td><td>44</td><td>s</td></tr>
-            <tr><td>3</td><td>ddd</td><td>22</td><td>d</td></tr>
-          </table></div>
-        </div>
-      </div>
-      <div class="why-strip"><b>Why:</b> <code>head(3)</code> previews just the first 3 rows out of however many exist — a lifesaver on files with 50,000 rows.</div>
-    </div>
 
-    <!-- Program 2 -->
-    <div class="program reveal">
-      <div class="program-head"><h4>Program 2 — Checking size &amp; column names</h4><span class="pill">2 / 3</span></div>
-      <div class="program-body">
-        <div class="code-side">
-          <div class="dots"><span></span><span></span><span></span></div>
-          <pre><span class="fn">print</span>(df.shape)
-<span class="fn">print</span>(df.columns.tolist())</pre>
-        </div>
-        <div class="output-side">
-          <div class="lbl">▶ Output</div>
-          <pre>(50, 4)
-['Name', 'Marks', 'Branch', 'City']</pre>
-        </div>
-      </div>
-      <div class="why-strip"><b>Why:</b> <code>shape</code> = (rows, columns) at a glance; <code>columns.tolist()</code> lists every column name — handy when a dataset has 40 columns and you can't remember one.</div>
-    </div>
-
-    <!-- Program 3 -->
-    <div class="program reveal">
-      <div class="program-head"><h4>Program 3 — The full health check: info() + describe()</h4><span class="pill">3 / 3</span></div>
-      <div class="program-body">
-        <div class="code-side">
-          <div class="dots"><span></span><span></span><span></span></div>
-          <pre><span class="fn">print</span>(df.info())
-<span class="fn">print</span>(df.describe())</pre>
-        </div>
-        <div class="output-side">
-          <div class="lbl">▶ Output</div>
-          <pre>column dtypes + non-null counts,
-then a mean/std/min/max table</pre>
-        </div>
-      </div>
-      <div class="why-strip"><b>Why:</b> <code>info()</code> flags missing data early; <code>describe()</code> gives instant statistics for every numeric column — no formulas needed.</div>
-    </div>
+    
+    
 
     <div class="trace reveal">
       <div class="trace-title">🔎 Reading real df.info() output, piece by piece</div>
@@ -770,56 +785,13 @@ memory usage: 200.0+ bytes</pre>
 pd.<span class="fn">read_excel</span>(<span class="str">"file.xlsx"</span>, sheet_name=<span class="str">"Sheet1"</span>)</pre>
     </div>
 
-    <div class="program reveal">
-      <div class="program-head"><h4>Program 1 — Reading a CSV file</h4><span class="pill">1 / 3</span></div>
-      <div class="program-body">
-        <div class="code-side">
-          <div class="dots"><span></span><span></span><span></span></div>
-          <pre>df = pd.read_csv(<span class="str">"students.csv"</span>)
-<span class="fn">print</span>(df.shape)</pre>
-        </div>
-        <div class="output-side"><div class="lbl">▶ Output</div><pre>(50, 4)</pre></div>
-      </div>
-      <div class="why-strip"><b>Why:</b> Checking <code>.shape</code> right after loading instantly confirms the file actually came in correctly.</div>
-    </div>
+    <div class="runner-group" id="runners-reading"></div>
 
-    <div class="program reveal">
-      <div class="program-head"><h4>Program 2 — Reading a specific Excel sheet</h4><span class="pill">2 / 3</span></div>
-      <div class="program-body">
-        <div class="code-side">
-          <div class="dots"><span></span><span></span><span></span></div>
-          <pre>df2 = pd.read_excel(
-    <span class="str">"marks.xlsx"</span>, sheet_name=<span class="str">"Sheet1"</span>
-)
-<span class="cm"># no sheet_name? defaults to Sheet1</span>
-<span class="fn">print</span>(df2.columns.tolist())</pre>
-        </div>
-        <div class="output-side"><div class="lbl">▶ Output</div><pre>['Name', 'Marks', 'Grade']</pre></div>
-      </div>
-      <div class="why-strip"><b>Why:</b> <code>sheet_name</code> picks exactly which sheet to load out of a multi-sheet workbook.</div>
-    </div>
 
-    <div class="program reveal">
-      <div class="program-head"><h4>Program 3 — Loading only the columns you need</h4><span class="pill">3 / 3</span></div>
-      <div class="program-body">
-        <div class="code-side">
-          <div class="dots"><span></span><span></span><span></span></div>
-          <pre>sales = pd.read_csv(
-    <span class="str">"sales.csv"</span>, usecols=[<span class="str">"Date"</span>,<span class="str">"Amount"</span>]
-)
-<span class="fn">print</span>(sales.head(2))</pre>
-        </div>
-        <div class="output-side">
-          <div class="lbl">▶ Output</div>
-          <div class="excel-wrap"><table class="excel">
-            <tr><th>Date</th><th>Amount</th></tr>
-            <tr><td>01-Jan</td><td>1200</td></tr>
-            <tr><td>02-Jan</td><td>950</td></tr>
-          </table></div>
-        </div>
-      </div>
-      <div class="why-strip"><b>Why:</b> <code>usecols</code> loads just the columns you actually need — much faster on huge files with 40+ columns.</div>
-    </div>
+
+    
+
+    
 
     <div class="trace reveal">
       <div class="trace-title">🔎 The "Where's my file?" trace — 3 ways to point to a CSV</div>
@@ -889,33 +861,11 @@ df = pd.read_csv(<span class="str">"student.csv"</span>)</pre></div>
 df.<span class="fn">to_excel</span>(<span class="str">"out.xlsx"</span>, sheet_name=<span class="str">"Report"</span>, index=<span class="kw">False</span>)</pre>
     </div>
 
-    <div class="program reveal">
-      <div class="program-head"><h4>Program 1 — Saving a cleaned CSV</h4><span class="pill">1 / 3</span></div>
-      <div class="program-body">
-        <div class="code-side">
-          <div class="dots"><span></span><span></span><span></span></div>
-          <pre>df.to_csv(<span class="str">"clean_students.csv"</span>, index=<span class="kw">False</span>)
-<span class="fn">print</span>(<span class="str">"Saved!"</span>)</pre>
-        </div>
-        <div class="output-side"><div class="lbl">▶ Output</div><pre>Saved!
-(file written to disk)</pre></div>
-      </div>
-      <div class="why-strip"><b>Why:</b> <code>index=False</code> keeps the output file clean — no stray, meaningless "0,1,2..." column tacked onto the front.</div>
-    </div>
+    <div class="runner-group" id="runners-saving"></div>
 
-    <div class="program reveal">
-      <div class="program-head"><h4>Program 2 — Exporting a filtered subset</h4><span class="pill">2 / 3</span></div>
-      <div class="program-body">
-        <div class="code-side">
-          <div class="dots"><span></span><span></span><span></span></div>
-          <pre>toppers = df[df[<span class="str">"Marks"</span>] > 85]
-toppers.to_csv(<span class="str">"toppers.csv"</span>, index=<span class="kw">False</span>)</pre>
-        </div>
-        <div class="output-side"><div class="lbl">▶ Output</div><pre>file "toppers.csv" created,
-containing only high scorers</pre></div>
-      </div>
-      <div class="why-strip"><b>Why:</b> You can export any filtered slice of your data, not just the whole table.</div>
-    </div>
+
+
+    
 
     <div class="trace reveal">
       <div class="trace-title">🔎 Trace — how "only toppers" gets saved</div>
@@ -961,20 +911,7 @@ containing only high scorers</pre></div>
       </div>
     </div>
 
-    <div class="program reveal">
-      <div class="program-head"><h4>Program 3 — Saving to Excel</h4><span class="pill">3 / 3</span></div>
-      <div class="program-body">
-        <div class="code-side">
-          <div class="dots"><span></span><span></span><span></span></div>
-          <pre>df.to_excel(
-    <span class="str">"report.xlsx"</span>, sheet_name=<span class="str">"FinalReport"</span>, index=<span class="kw">False</span>
-)
-<span class="fn">print</span>(<span class="str">"Excel ready"</span>)</pre>
-        </div>
-        <div class="output-side"><div class="lbl">▶ Output</div><pre>Excel ready</pre></div>
-      </div>
-      <div class="why-strip"><b>Why:</b> <code>to_excel()</code> needs the same <code>openpyxl</code> package installed as <code>read_excel()</code>.</div>
-    </div>
+    
 
     <div class="witty reveal">
       💾 <b>Witty takeaway:</b> Reading gets data in; saving gets your <i>work</i> back out. Always set <code>index=False</code> unless you specifically want that extra numbering column in the file.
@@ -1058,37 +995,13 @@ df.at[row_label, col_label]     df.iat[row_pos, col_pos]</pre>
       <div class="witty" style="margin-top:20px;">⚡ Same cell, same value — <code>loc</code> got there by reading names, <code>iloc</code> got there by counting. Big difference: with <code>loc</code>, a range like <code>"S1":"S2"</code> <b>includes</b> the last label; with <code>iloc</code>, <code>0:2</code> <b>excludes</b> position 2 — just like normal Python slicing.</div>
     </div>
 
-    <div class="program reveal">
-      <div class="program-head"><h4>Program 1 — Selecting by label with loc</h4><span class="pill">1 / 3</span></div>
-      <div class="program-body">
-        <div class="code-side"><div class="dots"><span></span><span></span><span></span></div>
-          <pre><span class="fn">print</span>(df.loc[2, <span class="str">"Name"</span>])</pre></div>
-        <div class="output-side"><div class="lbl">▶ Output</div><pre>'Zoya'</pre></div>
-      </div>
-      <div class="why-strip"><b>Why:</b> <code>loc[2, "Name"]</code> reads the row <i>labelled</i> 2, in the column <i>labelled</i> "Name".</div>
-    </div>
+    <div class="runner-group" id="runners-loc-iloc"></div>
 
-    <div class="program reveal">
-      <div class="program-head"><h4>Program 2 — Selecting by position with iloc</h4><span class="pill">2 / 3</span></div>
-      <div class="program-body">
-        <div class="code-side"><div class="dots"><span></span><span></span><span></span></div>
-          <pre><span class="fn">print</span>(df.iloc[0:3, 0:2])</pre></div>
-        <div class="output-side"><div class="lbl">▶ Output</div><pre>first 3 rows,
-first 2 columns</pre></div>
-      </div>
-      <div class="why-strip"><b>Why:</b> <code>iloc</code> uses pure position — exactly like Python list slicing, end excluded.</div>
-    </div>
 
-    <div class="program reveal">
-      <div class="program-head"><h4>Program 3 — Reading/updating one cell with at</h4><span class="pill">3 / 3</span></div>
-      <div class="program-body">
-        <div class="code-side"><div class="dots"><span></span><span></span><span></span></div>
-          <pre>df.at[1, <span class="str">"Marks"</span>] = 100
-<span class="fn">print</span>(df.at[1, <span class="str">"Marks"</span>])</pre></div>
-        <div class="output-side"><div class="lbl">▶ Output</div><pre>100</pre></div>
-      </div>
-      <div class="why-strip"><b>Why:</b> <code>at[]</code> (and its position-based twin <code>iat[]</code>) is the fastest way to read <i>or update</i> a single cell in a huge table.</div>
-    </div>
+
+    
+
+    
 
     <div class="witty reveal">
       🎯 <b>Witty takeaway:</b> Name in mind → <code>loc</code>. Number in mind → <code>iloc</code>. Just one cell, need for speed → <code>at</code>/<code>iat</code>.
@@ -1168,42 +1081,13 @@ df.isnull().<span class="fn">sum</span>()</pre>
       </div>
     </div>
 
-    <div class="program reveal">
-      <div class="program-head"><h4>Program 1 — Counting missing values per column</h4><span class="pill">1 / 3</span></div>
-      <div class="program-body">
-        <div class="code-side"><div class="dots"><span></span><span></span><span></span></div>
-          <pre><span class="fn">print</span>(df.isnull().sum())</pre></div>
-        <div class="output-side"><div class="lbl">▶ Output</div><pre>Name      0
-Marks     3
-Branch    1
-dtype: int64</pre></div>
-      </div>
-      <div class="why-strip"><b>Why:</b> Shows the missing-value count for every column at a single glance.</div>
-    </div>
+    <div class="runner-group" id="runners-detecting"></div>
 
-    <div class="program reveal">
-      <div class="program-head"><h4>Program 2 — Viewing only the problem rows</h4><span class="pill">2 / 3</span></div>
-      <div class="program-body">
-        <div class="code-side"><div class="dots"><span></span><span></span><span></span></div>
-          <pre><span class="fn">print</span>(df[df[<span class="str">"Marks"</span>].isnull()])</pre></div>
-        <div class="output-side"><div class="lbl">▶ Output</div><pre>only the rows where
-Marks is missing</pre></div>
-      </div>
-      <div class="why-strip"><b>Why:</b> Combining <code>isnull()</code> with filtering shows you the <i>exact</i> rows causing trouble — not just a count.</div>
-    </div>
 
-    <div class="program reveal">
-      <div class="program-head"><h4>Program 3 — Counting valid (non-missing) entries</h4><span class="pill">3 / 3</span></div>
-      <div class="program-body">
-        <div class="code-side"><div class="dots"><span></span><span></span><span></span></div>
-          <pre><span class="fn">print</span>(df.notnull().sum())</pre></div>
-        <div class="output-side"><div class="lbl">▶ Output</div><pre>Name      50
-Marks     47
-Branch    49
-dtype: int64</pre></div>
-      </div>
-      <div class="why-strip"><b>Why:</b> <code>notnull()</code> is the mirror image of <code>isnull()</code> — confirms exactly how many complete entries exist.</div>
-    </div>
+
+    
+
+    
 
     <div class="witty reveal">
       🔍 <b>Witty takeaway:</b> <code>isnull()</code> and <code>isna()</code> are identical twins — literally the same function under two names. Detect first, decide later (fill it, or drop it — next up!).
@@ -1280,49 +1164,13 @@ df.fillna(method=<span class="str">"ffill"</span>)</pre>
       </div>
     </div>
 
-    <div class="program reveal">
-      <div class="program-head"><h4>Program 1 — Filling with the column mean</h4><span class="pill">1 / 3</span></div>
-      <div class="program-body">
-        <div class="code-side"><div class="dots"><span></span><span></span><span></span></div>
-          <pre>df[<span class="str">"Marks"</span>] = df[<span class="str">"Marks"</span>].fillna(
-    df[<span class="str">"Marks"</span>].mean()
-)
-<span class="fn">print</span>(df[<span class="str">"Marks"</span>].isnull().sum())</pre></div>
-        <div class="output-side"><div class="lbl">▶ Output</div><pre>0</pre></div>
-      </div>
-      <div class="why-strip"><b>Why:</b> NaNs get replaced by the column average, so zero missing values remain afterward.</div>
-    </div>
+    <div class="runner-group" id="runners-filling"></div>
 
-    <div class="program reveal">
-      <div class="program-head"><h4>Program 2 — Filling text columns with a label</h4><span class="pill">2 / 3</span></div>
-      <div class="program-body">
-        <div class="code-side"><div class="dots"><span></span><span></span><span></span></div>
-          <pre>df[<span class="str">"Branch"</span>] = df[<span class="str">"Branch"</span>].fillna(<span class="str">"Unknown"</span>)
-<span class="fn">print</span>(df[<span class="str">"Branch"</span>].unique())</pre></div>
-        <div class="output-side"><div class="lbl">▶ Output</div><pre>array(['IT', 'CE', 'Unknown'], dtype=object)</pre></div>
-      </div>
-      <div class="why-strip"><b>Why:</b> Text columns usually get a placeholder label instead of a number — "Unknown" is honest about the gap.</div>
-    </div>
 
-    <div class="program reveal">
-      <div class="program-head"><h4>Program 3 — Forward-filling from the previous row</h4><span class="pill">3 / 3</span></div>
-      <div class="program-body">
-        <div class="code-side"><div class="dots"><span></span><span></span><span></span></div>
-          <pre>df_filled = df.fillna(method=<span class="str">"ffill"</span>)
-<span class="fn">print</span>(df_filled.head())</pre></div>
-        <div class="output-side">
-          <div class="lbl">▶ Output</div>
-          <div class="excel-wrap"><table class="excel">
-            <tr><th>Day</th><th>Temp (before)</th><th>Temp (ffill)</th></tr>
-            <tr><td>Mon</td><td>30</td><td>30</td></tr>
-            <tr><td>Tue</td><td class="hl-red">NaN</td><td class="hl-green">30</td></tr>
-            <tr><td>Wed</td><td class="hl-red">NaN</td><td class="hl-green">30</td></tr>
-            <tr><td>Thu</td><td>32</td><td>32</td></tr>
-          </table></div>
-        </div>
-      </div>
-      <div class="why-strip"><b>Why:</b> Forward-fill copies the last known value downward — ideal for time-series like a daily temperature or attendance log.</div>
-    </div>
+
+    
+
+    
 
     <div class="witty reveal">
       🩹 <b>Witty takeaway:</b> Number gap → usually mean. Text gap → a clear label like "Unknown". Data over time → forward-fill. Choose on purpose, never by accident.
@@ -1411,38 +1259,13 @@ df.dropna(subset=[<span class="str">"col"</span>])</pre>
       </div>
     </div>
 
-    <div class="program reveal">
-      <div class="program-head"><h4>Program 1 — Dropping all incomplete rows</h4><span class="pill">1 / 3</span></div>
-      <div class="program-body">
-        <div class="code-side"><div class="dots"><span></span><span></span><span></span></div>
-          <pre>df_clean = df.dropna()
-<span class="fn">print</span>(df_clean.shape)</pre></div>
-        <div class="output-side"><div class="lbl">▶ Output</div><pre>(46, 4)</pre></div>
-      </div>
-      <div class="why-strip"><b>Why:</b> Any row with even one missing value is removed — the row count naturally shrinks from 50 to 46.</div>
-    </div>
+    <div class="runner-group" id="runners-dropping"></div>
 
-    <div class="program reveal">
-      <div class="program-head"><h4>Program 2 — Dropping based on one column only</h4><span class="pill">2 / 3</span></div>
-      <div class="program-body">
-        <div class="code-side"><div class="dots"><span></span><span></span><span></span></div>
-          <pre>df_clean2 = df.dropna(subset=[<span class="str">"Marks"</span>])
-<span class="fn">print</span>(df_clean2.shape)</pre></div>
-        <div class="output-side"><div class="lbl">▶ Output</div><pre>(47, 4)</pre></div>
-      </div>
-      <div class="why-strip"><b>Why:</b> Only rows missing "Marks" specifically get dropped — gaps in other columns are ignored, so fewer rows are lost.</div>
-    </div>
 
-    <div class="program reveal">
-      <div class="program-head"><h4>Program 3 — Dropping incomplete columns</h4><span class="pill">3 / 3</span></div>
-      <div class="program-body">
-        <div class="code-side"><div class="dots"><span></span><span></span><span></span></div>
-          <pre>df_clean3 = df.dropna(axis=1)
-<span class="fn">print</span>(df_clean3.columns.tolist())</pre></div>
-        <div class="output-side"><div class="lbl">▶ Output</div><pre>['Name', 'Branch']</pre></div>
-      </div>
-      <div class="why-strip"><b>Why:</b> <code>axis=1</code> removes entire columns that contain even a single missing value — here, "Marks" and "City" got wiped, but "Name" and "Branch" happened to be complete.</div>
-    </div>
+
+    
+
+    
 
     <div class="witty reveal">
       🗑️ <b>Witty takeaway:</b> <code>dropna()</code> is the nuclear option — powerful, but it deletes data forever. Always check <code>.shape</code> before and after so you know exactly how much you just threw away.
@@ -1474,11 +1297,608 @@ df.dropna(subset=[<span class="str">"col"</span>])</pre>
 <footer>
   <span class="panda">🐼</span>
   <h3>You now speak (some) Pandas.</h3>
-  <p>8 core functions mastered · 24 practice programs · 1 sales sheet finally under control</p>
+  <p>8 core functions mastered · 40 practice programs · 1 sales sheet finally under control</p>
   <div class="credit">BTIT15501 · Data Science using Python · Prof. Bhumika — Foundations through Selecting &amp; Cleaning Data</div>
 </footer>
 
 <div id="toTop">↑</div>
+
+<script>
+// ======================= ANIMATED PROGRAM RUNNER ENGINE =======================
+const PROGRAMS = {
+
+"series-dataframe": [
+  {
+    title: "Program 1 — Creating a Series",
+    usecase: "🏪 Retail: track daily units sold per item",
+    input: { fname: "raw list: [45, 67, 89, 32]", headers: ["Units Sold (row order)"], rows: [["45"],["67"],["89"],["32"]] },
+    code: [
+      "import pandas as pd",
+      "",
+      "units = pd.Series([45, 67, 89, 32])",
+      "print(units)"
+    ],
+    out: { 3: ["0    45","1    67","2    89","3    32","dtype: int64"] },
+    why: "Pandas silently generates index labels 0,1,2,3 next to every value — you never asked for them, but you get them for free."
+  },
+  {
+    title: "Program 2 — Series with a custom index",
+    usecase: "🛒 Grocery store: stock count per fruit",
+    input: { fname: "stock sheet", headers: ["Fruit","Stock"], rows: [["Apple","120"],["Banana","90"],["Mango","75"]] },
+    code: [
+      "fruits = pd.Series(",
+      "    [120, 90, 75],",
+      '    index=["Apple", "Banana", "Mango"]',
+      ")",
+      'print(fruits["Banana"])'
+    ],
+    out: { 4: ["90"] },
+    why: 'A custom index lets you fetch a value by a meaningful name instead of remembering "it was the 2nd item".'
+  },
+  {
+    title: "Program 3 — Creating a DataFrame",
+    usecase: "🎓 School: building a class roster with marks",
+    input: { fname: "raw dict", headers: ["Name","Marks"], rows: [["Riya","88"],["Aman","72"],["Zoya","95"]] },
+    code: [
+      'data = {"Name": ["Riya","Aman","Zoya"],',
+      '        "Marks": [88, 72, 95]}',
+      "df = pd.DataFrame(data)",
+      "print(df)"
+    ],
+    out: { 3: ["   Name  Marks","0  Riya     88","1  Aman     72","2  Zoya     95"] },
+    why: "A dictionary of lists becomes a full table — each dictionary key becomes a column name, each list becomes that column's values."
+  },
+  {
+    title: "Program 4 — Series arithmetic on every value at once",
+    usecase: "🏷️ E-commerce: applying a 10% festive discount",
+    input: { fname: "price list", headers: ["Item","Price"], rows: [["Shirt","500"],["Jeans","700"],["Jacket","1200"]] },
+    code: [
+      'prices = pd.Series([500, 700, 1200],',
+      '    index=["Shirt","Jeans","Jacket"])',
+      "discounted = prices * 0.9",
+      "print(discounted)"
+    ],
+    out: { 3: ["Shirt      450.0","Jeans      630.0","Jacket    1080.0","dtype: float64"] },
+    why: "Series math applies to every value at once — no manual loop needed to discount all three prices."
+  },
+  {
+    title: "Program 5 — DataFrame from a list of dictionaries",
+    usecase: "🏥 Hospital: turning separate intake forms into one table",
+    input: { fname: "3 intake forms", headers: ["Patient","Age"], rows: [["Aman","34"],["Riya","28"],["John","45"]] },
+    code: [
+      'records = [{"Patient":"Aman","Age":34},',
+      '           {"Patient":"Riya","Age":28},',
+      '           {"Patient":"John","Age":45}]',
+      "df = pd.DataFrame(records)",
+      "print(df)"
+    ],
+    out: { 4: ["  Patient  Age","0    Aman   34","1    Riya   28","2    John   45"] },
+    why: "Each dictionary in the list becomes one row — ideal when data arrives form-by-form instead of column-by-column."
+  }
+],
+
+"exploring": [
+  {
+    title: "Program 1 — Previewing rows with head()",
+    usecase: "🎓 Teacher: quickly peek at a freshly loaded class list",
+    input: { fname: "students.csv", headers: ["roll","name","age","city"], rows: [["1","aaa","33","a"],["2","sss","44","s"],["3","ddd","22","d"],["4","fff","21","f"],["5","ggg","23","g"]] },
+    code: [
+      'df = pd.read_csv("students.csv")',
+      "print(df.head(3))  # default is 5 rows"
+    ],
+    out: { 1: ["   roll name  age city","0     1  aaa   33    a","1     2  sss   44    s","2     3  ddd   22    d"] },
+    why: "head(3) previews just the first 3 rows out of however many exist — a lifesaver on files with 50,000 rows."
+  },
+  {
+    title: "Program 2 — Peeking at the end with tail()",
+    usecase: "🛍️ Store manager: checking the last few sales before closing",
+    input: { fname: "sales_log.csv", headers: ["Time","Item","Amount"], rows: [["9:10","Pen","20"],["9:45","Bag","450"],["10:30","Book","120"],["11:05","Pen","20"],["11:40","Bottle","180"]] },
+    code: [
+      'sales = pd.read_csv("sales_log.csv")',
+      "print(sales.tail(2))"
+    ],
+    out: { 1: ["    Time    Item  Amount","3  11:05     Pen      20","4  11:40  Bottle     180"] },
+    why: "tail() mirrors head() but from the bottom — perfect for checking the most recent entries in a running log."
+  },
+  {
+    title: "Program 3 — Checking size & column names",
+    usecase: "📋 Analyst: sanity-checking a dataset before starting work",
+    input: { fname: "students.csv (50 rows)", headers: ["Name","Marks","Branch","City"], rows: [["…","…","…","…"]] },
+    code: [
+      "print(df.shape)",
+      "print(df.columns.tolist())"
+    ],
+    out: { 0: ["(50, 4)"], 1: ["['Name', 'Marks', 'Branch', 'City']"] },
+    why: "shape = (rows, columns) at a glance; columns.tolist() lists every column name — handy when a dataset has 40 columns and you can't remember one."
+  },
+  {
+    title: "Program 4 — Catching wrong data types with dtypes",
+    usecase: "💼 HR: catching salary stored as text before doing payroll math",
+    input: { fname: "employees.csv", headers: ["Name","Salary"], rows: [["Aman","45000"],["Riya","39000"],["John","'50000'"]] },
+    code: [
+      'emp = pd.read_csv("employees.csv")',
+      "print(emp.dtypes)"
+    ],
+    out: { 1: ["Name      object","Salary    object","dtype: object"] },
+    why: 'dtypes reveals Salary loaded as text (object), not a number — until fixed with astype(), "45000"+"39000" would glue into "4500039000" instead of adding.'
+  },
+  {
+    title: "Program 5 — The full health check: info() + describe()",
+    usecase: "🩺 New dataset, first 30 seconds of due-diligence",
+    input: { fname: "students.csv", headers: ["Name","Age","Marks"], rows: [["John","20","85"],["Alice","22","90"],["Bob","21","78"]] },
+    code: [
+      "print(df.info())",
+      "print(df.describe())"
+    ],
+    out: {
+      0: ["<class 'pandas.core.frame.DataFrame'>","RangeIndex: 3 entries, 0 to 2","Data columns (total 3 columns):"," #   Column  Non-Null Count  Dtype","---  ------  --------------  -----"," 0   Name    3 non-null      object"," 1   Age     3 non-null      int64"," 2   Marks   3 non-null      int64"],
+      1: ["        Age      Marks","count   3.0   3.000000","mean   21.0  84.333333","std     1.0   6.027714","min    20.0  78.000000","25%    20.5  81.500000","50%    21.0  85.000000","75%    21.5  87.500000","max    22.0  90.000000"]
+    },
+    why: "info() flags missing data early; describe() gives instant statistics for every numeric column — no formulas needed."
+  }
+],
+
+"reading": [
+  {
+    title: "Program 1 — Reading a CSV file",
+    usecase: "📥 Analyst: loading the raw dataset for the first time",
+    input: { fname: "students.csv (on disk)", headers: ["Name","Marks","Branch","City"], rows: [["…50 rows…","","",""]] },
+    code: [
+      'df = pd.read_csv("students.csv")',
+      "print(df.shape)"
+    ],
+    out: { 1: ["(50, 4)"] },
+    why: "Checking .shape right after loading instantly confirms the file actually came in correctly."
+  },
+  {
+    title: "Program 2 — Reading a specific Excel sheet",
+    usecase: "📥 Teacher: loading marks from a specific tab in a workbook",
+    input: { fname: "marks.xlsx → Sheet1", headers: ["Name","Marks","Grade"], rows: [["Riya","88","A"],["Aman","72","B"],["Zoya","95","A+"]] },
+    code: [
+      'df2 = pd.read_excel(',
+      '    "marks.xlsx", sheet_name="Sheet1"',
+      ")",
+      "print(df2.columns.tolist())"
+    ],
+    out: { 3: ["['Name', 'Marks', 'Grade']"] },
+    why: "sheet_name picks exactly which sheet to load out of a multi-sheet workbook."
+  },
+  {
+    title: "Program 3 — Loading only the columns you need",
+    usecase: "⚡ Speed: skipping 38 unneeded columns on a huge file",
+    input: { fname: "sales.csv (40 columns)", headers: ["Date","Amount","...(38 more)"], rows: [["01-Jan","1200","…"],["02-Jan","950","…"]] },
+    code: [
+      "sales = pd.read_csv(",
+      '    "sales.csv", usecols=["Date","Amount"]',
+      ")",
+      "print(sales.head(2))"
+    ],
+    out: { 3: ["     Date  Amount","0  01-Jan    1200","1  02-Jan     950"] },
+    why: "usecols loads just the columns you actually need — much faster on huge files with 40+ columns."
+  },
+  {
+    title: "Program 4 — Reading a semicolon-separated bank statement",
+    usecase: "🏦 Bank: reading a statement exported in European CSV format",
+    input: { fname: "bank_statement.csv (raw text)", headers: ["Date;Description;Amount"], rows: [["01-07-2026;Grocery;-1200"],["02-07-2026;Salary;45000"]] },
+    code: [
+      'bank = pd.read_csv(',
+      '    "bank_statement.csv", sep=";"',
+      ")",
+      "print(bank.head(2))"
+    ],
+    out: { 3: ["         Date Description  Amount","0  01-07-2026    Grocery   -1200","1  02-07-2026     Salary   45000"] },
+    why: 'European bank exports often use semicolons instead of commas — sep=";" tells Pandas exactly where one column ends and the next begins.'
+  },
+  {
+    title: "Program 5 — Loading every sheet from a workbook at once",
+    usecase: "🏫 School office: a workbook with one attendance sheet per month",
+    input: { fname: "attendance.xlsx (3 sheets)", headers: ["Sheet","Rows"], rows: [["Jan","30"],["Feb","28"],["Mar","31"]] },
+    code: [
+      "sheets = pd.read_excel(",
+      '    "attendance.xlsx", sheet_name=None',
+      ")",
+      "print(sheets.keys())",
+      'print(sheets["Feb"].shape)'
+    ],
+    out: { 3: ["dict_keys(['Jan', 'Feb', 'Mar'])"], 4: ["(28, 5)"] },
+    why: "sheet_name=None loads every sheet at once into a dictionary of DataFrames, keyed by sheet name — perfect for month-by-month workbooks."
+  }
+],
+
+"saving": [
+  {
+    title: "Program 1 — Saving a cleaned CSV",
+    usecase: "💾 Handing off cleaned data to a teammate",
+    input: { fname: "df (in memory)", headers: ["Name","Marks"], rows: [["Riya","88"],["Aman","72"]] },
+    code: [
+      'df.to_csv("clean_students.csv", index=False)',
+      'print("Saved!")'
+    ],
+    out: { 1: ["Saved!","(file written to disk)"] },
+    why: "index=False keeps the output file clean — no stray, meaningless \"0,1,2...\" column tacked onto the front."
+  },
+  {
+    title: "Program 2 — Exporting a filtered subset",
+    usecase: "🏅 Publishing just the topper list",
+    input: { fname: "df", headers: ["Name","Marks"], rows: [["John","90"],["Alice","75"],["Bob","88"],["David","60"]] },
+    code: [
+      'toppers = df[df["Marks"] > 85]',
+      'toppers.to_csv("toppers.csv", index=False)'
+    ],
+    out: { 1: ["file 'toppers.csv' created,","containing only John & Bob"] },
+    why: "You can export any filtered slice of your data, not just the whole table."
+  },
+  {
+    title: "Program 3 — Saving to Excel",
+    usecase: "📊 Delivering a polished .xlsx report",
+    input: { fname: "df", headers: ["Name","Marks"], rows: [["Riya","88"],["Aman","72"]] },
+    code: [
+      "df.to_excel(",
+      '    "report.xlsx", sheet_name="FinalReport", index=False',
+      ")",
+      'print("Excel ready")'
+    ],
+    out: { 3: ["Excel ready"] },
+    why: "to_excel() needs the same openpyxl package installed as read_excel()."
+  },
+  {
+    title: "Program 4 — Exporting only selected columns",
+    usecase: "📄 Registrar: printing report cards with just Name & Grade",
+    input: { fname: "df (full table)", headers: ["Name","Marks","Grade","City"], rows: [["Riya","88","A","Surat"],["Aman","72","B","Delhi"]] },
+    code: [
+      'df.to_csv("report_cards.csv",',
+      '    columns=["Name","Grade"], index=False)',
+      'print("Saved report cards")'
+    ],
+    out: { 2: ["Saved report cards","(file has only Name, Grade)"] },
+    why: "columns=[...] exports a narrow slice of a wide table without building a separate filtered DataFrame first."
+  },
+  {
+    title: "Program 5 — Saving two sheets in ONE workbook",
+    usecase: "🧾 HR: delivering the cleaned data + a summary together",
+    input: { fname: "cleaned + summary (in memory)", headers: ["DataFrame","Rows"], rows: [["cleaned","46"],["summary","3"]] },
+    code: [
+      'with pd.ExcelWriter("hr_report.xlsx") as writer:',
+      '    cleaned.to_excel(writer, sheet_name="Cleaned", index=False)',
+      '    summary.to_excel(writer, sheet_name="Summary", index=False)',
+      'print("hr_report.xlsx ready with 2 sheets")'
+    ],
+    out: { 3: ["hr_report.xlsx ready with 2 sheets"] },
+    why: "ExcelWriter lets multiple DataFrames land as separate tabs inside a single workbook — one file to email instead of two."
+  }
+],
+
+"loc-iloc": [
+  {
+    title: "Program 1 — Selecting by label with loc",
+    usecase: "🏷️ Fetching a value by its meaningful row label",
+    input: { fname: "df", headers: ["Index","Name","Marks"], rows: [["0","Riya","88"],["1","Aman","72"],["2","Zoya","95"]] },
+    code: [ 'print(df.loc[2, "Name"])' ],
+    out: { 0: ["'Zoya'"] },
+    why: 'loc[2, "Name"] reads the row labelled 2, in the column labelled "Name".'
+  },
+  {
+    title: "Program 2 — Selecting by position with iloc",
+    usecase: "🔢 Grabbing the first few rows/columns by pure position",
+    input: { fname: "df", headers: ["Name","Marks","City"], rows: [["Alice","85","Surat"],["Bob","90","Mumbai"],["Charlie","78","Delhi"]] },
+    code: [ "print(df.iloc[0:3, 0:2])" ],
+    out: { 0: ["first 3 rows,","first 2 columns"] },
+    why: "iloc uses pure position — exactly like Python list slicing, end excluded."
+  },
+  {
+    title: "Program 3 — Reading/updating one cell with at",
+    usecase: "✏️ Correcting one score after a re-check",
+    input: { fname: "df", headers: ["Index","Name","Marks"], rows: [["0","Alice","85"],["1","Bob","90"],["2","Charlie","78"]] },
+    code: [
+      'df.at[1, "Marks"] = 100',
+      'print(df.at[1, "Marks"])'
+    ],
+    out: { 1: ["100"] },
+    why: "at[] (and its position-based twin iat[]) is the fastest way to read or update a single cell in a huge table."
+  },
+  {
+    title: "Program 4 — Boolean loc: building an honor roll",
+    usecase: "🏅 Principal: pulling names of students scoring 80+",
+    input: { fname: "df", headers: ["Name","Marks"], rows: [["John","90"],["Alice","75"],["Bob","88"],["David","60"]] },
+    code: [
+      'honor_roll = df.loc[df["Marks"] >= 80, "Name"]',
+      "print(honor_roll)"
+    ],
+    out: { 1: ["0    John","2     Bob","Name: Name, dtype: object"] },
+    why: 'loc accepts a True/False condition as the row-selector — it\'s not just for named rows, it\'s for "which rows match this rule".'
+  },
+  {
+    title: "Program 5 — Fastest single-cell read with iat",
+    usecase: "🏥 Reception: instantly fetching the first patient in today's queue",
+    input: { fname: "df", headers: ["Token","Patient"], rows: [["1","Aman"],["2","Riya"],["3","John"]] },
+    code: [ "first_patient = df.iat[0, 1]", "print(first_patient)" ],
+    out: { 1: ["'Aman'"] },
+    why: "iat is the fastest possible way to grab a single cell by pure position — built for speed in tight loops or live dashboards."
+  }
+],
+
+"detecting": [
+  {
+    title: "Program 1 — Counting missing values per column",
+    usecase: "🔍 First scan of a freshly loaded dataset",
+    input: { fname: "df (50 rows)", headers: ["Name","Marks","Branch"], rows: [["…","…","…"]] },
+    code: [ "print(df.isnull().sum())" ],
+    out: { 0: ["Name      0","Marks     3","Branch    1","dtype: int64"] },
+    why: "Shows the missing-value count for every column at a single glance."
+  },
+  {
+    title: "Program 2 — Viewing only the problem rows",
+    usecase: "🎯 Zooming in on exactly which students lack marks",
+    input: { fname: "df", headers: ["Name","Marks"], rows: [["Alice","85"],["Bob","NaN"],["Charlie","78"]] },
+    code: [ 'print(df[df["Marks"].isnull()])' ],
+    out: { 0: ["only the rows where","Marks is missing (Bob)"] },
+    why: "Combining isnull() with filtering shows you the exact rows causing trouble — not just a count."
+  },
+  {
+    title: "Program 3 — Counting valid (non-missing) entries",
+    usecase: "✅ Confirming how much clean data you actually have",
+    input: { fname: "df (50 rows)", headers: ["Name","Marks","Branch"], rows: [["…","…","…"]] },
+    code: [ "print(df.notnull().sum())" ],
+    out: { 0: ["Name      50","Marks     47","Branch    49","dtype: int64"] },
+    why: "notnull() is the mirror image of isnull() — confirms exactly how many complete entries exist."
+  },
+  {
+    title: "Program 4 — Flagging any row with a gap anywhere",
+    usecase: "🏦 Loan officer: flagging incomplete applications before approval",
+    input: { fname: "loan_apps.csv", headers: ["Name","Income","ID_Proof"], rows: [["Aman","45000","Yes"],["Riya","NaN","Yes"],["John","38000","NaN"]] },
+    code: [
+      "incomplete = df[df.isnull().any(axis=1)]",
+      "print(incomplete)"
+    ],
+    out: { 1: ["   Name   Income ID_Proof","1  Riya      NaN      Yes","2  John  38000.0      NaN"] },
+    why: 'any(axis=1) checks each row sideways — "does THIS row have even one gap anywhere?" — exactly what a loan officer needs to flag.'
+  },
+  {
+    title: "Program 5 — Turning gaps into a % data-quality report",
+    usecase: "📊 Ranking which column is the biggest problem",
+    input: { fname: "customers.csv (100 rows)", headers: ["Column","Missing"], rows: [["Name","0"],["Email","5"],["Phone","12"]] },
+    code: [
+      "missing_pct = (df.isnull().sum() / len(df)) * 100",
+      "print(missing_pct.round(1))"
+    ],
+    out: { 1: ["Name      0.0","Email     5.0","Phone    12.0","dtype: float64"] },
+    why: "Turning raw counts into percentages instantly shows which column is the biggest problem — 12% missing phones is a real red flag."
+  }
+],
+
+"filling": [
+  {
+    title: "Program 1 — Filling with the column mean",
+    usecase: "🎓 Fair marks for students who missed the exam",
+    input: { fname: "df", headers: ["Name","Marks"], rows: [["Alice","85"],["Bob","NaN"],["Charlie","78"],["David","NaN"]] },
+    code: [
+      'df["Marks"] = df["Marks"].fillna(',
+      '    df["Marks"].mean()',
+      ")",
+      'print(df["Marks"].isnull().sum())'
+    ],
+    out: { 3: ["0"] },
+    why: "NaNs get replaced by the column average, so zero missing values remain afterward."
+  },
+  {
+    title: "Program 2 — Filling text columns with a label",
+    usecase: "🏷️ Marking unspecified branches honestly",
+    input: { fname: "df", headers: ["Name","Branch"], rows: [["Aman","IT"],["Riya","NaN"],["John","CE"]] },
+    code: [
+      'df["Branch"] = df["Branch"].fillna("Unknown")',
+      'print(df["Branch"].unique())'
+    ],
+    out: { 1: ["array(['IT', 'CE', 'Unknown'], dtype=object)"] },
+    why: 'Text columns usually get a placeholder label instead of a number — "Unknown" is honest about the gap.'
+  },
+  {
+    title: "Program 3 — Forward-filling from the previous row",
+    usecase: "🌡️ Filling gaps in a daily temperature log",
+    input: { fname: "weather.csv", headers: ["Day","Temp"], rows: [["Mon","30"],["Tue","NaN"],["Wed","NaN"],["Thu","32"]] },
+    code: [
+      'df_filled = df.fillna(method="ffill")',
+      "print(df_filled)"
+    ],
+    out: { 1: ["   Day  Temp","0  Mon  30.0","1  Tue  30.0","2  Wed  30.0","3  Thu  32.0"] },
+    why: "Forward-fill copies the last known value downward — ideal for time-series like a daily temperature or attendance log."
+  },
+  {
+    title: "Program 4 — Filling with the median (outlier-safe)",
+    usecase: "💰 Payroll: patching a missing salary without a CEO-sized outlier skewing it",
+    input: { fname: "payroll.csv", headers: ["Employee","Salary"], rows: [["Aman","45000"],["Riya","NaN"],["John","42000"],["CEO","500000"]] },
+    code: [
+      'df["Salary"] = df["Salary"].fillna(',
+      '    df["Salary"].median()',
+      ")",
+      'print(df["Salary"])'
+    ],
+    out: { 3: ["Aman     45000.0","Riya     45000.0","John     42000.0","CEO     500000.0"] },
+    why: "The mean here would have been pulled way up to ₹1,95,667 by the CEO's salary — median ignores outliers and gives a realistic fill value."
+  },
+  {
+    title: "Program 5 — Filling with a fixed business-rule value",
+    usecase: "📦 Inventory: a blank order really means zero, not 'unknown'",
+    input: { fname: "orders.csv", headers: ["Product","Qty_Ordered"], rows: [["Pen","50"],["Notebook","NaN"],["Eraser","30"],["Marker","NaN"]] },
+    code: [
+      'df["Qty_Ordered"] = df["Qty_Ordered"].fillna(0)',
+      'print(df["Qty_Ordered"])'
+    ],
+    out: { 1: ["Pen         50","Notebook     0","Eraser      30","Marker       0"] },
+    why: "Unlike marks or salary, a blank order quantity in this system specifically means \"nothing was ordered\" — filling with 0 is a business rule, not a guess."
+  }
+],
+
+"dropping": [
+  {
+    title: "Program 1 — Dropping all incomplete rows",
+    usecase: "🧹 Quick, strict cleanup before analysis",
+    input: { fname: "df (50 rows)", headers: ["Name","Marks","City"], rows: [["…","…","…"]] },
+    code: [ "df_clean = df.dropna()", "print(df_clean.shape)" ],
+    out: { 1: ["(46, 3)"] },
+    why: "Any row with even one missing value is removed — the row count naturally shrinks from 50 to 46."
+  },
+  {
+    title: "Program 2 — Dropping based on one column only",
+    usecase: "🎯 Only Marks really matters for this report",
+    input: { fname: "df (50 rows)", headers: ["Name","Marks","City"], rows: [["…","…","…"]] },
+    code: [ 'df_clean2 = df.dropna(subset=["Marks"])', "print(df_clean2.shape)" ],
+    out: { 1: ["(47, 3)"] },
+    why: "Only rows missing \"Marks\" specifically get dropped — gaps in other columns are ignored, so fewer rows are lost."
+  },
+  {
+    title: "Program 3 — Dropping incomplete columns",
+    usecase: "🗑️ Removing columns too broken to trust",
+    input: { fname: "df", headers: ["Name","Marks","City","Branch"], rows: [["…","…","…","…"]] },
+    code: [ "df_clean3 = df.dropna(axis=1)", "print(df_clean3.columns.tolist())" ],
+    out: { 1: ["['Name', 'Branch']"] },
+    why: "axis=1 removes entire columns that contain even a single missing value — here Marks and City got wiped."
+  },
+  {
+    title: "Program 4 — Keeping rows with 'enough' answers",
+    usecase: "📝 Survey: keep responses answering at least 3 of 4 questions",
+    input: { fname: "survey.csv", headers: ["Q1","Q2","Q3","Q4"], rows: [["Yes","No","Yes","Yes"],["Yes","No","Yes","NaN"],["Yes","NaN","NaN","No"],["NaN","NaN","NaN","NaN"]] },
+    code: [ "cleaned = df.dropna(thresh=3)", "print(cleaned.shape)" ],
+    out: { 1: ["(2, 4)"] },
+    why: "thresh=3 keeps a row only if it has at least 3 real answers — a fairer cutoff than demanding a perfectly complete response."
+  },
+  {
+    title: "Program 5 — Removing only fully-blank rows",
+    usecase: "🕸️ Web scraping: clearing blank separator rows from a scraped table",
+    input: { fname: "scraped.csv", headers: ["Name","Price","Stock"], rows: [["Pen","20","50"],["NaN","NaN","NaN"],["Bag","NaN","12"]] },
+    code: [ 'df_clean = df.dropna(how="all")', "print(df_clean.shape)" ],
+    out: { 1: ["(2, 3)"] },
+    why: 'how="all" only removes a row when EVERY column is empty — a partially filled row (like Bag) survives, unlike the default dropna().'
+  }
+]
+
+};
+
+function hlLine(line){
+  let s = line.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const tokens = [];
+  const enc = (i)=> (i+10).toString(36); // letters only (a,b,c...) so the digit-highlighter below can never touch a placeholder
+  s = s.replace(/(#[^\n]*)/, (m)=>{ tokens.push('<span class="cm">'+m+'</span>'); return '\u0000'+enc(tokens.length-1)+'\u0000'; });
+  s = s.replace(/("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')/g, (m)=>{ tokens.push('<span class="str">'+m+'</span>'); return '\u0000'+enc(tokens.length-1)+'\u0000'; });
+  s = s.replace(/\b(import|as|from|print|True|False|None|if|else|elif|for|in|def|return|with|lambda)\b/g, '<span class="kw">$1</span>');
+  s = s.replace(/\b([a-zA-Z_][a-zA-Z0-9_]*)(?=\()/g, '<span class="fn">$1</span>');
+  s = s.replace(/\b(\d+\.?\d*)\b/g, '<span class="num">$1</span>');
+  s = s.replace(/\u0000([a-z]+)\u0000/g, (_, code)=> tokens[parseInt(code,36)-10]);
+  return s;
+}
+
+function excelTableHTML(input){
+  if(!input) return '';
+  const thead = '<tr>' + input.headers.map(h=>`<th>${h}</th>`).join('') + '</tr>';
+  const rows = input.rows.map(r=>'<tr>' + r.map(c=>`<td>${c}</td>`).join('') + '</tr>').join('');
+  return `<table class="excel">${thead}${rows}</table>`;
+}
+
+function renderRunner(program, topicId, idx){
+  const codeLines = program.code.map((line,i)=>
+    `<div class="cline" data-i="${i}"><span class="ln">${i+1}</span><span class="txt">${hlLine(line)}</span></div>`
+  ).join('');
+  const dots = program.code.map(()=>`<span class="d"></span>`).join('');
+  const inputBlock = program.input ? `
+    <div class="flow-block flow-input">
+      <div class="flow-label">📄 Input Data <span class="fname">${program.input.fname||''}</span></div>
+      <div class="excel-wrap" style="margin:0; box-shadow:none; border-radius:0;">${excelTableHTML(program.input)}</div>
+    </div>` : '';
+
+  return `
+  <div class="runner reveal" data-topic="${topicId}" data-idx="${idx}">
+    <div class="runner-top">
+      <div class="rt-left">
+        <h4>${program.title}</h4>
+        <span class="usecase">${program.usecase}</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:14px;">
+        <div class="progress-dots">${dots}</div>
+        <button class="run-btn" type="button"><span class="icon">▶</span> Run</button>
+      </div>
+    </div>
+    <div class="runner-flow">
+      ${inputBlock}
+      <div class="flow-block flow-code">
+        <div class="flow-label">💻 Code</div>
+        <div class="runner-code-body">${codeLines}</div>
+      </div>
+      <div class="flow-block flow-output">
+        <div class="flow-label">▶ Output</div>
+        <div class="runner-output-body"><span class="placeholder">Scroll here (or press Run) to watch this execute line by line…</span></div>
+      </div>
+    </div>
+    <div class="runner-why"><b>Why:</b> ${program.why}</div>
+  </div>`;
+}
+
+function playRunner(container, program){
+  const gen = (container._gen = (container._gen||0) + 1);
+  const lines = container.querySelectorAll('.cline');
+  const outBody = container.querySelector('.runner-output-body');
+  const dots = container.querySelectorAll('.progress-dots .d');
+  const btn = container.querySelector('.run-btn');
+  const placeholder = outBody.querySelector('.placeholder');
+
+  lines.forEach(l=>l.classList.remove('active','done'));
+  outBody.querySelectorAll('.oline').forEach(o=>o.remove());
+  if(placeholder) placeholder.style.display = 'block';
+  dots.forEach(d=>d.classList.remove('on'));
+  if(btn) btn.classList.add('playing');
+
+  function step(i){
+    if(container._gen !== gen) return;
+    if(i > 0){ lines[i-1].classList.remove('active'); lines[i-1].classList.add('done'); }
+    if(i >= lines.length){
+      if(btn) btn.classList.remove('playing');
+      return;
+    }
+    lines[i].classList.add('active');
+    if(dots[i]) dots[i].classList.add('on');
+    try{ lines[i].scrollIntoView({block:'nearest', behavior:'smooth'}); }catch(e){}
+    const outs = program.out && program.out[i];
+    if(outs){
+      if(placeholder) placeholder.style.display = 'none';
+      outs.forEach((text, k)=>{
+        setTimeout(()=>{
+          if(container._gen !== gen) return;
+          const div = document.createElement('div');
+          div.className = 'oline';
+          div.textContent = text;
+          outBody.appendChild(div);
+          requestAnimationFrame(()=> div.classList.add('show'));
+        }, 200 + k*120);
+      });
+    }
+    setTimeout(()=> step(i+1), 820);
+  }
+  step(0);
+}
+
+// Render every runner-group from data
+document.querySelectorAll('.runner-group').forEach(group=>{
+  const tid = group.id.replace('runners-','');
+  const progs = PROGRAMS[tid] || [];
+  group.innerHTML = progs.map((p,i)=>renderRunner(p, tid, i)).join('');
+});
+
+// Wire up buttons + auto-play-on-scroll for every runner
+document.querySelectorAll('.runner').forEach(runnerEl=>{
+  const tid = runnerEl.dataset.topic;
+  const pidx = +runnerEl.dataset.idx;
+  const program = PROGRAMS[tid][pidx];
+  const btn = runnerEl.querySelector('.run-btn');
+  if(btn){ btn.addEventListener('click', ()=> playRunner(runnerEl, program)); }
+  const runObs = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        playRunner(runnerEl, program);
+        runObs.unobserve(runnerEl);
+      }
+    });
+  }, { threshold: 0.4 });
+  runObs.observe(runnerEl);
+});
+</script>
 
 <script>
   // progress bar
