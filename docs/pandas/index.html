@@ -203,6 +203,9 @@
   .chapter1 .chapter-banner{background:linear-gradient(120deg, var(--bamboo) 0%, var(--bamboo-dark) 100%);}
   .chapter2 .chapter-banner{background:linear-gradient(120deg, var(--sky) 0%, var(--sky-deep) 100%);}
   .chapter3 .chapter-banner{background:linear-gradient(120deg, var(--coral) 0%, #c23f6d 100%);}
+  .chapter4 .chapter-banner{background:linear-gradient(120deg, var(--lavender) 0%, #6f4bb5 100%);}
+  .chapter5 .chapter-banner{background:linear-gradient(120deg, #2b8fc2 0%, #1f5a80 100%);}
+  .chapter6 .chapter-banner{background:linear-gradient(120deg, #f5a623 0%, #c9760a 100%);}
 
   /* ---------- topic block ---------- */
   .topic{padding:70px 0; border-bottom:1px solid var(--line);}
@@ -421,6 +424,47 @@
   .progress-dots .d{width:7px; height:7px; border-radius:50%; background:#d8e6de; transition:background .25s ease, transform .25s ease;}
   .progress-dots .d.on{background:var(--bamboo); transform:scale(1.3);}
 
+  /* ---------- setup / imports banner ---------- */
+  .setup-banner{
+    max-width:980px; margin:0 auto 34px; background:#1b1e24; border-radius:18px; padding:20px 26px;
+    box-shadow:var(--shadow); display:flex; align-items:center; gap:20px; flex-wrap:wrap;
+  }
+  .setup-banner pre{font-family:var(--mono); color:#eafff5; font-size:14.5px; line-height:1.7;}
+  .setup-banner pre .kw{color:#ffd479;} .setup-banner pre .fn{color:#7fd9ff;}
+  .setup-banner .note{color:#a6f5d0; font-size:12.5px; font-weight:600; max-width:320px;}
+
+  /* ---------- real-world pipeline card ---------- */
+  .pipeline{
+    background:var(--paper); border-radius:26px; box-shadow:var(--shadow); border:1px solid var(--line);
+    padding:0; overflow:hidden; margin-bottom:40px;
+  }
+  .pipeline-top{
+    padding:30px 34px; background:linear-gradient(120deg, var(--sun) 0%, var(--sun-deep) 100%); color:#3a2a04;
+  }
+  .pipeline-top .ptag{font-family:var(--display); font-weight:700; font-size:13px; letter-spacing:1.5px; background:rgba(255,255,255,.35); display:inline-block; padding:5px 14px; border-radius:100px; margin-bottom:12px;}
+  .pipeline-top h3{font-size:26px; margin-bottom:8px; color:#2c2004;}
+  .pipeline-top p{color:#4a3a10; font-size:15px; max-width:760px;}
+  .pipeline-body{padding:30px 34px;}
+  .pipeline-steps{list-style:none; counter-reset:pstep; margin:0 0 26px; display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:12px;}
+  .pipeline-steps li{
+    counter-increment:pstep; background:var(--bamboo-pale); border:1px solid var(--bamboo-light); border-radius:14px;
+    padding:14px 16px 14px 46px; position:relative; font-size:14px; color:var(--ink-soft); font-weight:500;
+  }
+  .pipeline-steps li::before{
+    content:counter(pstep); position:absolute; left:12px; top:12px; width:24px; height:24px; border-radius:50%;
+    background:var(--bamboo); color:#fff; font-family:var(--display); font-weight:700; font-size:12.5px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .pipeline-code{background:#1b1e24; border-radius:16px; padding:22px 24px; margin-bottom:20px;}
+  .pipeline-code pre{font-family:var(--mono); color:#eafff5; font-size:13.8px; white-space:pre-wrap; line-height:1.75;}
+  .pipeline-code pre .kw{color:#ffd479;} .pipeline-code pre .fn{color:#7fd9ff;} .pipeline-code pre .str{color:#a6f5d0;} .pipeline-code pre .cm{color:#7a8494;} .pipeline-code pre .num{color:#ffb3e6;}
+  .pipeline-output{background:var(--bamboo-pale); border-radius:16px; padding:20px 24px; margin-bottom:20px;}
+  .pipeline-output .lbl{font-weight:700; font-size:12px; letter-spacing:1.5px; text-transform:uppercase; color:var(--bamboo-dark); margin-bottom:10px;}
+  .pipeline-output pre{font-family:var(--mono); color:var(--ink); font-size:13.4px; white-space:pre-wrap; line-height:1.7;}
+  .pipeline-walk{display:flex; flex-direction:column; gap:8px;}
+  .pipeline-walk .wline{font-size:14px; color:var(--ink-soft); padding-left:18px; position:relative;}
+  .pipeline-walk .wline::before{content:'→'; position:absolute; left:0; color:var(--sun-deep); font-weight:700;}
+
 </style>
 </head>
 <body>
@@ -435,6 +479,9 @@
       <a href="#foundations">Foundations</a>
       <a href="#io">Data In/Out</a>
       <a href="#cleaning">Select & Clean</a>
+      <a href="#transform">Transform</a>
+      <a href="#combine">Combine & Summarize</a>
+      <a href="#realworld">Real-World</a>
       <a href="#cheatsheet">Cheat Sheet</a>
     </nav>
   </div>
@@ -451,13 +498,24 @@
   <div class="hero-panda">🐼</div>
   <div class="eyebrow">✨ Unit 2 · Data Science using Python</div>
   <h1>Meet Pandas — <span class="hl">unbearably</span> good at spreadsheets.</h1>
-  <p class="sub">A messy sales sheet, a confused analyst (you), and eight superpowers that turn chaos into clean, trustworthy answers — explained like a story, not a manual.</p>
+  <p class="sub">A messy sales sheet, a confused analyst (you), and sixteen superpowers that turn chaos into clean, trustworthy answers — explained like a story, not a manual.</p>
   <div class="hero-stats">
-    <div class="stat-chip"><b>8</b><span>Core Functions</span></div>
-    <div class="stat-chip"><b>40</b><span>Practice Programs</span></div>
-    <div class="stat-chip"><b>1</b><span>Runaway Sales Sheet</span></div>
+    <div class="stat-chip"><b>16</b><span>Core Functions</span></div>
+    <div class="stat-chip"><b>80+</b><span>Practice Programs</span></div>
+    <div class="stat-chip"><b>3</b><span>Real-World Projects</span></div>
   </div>
 </section>
+
+<!-- ======================= SETUP / IMPORTS ======================= -->
+<div class="container">
+  <div class="setup-banner reveal">
+    <div style="flex:1; min-width:220px;">
+      <pre><span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">import</span> numpy <span class="kw">as</span> np</pre>
+    </div>
+    <div class="note">🧪 Run this ONCE at the top of your script / notebook. Every program on this page — from Series &amp; DataFrame all the way to the Real-World pipelines — assumes both lines already ran. <code style="background:rgba(255,255,255,.08); padding:2px 6px; border-radius:6px;">numpy</code> shows up the moment you need <code style="background:rgba(255,255,255,.08); padding:2px 6px; border-radius:6px;">np.nan</code>, numeric arrays, or any math Pandas itself borrows from it.</div>
+  </div>
+</div>
 
 <!-- ======================= THE STORY / CASE FILE ======================= -->
 <section id="story">
@@ -508,7 +566,7 @@
     <div class="section-head reveal">
       <span class="kicker">Why Bother Learning This?</span>
       <h2>Pandas isn't a classroom toy. It runs the world.</h2>
-      <p>Same eight functions you're about to meet — reused everywhere, on every kind of data, by every kind of company.</p>
+      <p>Same functions you're about to meet — reused everywhere, on every kind of data, by every kind of company.</p>
     </div>
 
     <div class="industry-scroll reveal">
@@ -554,7 +612,7 @@
 <div class="chapter chapter1 reveal" id="foundations">
   <div class="chapter-banner">
     <span class="deco">🐼</span>
-    <span class="num">SECTION 1 OF 3</span>
+    <span class="num">SECTION 1 OF 6</span>
     <h2>Foundations of Pandas</h2>
     <p>The two building blocks every Pandas program starts with — and the six commands that let you "meet" any new dataset in under a minute.</p>
   </div>
@@ -666,7 +724,7 @@ df.shape   df.columns   df.dtypes</pre>
     <div class="runner-group" id="runners-exploring"></div>
 
 
-    
+
     
 
     <div class="trace reveal">
@@ -751,7 +809,7 @@ memory usage: 200.0+ bytes</pre>
 <div class="chapter chapter2 reveal" id="io">
   <div class="chapter-banner">
     <span class="deco">📂</span>
-    <span class="num">SECTION 2 OF 3</span>
+    <span class="num">SECTION 2 OF 6</span>
     <h2>Getting Data In &amp; Out</h2>
     <p>Loading real files into Python, and saving your cleaned results back out — the very first and very last line of almost every Pandas program.</p>
   </div>
@@ -923,7 +981,7 @@ df.<span class="fn">to_excel</span>(<span class="str">"out.xlsx"</span>, sheet_n
 <div class="chapter chapter3 reveal" id="cleaning">
   <div class="chapter-banner">
     <span class="deco">🧹</span>
-    <span class="num">SECTION 3 OF 3</span>
+    <span class="num">SECTION 3 OF 6</span>
     <h2>Selecting &amp; Cleaning Data</h2>
     <p>Picking exact cells like a surgeon, then handling the gaps that real-world data always, always has.</p>
   </div>
@@ -1131,7 +1189,7 @@ df.fillna(method=<span class="str">"ffill"</span>)</pre>
           <div class="step-num">1</div>
           <div class="step-content">
             <div class="step-label">Start: Marks column has gaps</div>
-            <div class="excel-wrap" style="max-width:260px;"><table class="excel">
+            <div class="excel-wrap" style="max-width:100%;"><table class="excel" style="min-width:0; width:auto;">
               <tr><th>Name</th><th>Marks</th></tr>
               <tr><td>Alice</td><td>85</td></tr>
               <tr><td>Bob</td><td class="hl-red">NaN</td></tr>
@@ -1151,7 +1209,7 @@ df.fillna(method=<span class="str">"ffill"</span>)</pre>
           <div class="step-num">3</div>
           <div class="step-content">
             <div class="step-label">Outer call: every NaN becomes 81.5</div>
-            <div class="excel-wrap" style="max-width:260px;"><table class="excel">
+            <div class="excel-wrap" style="max-width:100%;"><table class="excel" style="min-width:0; width:auto;">
               <tr><th>Name</th><th>Marks</th></tr>
               <tr><td>Alice</td><td>85</td></tr>
               <tr><td>Bob</td><td class="hl-green">81.5</td></tr>
@@ -1269,6 +1327,503 @@ df.dropna(subset=[<span class="str">"col"</span>])</pre>
 
     <div class="witty reveal">
       🗑️ <b>Witty takeaway:</b> <code>dropna()</code> is the nuclear option — powerful, but it deletes data forever. Always check <code>.shape</code> before and after so you know exactly how much you just threw away.
+    </div>
+  </div>
+</section>
+
+<!-- ======================= CHAPTER 4 BANNER ======================= -->
+<div class="chapter chapter4 reveal" id="transform">
+  <div class="chapter-banner">
+    <span class="deco">🧪</span>
+    <span class="num">SECTION 4 OF 6</span>
+    <h2>Transforming &amp; Analyzing Data</h2>
+    <p>Filtering, sorting, reshaping and cleaning columns — the toolkit you reach for once your data is already loaded and gap-free.</p>
+  </div>
+</div>
+
+<!-- ======================= TOPIC: FILTERING ROWS ======================= -->
+<section class="topic" id="filtering">
+  <div class="container">
+    <div class="topic-head reveal">
+      <div class="topic-badge">🔎</div>
+      <div class="topic-title">
+        <h3>Filtering Rows</h3>
+        <p>Asking questions of your table: "show me only…"</p>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="panel why reveal-left">
+        <div class="tag">💡 Why this exists</div>
+        <p>Input: a boolean condition → Output: only the rows where that condition is True. Combine multiple conditions with <code>&amp;</code> (and) or <code>|</code> (or) — wrap each condition in its own <code>( )</code>. <code>isin()</code> checks membership in a list, replacing a long chain of OR conditions.</p>
+      </div>
+      <div class="panel real reveal-right">
+        <div class="tag">🌍 Real-world picture</div>
+        <p>"Show me only students from the IT branch scoring above 80" — exactly how a teacher would shortlist a topper list by hand, just automated.</p>
+      </div>
+    </div>
+
+    <div class="syntax-block reveal">
+      <div class="tag">🧠 Syntax Pattern</div>
+      <pre>df[df[<span class="str">"col"</span>] &gt; value]
+df[(cond1) &amp; (cond2)]
+df[df[<span class="str">"col"</span>].isin([...])]</pre>
+    </div>
+
+    <div class="runner-group" id="runners-filtering"></div>
+
+    <div class="witty reveal">
+      🔎 <b>Witty takeaway:</b> Everything inside <code>df[...]</code> boils down to one question per row: True or False? Keep chaining conditions with <code>&amp;</code>/<code>|</code>, just never forget the parentheses.
+    </div>
+  </div>
+</section>
+
+<!-- ======================= TOPIC: SORTING DATA ======================= -->
+<section class="topic" style="background:var(--bamboo-pale);" id="sorting">
+  <div class="container">
+    <div class="topic-head reveal">
+      <div class="topic-badge">↕️</div>
+      <div class="topic-title">
+        <h3>Sorting Data</h3>
+        <p>Asking: "in what order should I look at this?"</p>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="panel why reveal-left">
+        <div class="tag">💡 Why this exists</div>
+        <p>Input: column name(s) to sort by → Output: a reordered DataFrame (the original stays unchanged). <code>ascending=False</code> gives highest-first ordering. Sorting by multiple columns uses the second column to break ties in the first.</p>
+      </div>
+      <div class="panel real reveal-right">
+        <div class="tag">🌍 Real-world picture</div>
+        <p>Ranking students by marks to declare a merit list — highest score placed first, exactly like a leaderboard.</p>
+      </div>
+    </div>
+
+    <div class="syntax-block reveal">
+      <div class="tag">🧠 Syntax Pattern</div>
+      <pre>df.<span class="fn">sort_values</span>(<span class="str">"col"</span>, ascending=<span class="kw">False</span>)
+df.sort_values([<span class="str">"col1"</span>,<span class="str">"col2"</span>])
+df.<span class="fn">sort_index</span>()</pre>
+    </div>
+
+    <div class="runner-group" id="runners-sorting"></div>
+
+    <div class="witty reveal">
+      ↕️ <b>Witty takeaway:</b> <code>sort_values()</code> never edits your original table — it hands back a brand-new, reordered one. Forgot the order you started with? <code>sort_index()</code> is your undo button.
+    </div>
+  </div>
+</section>
+
+<!-- ======================= TOPIC: APPLY() AND MAP() ======================= -->
+<section class="topic" id="apply-map">
+  <div class="container">
+    <div class="topic-head reveal">
+      <div class="topic-badge">⚙️</div>
+      <div class="topic-title">
+        <h3>apply() and map()</h3>
+        <p>Running your own custom logic on every value or every row</p>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="panel why reveal-left">
+        <div class="tag">💡 Why this exists</div>
+        <p><code>apply()</code> runs a custom function on every value (or every row, when <code>axis=1</code> is used). Input: a function, often a lambda → Output: a new, transformed Series or DataFrame. <code>map()</code> is a lighter tool — ideal for simple value substitution or a dictionary lookup.</p>
+      </div>
+      <div class="panel real reveal-right">
+        <div class="tag">🌍 Real-world picture</div>
+        <p>Converting numeric marks into letter grades (A/B/C) is a rule applied identically to every single student in the table.</p>
+      </div>
+    </div>
+
+    <div class="syntax-block reveal">
+      <div class="tag">🧠 Syntax Pattern</div>
+      <pre>df[<span class="str">"col"</span>].<span class="fn">apply</span>(function)
+df[<span class="str">"col"</span>].<span class="fn">map</span>({...})
+df.apply(function, axis=1)</pre>
+    </div>
+
+    <div class="runner-group" id="runners-apply-map"></div>
+
+    <div class="witty reveal">
+      ⚙️ <b>Witty takeaway:</b> Simple lookup or swap → <code>map()</code>. Custom logic, math, or multi-column rules → <code>apply()</code>. Need every row instead of every column? Add <code>axis=1</code>.
+    </div>
+  </div>
+</section>
+
+<!-- ======================= TOPIC: MODIFYING COLUMNS ======================= -->
+<section class="topic" style="background:var(--bamboo-pale);" id="modifying">
+  <div class="container">
+    <div class="topic-head reveal">
+      <div class="topic-badge">✂️</div>
+      <div class="topic-title">
+        <h3>Modifying Columns</h3>
+        <p>drop(), rename(), and creating brand-new columns</p>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="panel why reveal-left">
+        <div class="tag">💡 Why this exists</div>
+        <p><code>drop()</code> removes rows/columns; <code>axis=1</code> for columns, <code>axis=0</code> for rows — Output: a smaller DataFrame. <code>rename()</code> relabels columns or rows without ever changing the underlying data values. Assigning to a brand-new column name creates it directly from a calculation.</p>
+      </div>
+      <div class="panel real reveal-right">
+        <div class="tag">🌍 Real-world picture</div>
+        <p>Cleaning up a messy spreadsheet — dropping an unused "Remarks" column, renaming "Stu_Name" to "Name", and adding a computed "Percentage" column.</p>
+      </div>
+    </div>
+
+    <div class="syntax-block reveal">
+      <div class="tag">🧠 Syntax Pattern</div>
+      <pre>df.<span class="fn">drop</span>(<span class="str">"col"</span>, axis=1)
+df.<span class="fn">rename</span>(columns={<span class="str">"old"</span>:<span class="str">"new"</span>})
+df[<span class="str">"new_col"</span>] = expression</pre>
+    </div>
+
+    <div class="runner-group" id="runners-modifying"></div>
+
+    <div class="witty reveal">
+      ✂️ <b>Witty takeaway:</b> Removing? <code>drop()</code>. Relabelling? <code>rename()</code>. Inventing something new from what's already there? Just assign to a fresh column name — Pandas creates it on the spot.
+    </div>
+  </div>
+</section>
+
+<!-- ======================= TOPIC: UNIQUE VALUES & COUNTS ======================= -->
+<section class="topic" id="unique-counts">
+  <div class="container">
+    <div class="topic-head reveal">
+      <div class="topic-badge">🔢</div>
+      <div class="topic-title">
+        <h3>Unique Values &amp; Counts</h3>
+        <p>unique(), nunique(), and value_counts()</p>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="panel why reveal-left">
+        <div class="tag">💡 Why this exists</div>
+        <p><code>unique()</code> returns the list of distinct values in a column; <code>nunique()</code> returns their count. <code>value_counts()</code> shows the frequency of each distinct value, sorted highest-first by default.</p>
+      </div>
+      <div class="panel real reveal-right">
+        <div class="tag">🌍 Real-world picture</div>
+        <p>"How many different branches do we have, and how many students belong to each?" — answered instantly with these three tools.</p>
+      </div>
+    </div>
+
+    <div class="syntax-block reveal">
+      <div class="tag">🧠 Syntax Pattern</div>
+      <pre>df[<span class="str">"col"</span>].<span class="fn">unique</span>()
+df[<span class="str">"col"</span>].<span class="fn">nunique</span>()
+df[<span class="str">"col"</span>].<span class="fn">value_counts</span>()</pre>
+    </div>
+
+    <div class="runner-group" id="runners-unique-counts"></div>
+
+    <div class="witty reveal">
+      🔢 <b>Witty takeaway:</b> <code>unique()</code> shows WHAT the categories are, <code>nunique()</code> shows HOW MANY there are, <code>value_counts()</code> shows how POPULAR each one is. Three angles on the same question.
+    </div>
+  </div>
+</section>
+
+<!-- ======================= TOPIC: DUPLICATES ======================= -->
+<section class="topic" style="background:var(--bamboo-pale);" id="duplicates">
+  <div class="container">
+    <div class="topic-head reveal">
+      <div class="topic-badge">👯</div>
+      <div class="topic-title">
+        <h3>Duplicates</h3>
+        <p>duplicated() and drop_duplicates()</p>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="panel why reveal-left">
+        <div class="tag">💡 Why this exists</div>
+        <p><code>duplicated()</code> flags each row True if it exactly repeats an earlier row. <code>drop_duplicates()</code> removes those repeated rows, always keeping the first occurrence by default. <code>subset=[...]</code> checks duplicates using only specific columns.</p>
+      </div>
+      <div class="panel real reveal-right">
+        <div class="tag">🌍 Real-world picture</div>
+        <p>A student accidentally submits the same registration form twice — <code>duplicated()</code> catches it, <code>drop_duplicates()</code> cleans it up.</p>
+      </div>
+    </div>
+
+    <div class="syntax-block reveal">
+      <div class="tag">🧠 Syntax Pattern</div>
+      <pre>df.<span class="fn">duplicated</span>()
+df.<span class="fn">drop_duplicates</span>()
+df.drop_duplicates(subset=[<span class="str">"col"</span>])</pre>
+    </div>
+
+    <div class="runner-group" id="runners-duplicates"></div>
+
+    <div class="witty reveal">
+      👯 <b>Witty takeaway:</b> Detect with <code>duplicated()</code> before you destroy anything — then decide with <code>keep="first"</code>, <code>"last"</code>, or <code>False</code> exactly which copies survive.
+    </div>
+  </div>
+</section>
+
+<!-- ======================= CHAPTER 5 BANNER ======================= -->
+<div class="chapter chapter5 reveal" id="combine">
+  <div class="chapter-banner">
+    <span class="deco">🔗</span>
+    <span class="num">SECTION 5 OF 6</span>
+    <h2>Combining &amp; Summarizing Data</h2>
+    <p>Joining tables together and building group-wise reports — the pattern behind almost every real dashboard.</p>
+  </div>
+</div>
+
+<!-- ======================= TOPIC: COMBINING DATA ======================= -->
+<section class="topic" id="combining">
+  <div class="container">
+    <div class="topic-head reveal">
+      <div class="topic-badge">🔗</div>
+      <div class="topic-title">
+        <h3>Combining Data — concat, merge, join</h3>
+        <p>Bringing two or more DataFrames together into one</p>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="panel why reveal-left">
+        <div class="tag">💡 Why this exists</div>
+        <p><code>concat()</code> stacks DataFrames on top of each other (or side by side) — best for same-structure batches. <code>merge()</code> joins two DataFrames on a shared key column, exactly like a SQL JOIN. <code>join()</code> merges two DataFrames using their index instead of a named key column.</p>
+      </div>
+      <div class="panel real reveal-right">
+        <div class="tag">🌍 Real-world picture</div>
+        <p>Combining January and February attendance sheets (concat), then joining that with a student-details table (merge) to add branch and city for every student.</p>
+      </div>
+    </div>
+
+    <div class="syntax-block reveal">
+      <div class="tag">🧠 Syntax Pattern</div>
+      <pre>pd.<span class="fn">concat</span>([df1, df2])
+pd.<span class="fn">merge</span>(df1, df2, on=<span class="str">"id"</span>)
+df1.<span class="fn">join</span>(df2)</pre>
+    </div>
+
+    <div class="runner-group" id="runners-combining"></div>
+
+    <div class="witty reveal">
+      🔗 <b>Witty takeaway:</b> Same columns, more rows → <code>concat()</code>. Different tables, shared key column → <code>merge()</code>. Different tables, shared index → <code>join()</code>. Pick based on what actually links them.
+    </div>
+  </div>
+</section>
+
+<!-- ======================= TOPIC: GROUPING & PIVOTING ======================= -->
+<section class="topic" style="background:var(--bamboo-pale);" id="grouping">
+  <div class="container">
+    <div class="topic-head reveal">
+      <div class="topic-badge">📊</div>
+      <div class="topic-title">
+        <h3>Grouping &amp; Pivoting</h3>
+        <p>The single pattern that answers 90% of "summarise my data" questions</p>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="panel why reveal-left">
+        <div class="tag">💡 Why this exists</div>
+        <p><code>groupby()</code> splits rows into groups by a column, ready for a per-group summary calculation. Chain an aggregate — <code>.mean()</code>, <code>.sum()</code>, <code>.count()</code> — right after <code>groupby()</code>. <code>agg()</code> runs several aggregations at once; <code>pivot_table()</code> reshapes data into a summary grid, like an Excel Pivot Table.</p>
+      </div>
+      <div class="panel real reveal-right">
+        <div class="tag">🌍 Real-world picture</div>
+        <p>"Average marks per branch" is a groupby; "average marks per branch, split by gender" is a pivot table.</p>
+      </div>
+    </div>
+
+    <div class="syntax-block reveal">
+      <div class="tag">🧠 Syntax Pattern</div>
+      <pre>df.<span class="fn">groupby</span>(<span class="str">"col"</span>)[<span class="str">"target"</span>].mean()
+df.groupby(<span class="str">"col"</span>).<span class="fn">agg</span>({...})
+pd.<span class="fn">pivot_table</span>(df, values=<span class="str">"v"</span>, index=<span class="str">"i"</span>, columns=<span class="str">"c"</span>)</pre>
+    </div>
+
+    <div class="runner-group" id="runners-grouping"></div>
+
+    <div class="witty reveal">
+      📊 <b>Witty takeaway:</b> <code>groupby()</code> answers "summarise by ONE thing." <code>pivot_table()</code> answers "summarise by TWO things, in a grid." Both are just <code>groupby()</code> wearing a nicer outfit.
+    </div>
+  </div>
+</section>
+
+<!-- ======================= CHAPTER 6 BANNER — REAL WORLD ======================= -->
+<div class="chapter chapter6 reveal" id="realworld">
+  <div class="chapter-banner">
+    <span class="deco">🧩</span>
+    <span class="num">SECTION 6 OF 6</span>
+    <h2>Real-World Application Programs</h2>
+    <p>Combining many functions together to solve day-to-day problems — this is what actually shows up in a job, not a single function in isolation.</p>
+  </div>
+</div>
+
+<section class="topic" id="realworld-programs">
+  <div class="container">
+
+    <!-- REAL WORLD PROGRAM 1 -->
+    <div class="pipeline reveal">
+      <div class="pipeline-top">
+        <span class="ptag">REAL-WORLD PROGRAM 1 OF 3</span>
+        <h3>🧩 Student Result Analysis System</h3>
+        <p><b>Scenario:</b> A college has a CSV of 50 students with Name, Marks and Branch. Some marks are missing. Build one program that loads the data, cleans it, grades every student, and prints a branch-wise summary.</p>
+      </div>
+      <div class="pipeline-body">
+        <ol class="pipeline-steps">
+          <li>Load students.csv into a DataFrame</li>
+          <li>Fill missing Marks with the column average</li>
+          <li>Add a Grade column using apply() + lambda</li>
+          <li>Filter students who passed (Marks ≥ 40)</li>
+          <li>Sort passed students by Marks, highest first</li>
+          <li>Group by Branch to find the average Marks per branch</li>
+        </ol>
+        <div class="pipeline-code">
+          <pre><span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+df = pd.<span class="fn">read_csv</span>(<span class="str">"students.csv"</span>)
+df[<span class="str">"Marks"</span>] = df[<span class="str">"Marks"</span>].<span class="fn">fillna</span>(df[<span class="str">"Marks"</span>].<span class="fn">mean</span>())
+
+df[<span class="str">"Grade"</span>] = df[<span class="str">"Marks"</span>].<span class="fn">apply</span>(
+    <span class="kw">lambda</span> m: <span class="str">"A"</span> <span class="kw">if</span> m&gt;=80 <span class="kw">else</span>
+              (<span class="str">"B"</span> <span class="kw">if</span> m&gt;=60 <span class="kw">else</span>
+              (<span class="str">"C"</span> <span class="kw">if</span> m&gt;=40 <span class="kw">else</span> <span class="str">"F"</span>)))
+
+passed = df[df[<span class="str">"Marks"</span>] &gt;= 40]
+ranked = passed.<span class="fn">sort_values</span>(<span class="str">"Marks"</span>, ascending=<span class="kw">False</span>)
+summary = df.<span class="fn">groupby</span>(<span class="str">"Branch"</span>)[<span class="str">"Marks"</span>].<span class="fn">mean</span>()
+
+<span class="fn">print</span>(ranked.head())
+<span class="fn">print</span>(summary)</pre>
+        </div>
+        <div class="pipeline-output">
+          <div class="lbl">▶ Output</div>
+          <pre>   Name    Marks  Branch  Grade
+   Zoya    95.0   IT      A
+   Riya    88.0   CE      A
+   Kabir   84.5   IT      A
+   ...
+
+Branch
+CE    78.1
+IT    82.4
+ME    74.6
+Name: Marks, dtype: float64</pre>
+        </div>
+        <div class="pipeline-walk">
+          <div class="wline">Step 1–2: read_csv() loads the file; fillna(mean()) removes every gap in Marks.</div>
+          <div class="wline">Step 3: apply() with nested conditions turns each numeric mark into a letter grade.</div>
+          <div class="wline">Step 4–5: boolean filtering keeps only passing students; sort_values() ranks them.</div>
+          <div class="wline">Step 6: groupby().mean() produces the final branch-wise performance summary.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- REAL WORLD PROGRAM 2 -->
+    <div class="pipeline reveal">
+      <div class="pipeline-top">
+        <span class="ptag">REAL-WORLD PROGRAM 2 OF 3</span>
+        <h3>🧩 Retail Sales Report</h3>
+        <p><b>Scenario:</b> Two monthly files — sales_jan.csv and sales_feb.csv — need to be combined with a products.csv master list to build a category-wise revenue report.</p>
+      </div>
+      <div class="pipeline-body">
+        <ol class="pipeline-steps">
+          <li>Load sales_jan.csv and sales_feb.csv</li>
+          <li>Concatenate both months into a single sales table</li>
+          <li>Merge sales with products.csv on "product_id"</li>
+          <li>Create a Revenue column = Quantity × Price</li>
+          <li>Group by Category and sum the Revenue</li>
+          <li>Sort categories by total revenue, highest first</li>
+        </ol>
+        <div class="pipeline-code">
+          <pre><span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+jan = pd.<span class="fn">read_csv</span>(<span class="str">"sales_jan.csv"</span>)
+feb = pd.<span class="fn">read_csv</span>(<span class="str">"sales_feb.csv"</span>)
+sales = pd.<span class="fn">concat</span>([jan, feb])
+
+products = pd.<span class="fn">read_csv</span>(<span class="str">"products.csv"</span>)
+merged = pd.<span class="fn">merge</span>(sales, products, on=<span class="str">"product_id"</span>)
+
+merged[<span class="str">"Revenue"</span>] = merged[<span class="str">"Quantity"</span>] * merged[<span class="str">"Price"</span>]
+
+report = merged.<span class="fn">groupby</span>(<span class="str">"Category"</span>)[<span class="str">"Revenue"</span>] \
+                .<span class="fn">sum</span>().<span class="fn">sort_values</span>(ascending=<span class="kw">False</span>)
+
+<span class="fn">print</span>(report)</pre>
+        </div>
+        <div class="pipeline-output">
+          <div class="lbl">▶ Output</div>
+          <pre>Category
+Electronics    482300
+Groceries      215600
+Apparel        168900
+Stationery      54200
+Name: Revenue, dtype: int64</pre>
+        </div>
+        <div class="pipeline-walk">
+          <div class="wline">Step 1–2: two monthly CSVs are loaded, then concat() stacks them into one sales table.</div>
+          <div class="wline">Step 3: merge() attaches Category and Price from products.csv using product_id.</div>
+          <div class="wline">Step 4: a new Revenue column is calculated directly from Quantity and Price.</div>
+          <div class="wline">Step 5–6: groupby().sum() totals revenue per category, sort_values() ranks the categories.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- REAL WORLD PROGRAM 3 -->
+    <div class="pipeline reveal">
+      <div class="pipeline-top">
+        <span class="ptag">REAL-WORLD PROGRAM 3 OF 3</span>
+        <h3>🧩 Employee Data Cleaning Pipeline</h3>
+        <p><b>Scenario:</b> HR exported an employee list containing duplicate entries and missing departments. Clean it end-to-end before any analysis is done.</p>
+      </div>
+      <div class="pipeline-body">
+        <ol class="pipeline-steps">
+          <li>Load employees.csv</li>
+          <li>Detect and count duplicate rows using duplicated()</li>
+          <li>Remove duplicates using drop_duplicates(subset=["EmpID"])</li>
+          <li>Fill missing Department values with "Unassigned"</li>
+          <li>Count employees per department using value_counts()</li>
+          <li>Export the cleaned file for HR</li>
+        </ol>
+        <div class="pipeline-code">
+          <pre><span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+emp = pd.<span class="fn">read_csv</span>(<span class="str">"employees.csv"</span>)
+<span class="fn">print</span>(<span class="str">"Duplicates found:"</span>, emp.<span class="fn">duplicated</span>().<span class="fn">sum</span>())
+
+emp = emp.<span class="fn">drop_duplicates</span>(subset=[<span class="str">"EmpID"</span>])
+emp[<span class="str">"Department"</span>] = emp[<span class="str">"Department"</span>].<span class="fn">fillna</span>(<span class="str">"Unassigned"</span>)
+
+<span class="fn">print</span>(emp[<span class="str">"Department"</span>].<span class="fn">value_counts</span>())
+
+emp.<span class="fn">to_csv</span>(<span class="str">"employees_clean.csv"</span>, index=<span class="kw">False</span>)
+<span class="fn">print</span>(<span class="str">"Cleaned file saved."</span>)</pre>
+        </div>
+        <div class="pipeline-output">
+          <div class="lbl">▶ Output</div>
+          <pre>Duplicates found: 7
+
+Sales          42
+Engineering    38
+HR             15
+Unassigned      6
+Name: Department, dtype: int64
+
+Cleaned file saved.</pre>
+        </div>
+        <div class="pipeline-walk">
+          <div class="wline">Step 1–2: the file loads, and duplicated().sum() reports exactly 7 repeated rows.</div>
+          <div class="wline">Step 3: drop_duplicates(subset=["EmpID"]) removes them, keeping one row per employee.</div>
+          <div class="wline">Step 4: fillna("Unassigned") replaces every missing Department with a clear placeholder.</div>
+          <div class="wline">Step 5–6: value_counts() summarises staffing per department; to_csv() saves the result.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="witty reveal">
+      🧩 <b>Witty takeaway:</b> Real jobs almost never ask for "just one function." They ask for a pipeline — load → clean → transform → summarise → save — and every single stage above is a function you already met earlier on this page.
     </div>
   </div>
 </section>
@@ -1725,6 +2280,18 @@ const PROGRAMS = {
     ],
     out: { 1: ["Pen         50","Notebook     0","Eraser      30","Marker       0"] },
     why: "Unlike marks or salary, a blank order quantity in this system specifically means \"nothing was ordered\" — filling with 0 is a business rule, not a guess."
+  },
+  {
+    title: "Program 6 — Filling with NumPy-aware logic",
+    usecase: "🧮 Analyst: treating both NaN and a placeholder -1 as \"missing\" together",
+    input: { fname: "df", headers: ["Name","Marks"], rows: [["Alice","85"],["Bob","-1"],["Charlie","NaN"],["David","92"]] },
+    code: [
+      'df["Marks"] = df["Marks"].replace(-1, np.nan)',
+      'df["Marks"] = df["Marks"].fillna(np.nanmean(df["Marks"]))',
+      'print(df["Marks"])'
+    ],
+    out: { 2: ["Alice     85.000000","Bob       88.500000","Charlie   88.500000","David     92.000000"] },
+    why: "np.nan gives every 'missing' sentinel (both blanks and a fake -1) one common shape, and np.nanmean() safely averages around them."
   }
 ],
 
@@ -1768,6 +2335,459 @@ const PROGRAMS = {
     code: [ 'df_clean = df.dropna(how="all")', "print(df_clean.shape)" ],
     out: { 1: ["(2, 3)"] },
     why: 'how="all" only removes a row when EVERY column is empty — a partially filled row (like Bag) survives, unlike the default dropna().'
+  }
+],
+
+"filtering": [
+  {
+    title: "Program 1 — A single condition",
+    usecase: "🎓 Teacher: shortlisting a topper list by hand-picking rule",
+    input: { fname: "df", headers: ["Name","Marks"], rows: [["John","90"],["Alice","75"],["Bob","88"],["David","60"]] },
+    code: [ 'toppers = df[df["Marks"] > 85]', "print(toppers)" ],
+    out: { 1: ["only the rows","with Marks > 85"] },
+    why: "A boolean condition inside df[...] filters rows — just like NumPy boolean masking, because that's exactly what it is under the hood."
+  },
+  {
+    title: "Program 2 — Combining two conditions",
+    usecase: "🏫 Branch topper list: IT students scoring above 80",
+    input: { fname: "df", headers: ["Name","Marks","Branch"], rows: [["John","90","IT"],["Alice","75","CE"],["Bob","88","IT"],["David","60","IT"]] },
+    code: [
+      'it_toppers = df[(df["Marks"]>80) &',
+      '                (df["Branch"]=="IT")]',
+      "print(it_toppers)"
+    ],
+    out: { 2: ["rows matching","BOTH conditions"] },
+    why: "The & operator combines two conditions — a row is kept only if both are True. Each condition MUST sit in its own ( )."
+  },
+  {
+    title: "Program 3 — Matching against a list",
+    usecase: "📋 Registrar: shortlisting two specific branches at once",
+    input: { fname: "df", headers: ["Name","Branch"], rows: [["Riya","IT"],["Aman","ME"],["Zoya","CE"],["John","IT"]] },
+    code: [ 'selected = df[df["Branch"].isin(["IT","CE"])]', "print(selected.shape)" ],
+    out: { 1: ["(34, 4)"] },
+    why: "isin() keeps every row whose Branch is either \"IT\" or \"CE\" — replacing a long chain of OR conditions with one clean call."
+  },
+  {
+    title: "Program 4 — Either/or with the | operator",
+    usecase: "🏙️ Ops: students from Surat OR Delhi need a special travel form",
+    input: { fname: "df", headers: ["Name","City"], rows: [["Alice","Surat"],["Bob","Mumbai"],["Charlie","Delhi"],["David","Pune"]] },
+    code: [ 'travel_list = df[(df["City"]=="Surat") |', '                  (df["City"]=="Delhi")]', "print(travel_list)" ],
+    out: { 2: ["rows where City is","Surat OR Delhi"] },
+    why: "| means OR — a row is kept if EITHER condition is True, unlike & which needs both."
+  },
+  {
+    title: "Program 5 — Excluding rows with ~ (NOT)",
+    usecase: "🚫 HR: everyone except employees already marked 'Resigned'",
+    input: { fname: "df", headers: ["Name","Status"], rows: [["Aman","Active"],["Riya","Resigned"],["John","Active"]] },
+    code: [ 'active_only = df[~(df["Status"]=="Resigned")]', "print(active_only)" ],
+    out: { 1: ["every row except","the Resigned ones"] },
+    why: "~ flips True/False — it's the easiest way to say 'give me everything that does NOT match' without rewriting the condition."
+  },
+  {
+    title: "Program 6 — Filtering 'above average' with NumPy",
+    usecase: "📈 Analyst: flagging students scoring above the class mean",
+    input: { fname: "df", headers: ["Name","Marks"], rows: [["Alice","85"],["Bob","60"],["Charlie","92"],["David","70"]] },
+    code: [
+      "class_avg = np.mean(df[\"Marks\"])",
+      'above_avg = df[df["Marks"] > class_avg]',
+      "print(above_avg)"
+    ],
+    out: { 2: ["Alice and Charlie —","the two above the mean"] },
+    why: "np.mean() computes the exact cutoff first, then the same boolean-filter pattern applies it — Pandas and NumPy working as one team."
+  }
+],
+
+"sorting": [
+  {
+    title: "Program 1 — Highest scorers first",
+    usecase: "🏆 Declaring a merit list, highest score on top",
+    input: { fname: "df", headers: ["Name","Marks"], rows: [["John","90"],["Alice","75"],["Bob","88"],["David","60"]] },
+    code: [ 'print(df.sort_values("Marks",', "            ascending=False).head(3))" ],
+    out: { 1: ["top 3 scorers"] },
+    why: "ascending=False gives highest-first ordering; the original DataFrame itself stays untouched."
+  },
+  {
+    title: "Program 2 — Sorting by two columns",
+    usecase: "🗂️ Branch-wise leaderboard, ranked within each branch",
+    input: { fname: "df", headers: ["Branch","Marks"], rows: [["IT","90"],["CE","75"],["IT","88"],["CE","95"]] },
+    code: [ 'print(df.sort_values(["Branch","Marks"],', "            ascending=[True, False]))" ],
+    out: { 1: ["grouped by branch,","marks high-to-low within each"] },
+    why: "Sorting by two columns at once creates a nested, easy-to-read ranking — the second column breaks ties in the first."
+  },
+  {
+    title: "Program 3 — Restoring the original order",
+    usecase: "↩️ Undo: getting back to row 0,1,2… after experimenting with sorts",
+    input: { fname: "df (already sorted by Marks)", headers: ["Name","Marks"], rows: [["Zoya","95"],["John","90"],["Bob","88"]] },
+    code: [ "print(df.sort_index())" ],
+    out: { 0: ["rows returned to the","original 0, 1, 2 ... order"] },
+    why: "sort_index() undoes a sort by restoring rows to their original row order — the safety net of sorting."
+  },
+  {
+    title: "Program 4 — Sorting by a computed column",
+    usecase: "📐 Ranking students by Percentage, not raw Marks",
+    input: { fname: "df", headers: ["Name","Marks","Percentage"], rows: [["Alice","425","85.0"],["Bob","310","62.0"],["Charlie","470","94.0"]] },
+    code: [ 'df["Percentage"] = (df["Marks"]/500)*100', 'print(df.sort_values("Percentage", ascending=False))' ],
+    out: { 1: ["Charlie, Alice, Bob —","by Percentage descending"] },
+    why: "You can sort by ANY column, including one you just calculated a line earlier — sort_values doesn't care where the column came from."
+  },
+  {
+    title: "Program 5 — Quick top-N with nlargest()",
+    usecase: "⚡ Instantly grabbing just the top 3 without a full sort + head()",
+    input: { fname: "df (200 rows)", headers: ["Name","Marks"], rows: [["…","…"]] },
+    code: [ 'print(df.nlargest(3, "Marks"))' ],
+    out: { 0: ["the 3 highest-scoring","rows, already sorted"] },
+    why: "nlargest(n, col) is a faster, one-line shortcut for sort_values(...).head(n) — same result, less typing, less memory churn on huge tables."
+  },
+  {
+    title: "Program 6 — Sorting by closeness to the class average",
+    usecase: "🎯 Finding the students whose marks sit closest to the mean",
+    input: { fname: "df", headers: ["Name","Marks"], rows: [["Alice","85"],["Bob","60"],["Charlie","81"],["David","70"]] },
+    code: [
+      "avg = np.mean(df[\"Marks\"])",
+      'df["diff_from_avg"] = np.abs(df["Marks"] - avg)',
+      'print(df.sort_values("diff_from_avg"))'
+    ],
+    out: { 2: ["rows ordered from closest","to farthest from the mean"] },
+    why: "np.abs() strips the +/- sign so a student 5 marks above and 5 marks below the average rank equally close — pure NumPy math feeding a Pandas sort."
+  }
+],
+
+"apply-map": [
+  {
+    title: "Program 1 — Turning marks into grades",
+    usecase: "🅰️ Report cards: deriving a letter grade from a number",
+    input: { fname: "df", headers: ["Marks"], rows: [["88"],["72"],["95"]] },
+    code: [
+      'df["Grade"] = df["Marks"].apply(',
+      '        lambda m: "A" if m>=80 else "B")',
+      'print(df[["Marks","Grade"]].head())'
+    ],
+    out: { 2: ["a new Grade column","added to the table"] },
+    why: "apply() with a lambda derives a brand-new column from an existing one, one value at a time."
+  },
+  {
+    title: "Program 2 — Renaming categories with map()",
+    usecase: "🏷️ Turning short branch codes into readable category names",
+    input: { fname: "df", headers: ["Branch"], rows: [["IT"],["CE"],["IT"]] },
+    code: [
+      'status = {"IT":"Tech", "CE":"Core"}',
+      'df["Category"] = df["Branch"].map(status)',
+      'print(df["Category"].head())'
+    ],
+    out: { 2: ["branch codes replaced by","full category names"] },
+    why: "map() looks up each value in a dictionary — ideal for renaming categories in one clean line."
+  },
+  {
+    title: "Program 3 — Combining two columns row-by-row",
+    usecase: "➕ Payroll: adding a bonus on top of base marks/salary",
+    input: { fname: "df", headers: ["Marks","Bonus"], rows: [["85","5"],["70","10"],["92","0"]] },
+    code: [
+      'df["Total"] = df.apply(',
+      '    lambda row: row["Marks"]+row["Bonus"], axis=1)',
+      'print(df[["Marks","Bonus","Total"]].head())'
+    ],
+    out: { 2: ["Total = Marks + Bonus","for every single row"] },
+    why: "axis=1 runs the function across each row instead of down each column — the row itself is handed to the lambda."
+  },
+  {
+    title: "Program 4 — Cleaning every cell at once with applymap()",
+    usecase: "🧽 Rounding every numeric mark in the whole table to 1 decimal",
+    input: { fname: "df", headers: ["Test1","Test2"], rows: [["85.666","78.111"],["90.333","88.888"]] },
+    code: [ "numeric_cols = df.select_dtypes(include='number')", 'df[numeric_cols.columns] = numeric_cols.applymap(lambda x: round(x,1))', "print(df)" ],
+    out: { 2: ["every numeric cell","rounded to 1 decimal"] },
+    why: "applymap() (DataFrame-wide) is apply()'s big sibling — it touches EVERY cell, not just one column or one row."
+  },
+  {
+    title: "Program 5 — Feeding a NumPy function straight into apply()",
+    usecase: "📐 Data science prep: log-scaling a skewed Revenue column",
+    input: { fname: "df", headers: ["Revenue"], rows: [["1000"],["50000"],["2500"]] },
+    code: [ 'df["Log_Revenue"] = df["Revenue"].apply(np.log10)', "print(df)" ],
+    out: { 1: ["Revenue compressed onto","a much smaller log scale"] },
+    why: "apply() accepts ANY function — including NumPy's own, like np.log10 — not just custom lambdas."
+  },
+  {
+    title: "Program 6 — Multi-condition grading with nested apply()",
+    usecase: "🎯 A full A/B/C/F grading scale, not just a single cutoff",
+    input: { fname: "df", headers: ["Marks"], rows: [["92"],["65"],["45"],["30"]] },
+    code: [
+      'def grade(m):',
+      '    if m>=80: return "A"',
+      '    elif m>=60: return "B"',
+      '    elif m>=40: return "C"',
+      '    return "F"',
+      'df["Grade"] = df["Marks"].apply(grade)',
+      "print(df)"
+    ],
+    out: { 6: ["A, B, C, F —","every mark correctly graded"] },
+    why: "apply() isn't limited to one-line lambdas — a full named function with multiple branches works exactly the same way."
+  }
+],
+
+"modifying": [
+  {
+    title: "Program 1 — Dropping a column",
+    usecase: "🧹 Removing an unused 'Remarks' column before analysis",
+    input: { fname: "df", headers: ["Name","Marks","Remarks"], rows: [["Riya","88","-"],["Aman","72","late submission"]] },
+    code: [ 'df2 = df.drop("Remarks", axis=1)', "print(df2.columns.tolist())" ],
+    out: { 1: ["column list, without","'Remarks' present"] },
+    why: "drop(axis=1) removes an entire column, referenced simply by name — the original df is untouched unless you reassign it."
+  },
+  {
+    title: "Program 2 — Renaming a column",
+    usecase: "✏️ Standardising a messy header name",
+    input: { fname: "df", headers: ["Stu_Name","Marks"], rows: [["Riya","88"],["Aman","72"]] },
+    code: [ 'df2 = df.rename(columns={"Stu_Name":"Name"})', "print(df2.columns.tolist())" ],
+    out: { 1: ["'Stu_Name' now","appears as 'Name'"] },
+    why: "rename() relabels a column without touching any of its data values underneath."
+  },
+  {
+    title: "Program 3 — Creating a computed column",
+    usecase: "📊 Turning raw Marks into a Percentage out of 500",
+    input: { fname: "df", headers: ["Name","Marks"], rows: [["Riya","440"],["Aman","375"]] },
+    code: [ 'df["Percentage"] = (df["Marks"]/500)*100', 'print(df[["Marks","Percentage"]].head())' ],
+    out: { 1: ["a new Percentage","column, calculated"] },
+    why: "A new column can be built directly from a formula applied to existing ones — no loop required."
+  },
+  {
+    title: "Program 4 — Reordering columns",
+    usecase: "📑 Putting the important columns first for a cleaner report",
+    input: { fname: "df", headers: ["Marks","City","Name","Branch"], rows: [["88","Surat","Riya","IT"]] },
+    code: [ 'df = df[["Name","Branch","Marks","City"]]', "print(df.columns.tolist())" ],
+    out: { 1: ["['Name', 'Branch',","'Marks', 'City']"] },
+    why: "Passing a list of column names inside df[[...]] both selects AND reorders — the DataFrame comes back in exactly that order."
+  },
+  {
+    title: "Program 5 — Renaming every column at once",
+    usecase: "🔤 Normalising messy 'Stu Name', 'MARKS' headers to lowercase_snake_case",
+    input: { fname: "df", headers: ["Stu Name","MARKS","City "], rows: [["Riya","88","Surat"]] },
+    code: [ "df.columns = df.columns.str.strip().str.lower().str.replace(' ','_')", "print(df.columns.tolist())" ],
+    out: { 1: ["['stu_name', 'marks', 'city']"] },
+    why: "Assigning straight to df.columns renames all of them together — chained .str methods clean spacing and casing in one pass."
+  },
+  {
+    title: "Program 6 — Conditional column with np.where()",
+    usecase: "✅ Adding a Pass/Fail column in a single vectorised line",
+    input: { fname: "df", headers: ["Name","Marks"], rows: [["Alice","85"],["Bob","32"],["Charlie","55"]] },
+    code: [ 'df["Result"] = np.where(df["Marks"]>=40, "Pass", "Fail")', "print(df)" ],
+    out: { 1: ["Pass, Fail, Pass —","one column, zero loops"] },
+    why: "np.where(condition, if_true, if_false) is the fast, vectorised cousin of apply() with an if/else lambda — same result, quicker on big data."
+  }
+],
+
+"unique-counts": [
+  {
+    title: "Program 1 — Listing distinct categories",
+    usecase: "🏫 'How many different branches even exist in this file?'",
+    input: { fname: "df", headers: ["Branch"], rows: [["IT"],["CE"],["IT"],["ME"],["CE"]] },
+    code: [ 'print(df["Branch"].unique())' ],
+    out: { 0: ["array(['IT', 'CE', 'ME'], dtype=object)"] },
+    why: "unique() lists every distinct category exactly once, in the order it first appears."
+  },
+  {
+    title: "Program 2 — Counting distinct categories",
+    usecase: "🔢 A single number for 'how many branches do we offer'",
+    input: { fname: "df", headers: ["Branch"], rows: [["IT"],["CE"],["IT"],["ME"]] },
+    code: [ 'print(df["Branch"].nunique())' ],
+    out: { 0: ["3"] },
+    why: "nunique() simply counts how many distinct categories exist — no need to count the unique() array by hand."
+  },
+  {
+    title: "Program 3 — Frequency of each category",
+    usecase: "📊 'How many students belong to each branch?'",
+    input: { fname: "df", headers: ["Branch"], rows: [["IT"],["CE"],["IT"],["ME"],["IT"]] },
+    code: [ 'print(df["Branch"].value_counts())' ],
+    out: { 0: ["IT    20","CE    18","ME    12"] },
+    why: "value_counts() shows how many students belong to each branch, most common first — an instant leaderboard."
+  },
+  {
+    title: "Program 4 — Frequencies as percentages",
+    usecase: "📈 A report that speaks in %, not raw headcounts",
+    input: { fname: "df (50 rows)", headers: ["Branch"], rows: [["…"]] },
+    code: [ 'print(df["Branch"].value_counts(normalize=True).round(2))' ],
+    out: { 0: ["IT    0.40","CE    0.36","ME    0.24"] },
+    why: "normalize=True turns raw counts straight into proportions (0–1) — multiply by 100 for a ready-to-present percentage."
+  },
+  {
+    title: "Program 5 — nunique() across every column at once",
+    usecase: "🕵️ Quick diversity check on a brand-new dataset",
+    input: { fname: "df", headers: ["Name","Branch","City"], rows: [["Riya","IT","Surat"],["Aman","CE","Delhi"],["Zoya","IT","Surat"]] },
+    code: [ "print(df.nunique())" ],
+    out: { 0: ["Name      3","Branch    2","City      2","dtype: int64"] },
+    why: "Calling nunique() on the whole DataFrame (not just one column) instantly flags which columns are near-constant vs. highly varied."
+  },
+  {
+    title: "Program 6 — Sorted distinct values with NumPy",
+    usecase: "🔤 Presenting branch names alphabetically, not by first appearance",
+    input: { fname: "df", headers: ["Branch"], rows: [["ME"],["IT"],["CE"],["IT"]] },
+    code: [ 'sorted_branches = np.sort(df["Branch"].unique())', "print(sorted_branches)" ],
+    out: { 1: ["['CE' 'IT' 'ME']"] },
+    why: "unique() keeps first-seen order; wrapping it in np.sort() gives a clean, alphabetised array for a tidier report."
+  }
+],
+
+"duplicates": [
+  {
+    title: "Program 1 — Counting duplicate rows",
+    usecase: "🔁 'Did someone accidentally submit the same form twice?'",
+    input: { fname: "df", headers: ["RollNo","Name"], rows: [["1","Aman"],["2","Riya"],["1","Aman"],["3","John"]] },
+    code: [ "print(df.duplicated().sum())" ],
+    out: { 0: ["4"] },
+    why: "Counts exactly how many rows are exact repeats of an earlier row — a quick red flag before cleaning."
+  },
+  {
+    title: "Program 2 — Removing duplicate rows",
+    usecase: "🧼 Cleaning a registration list before generating ID cards",
+    input: { fname: "df (50 rows)", headers: ["RollNo","Name"], rows: [["…","…"]] },
+    code: [ "df_unique = df.drop_duplicates()", "print(df_unique.shape)" ],
+    out: { 1: ["(46, 4)"] },
+    why: "Removes duplicate rows entirely, keeping only the first occurrence of each — the row count naturally shrinks."
+  },
+  {
+    title: "Program 3 — Duplicates based on one column",
+    usecase: "🎓 Treating two rows as 'the same student' by RollNo alone",
+    input: { fname: "df", headers: ["RollNo","Name","City"], rows: [["1","Aman","Surat"],["1","A. Kumar","Surat"],["2","Riya","Delhi"]] },
+    code: [ 'df_unique2 = df.drop_duplicates(', '                    subset=["RollNo"])', "print(df_unique2.shape)" ],
+    out: { 2: ["(48, 4)"] },
+    why: 'subset=["RollNo"] treats rows as duplicates only when RollNo matches — even if other columns like Name differ slightly.'
+  },
+  {
+    title: "Program 4 — Seeing EVERY copy, not just the repeats",
+    usecase: "🔍 Investigating a duplicate before deciding which copy to trust",
+    input: { fname: "df", headers: ["RollNo","Name"], rows: [["1","Aman"],["2","Riya"],["1","Aman K."],["3","John"]] },
+    code: [ 'print(df[df.duplicated(subset=["RollNo"], keep=False)])' ],
+    out: { 0: ["BOTH rows with","RollNo 1 — not just the 2nd"] },
+    why: "keep=False marks every copy of a duplicate as True (not just the extra ones) — essential when you need to inspect all versions before deciding."
+  },
+  {
+    title: "Program 5 — Keeping the LAST entry instead of the first",
+    usecase: "🕐 A student resubmitted a form — the newest version should win",
+    input: { fname: "df (submission order)", headers: ["RollNo","Marks"], rows: [["1","70"],["2","85"],["1","78"]] },
+    code: [ 'latest = df.drop_duplicates(subset=["RollNo"], keep="last")', "print(latest)" ],
+    out: { 1: ["RollNo 1 → keeps","the SECOND (78), not 70"] },
+    why: "keep='last' flips the default — handy whenever the most recent record, not the first one, is the one you actually trust."
+  },
+  {
+    title: "Program 6 — Finding exactly which RollNos repeat, with NumPy",
+    usecase: "🧮 Producing a short list of only the problem RollNos for HR to review",
+    input: { fname: "df", headers: ["RollNo"], rows: [["1"],["2"],["1"],["3"],["2"]] },
+    code: [
+      'vals, counts = np.unique(df["RollNo"], return_counts=True)',
+      "dupe_rolls = vals[counts > 1]",
+      "print(dupe_rolls)"
+    ],
+    out: { 2: ["[1 2]"] },
+    why: "np.unique(..., return_counts=True) hands back both the distinct values AND how many times each appeared — filtering counts>1 isolates just the offenders."
+  }
+],
+
+"combining": [
+  {
+    title: "Program 1 — Stacking two months together",
+    usecase: "📅 Merging January and February attendance into one table",
+    input: { fname: "jan_df + feb_df", headers: ["Month","Rows"], rows: [["Jan","50"],["Feb","50"]] },
+    code: [ "all_months = pd.concat([jan_df, feb_df])", "print(all_months.shape)" ],
+    out: { 1: ["(100, 4)"] },
+    why: "concat() stacks two same-column DataFrames into one longer table — best for combining same-structure batches."
+  },
+  {
+    title: "Program 2 — Joining on a shared key column",
+    usecase: "🔗 Adding branch/city details onto a marks-only table",
+    input: { fname: "students.csv + marks.csv", headers: ["Table","Key"], rows: [["students","student_id"],["marks","student_id"]] },
+    code: [ 'merged = pd.merge(students, marks,', '                    on="student_id")', "print(merged.head())" ],
+    out: { 2: ["combined table,","matched by student_id"] },
+    why: "on='student_id' tells Pandas exactly which column links the two tables — exactly like a SQL JOIN."
+  },
+  {
+    title: "Program 3 — Joining by index",
+    usecase: "🏙️ Attaching a city lookup table using a shared ID as the index",
+    input: { fname: "students + city (by id)", headers: ["Table","Indexed by"], rows: [["students","id"],["city","id"]] },
+    code: [ 'combined = students.set_index("id")\\', '            .join(city.set_index("id"))', "print(combined.head())" ],
+    out: { 2: ["student rows now","include a city column"] },
+    why: "join() aligns two tables using their shared index instead of a named key column."
+  },
+  {
+    title: "Program 4 — Keeping every row with a left join",
+    usecase: "⚠️ Some students have no marks yet — don't lose them from the report",
+    input: { fname: "students (50) + marks (46)", headers: ["Table","Rows"], rows: [["students","50"],["marks","46"]] },
+    code: [ 'report = pd.merge(students, marks,', '            on="student_id", how="left")', "print(report.shape)" ],
+    out: { 2: ["(50, 6) — all 50","students kept, marks = NaN for 4"] },
+    why: "how='left' keeps every row from the left table even when there's no match on the right — missing marks become NaN instead of the whole student vanishing."
+  },
+  {
+    title: "Program 5 — Combining columns side-by-side with concat(axis=1)",
+    usecase: "🧩 Two DataFrames that already share the same row order, glued sideways",
+    input: { fname: "marks_df + attendance_df (same order)", headers: ["Table","Cols"], rows: [["marks","Marks"],["attendance","Present_Days"]] },
+    code: [ "combined = pd.concat([marks_df, attendance_df], axis=1)", "print(combined.columns.tolist())" ],
+    out: { 1: ["['Marks', 'Present_Days']"] },
+    why: "axis=1 stacks sideways instead of downward — useful only when both tables are already aligned row-for-row."
+  },
+  {
+    title: "Program 6 — Auditing the merge with indicator=True",
+    usecase: "🔍 Confirming exactly which rows matched, and which didn't",
+    input: { fname: "students + marks", headers: ["_merge value","Meaning"], rows: [["both","matched in both tables"],["left_only","only in students"]] },
+    code: [
+      'audit = pd.merge(students, marks, on="student_id",',
+      '                   how="left", indicator=True)',
+      'print(audit["_merge"].value_counts())'
+    ],
+    out: { 2: ["both         46","left_only     4","Name: _merge, dtype: int64"] },
+    why: "indicator=True adds a _merge column labelling every row 'both', 'left_only', or 'right_only' — the fastest way to audit a join before trusting it."
+  }
+],
+
+"grouping": [
+  {
+    title: "Program 1 — Average per group",
+    usecase: "📊 'What's the average score, broken down by branch?'",
+    input: { fname: "df", headers: ["Branch","Marks"], rows: [["IT","85"],["CE","78"],["IT","80"],["ME","74"]] },
+    code: [ 'print(df.groupby("Branch")["Marks"].mean())' ],
+    out: { 0: ["IT    82.4","CE    78.1","ME    74.6"] },
+    why: "Average marks are calculated separately for every branch — one line replaces a manual filter + mean() per branch."
+  },
+  {
+    title: "Program 2 — Multiple aggregations at once",
+    usecase: "📐 Mean AND max marks per branch, side by side",
+    input: { fname: "df", headers: ["Branch","Marks"], rows: [["IT","85"],["CE","78"],["IT","95"]] },
+    code: [ 'print(df.groupby("Branch").agg(', '            {"Marks": ["mean","max"]}))' ],
+    out: { 1: ["mean & max per branch,","side by side"] },
+    why: "agg() runs several aggregate functions on a group in a single call, instead of one groupby() per statistic."
+  },
+  {
+    title: "Program 3 — Reshaping with a pivot table",
+    usecase: "🗂️ An Excel-style grid: average marks by Branch × Gender",
+    input: { fname: "df", headers: ["Branch","Gender","Marks"], rows: [["IT","M","85"],["IT","F","90"],["CE","M","78"]] },
+    code: [
+      'table = pd.pivot_table(df, values="Marks",',
+      '      index="Branch", columns="Gender",',
+      '      aggfunc="mean")',
+      "print(table)"
+    ],
+    out: { 3: ["a grid of Branch x Gender","average marks"] },
+    why: "pivot_table() reshapes summarised data into a readable grid, just like an Excel pivot table."
+  },
+  {
+    title: "Program 4 — Grouping by more than one column",
+    usecase: "🏫 Average marks per Branch, further split by Gender",
+    input: { fname: "df", headers: ["Branch","Gender","Marks"], rows: [["IT","M","85"],["IT","F","91"],["CE","M","78"]] },
+    code: [ 'print(df.groupby(["Branch","Gender"])["Marks"].mean())' ],
+    out: { 0: ["Branch Gender","IT     F         91.0","       M         85.0","CE     M         78.0"] },
+    why: "Passing a LIST of columns to groupby() nests the grouping — every Branch is further broken down by Gender."
+  },
+  {
+    title: "Program 5 — size() vs count(): a classic trap",
+    usecase: "🪤 'How many students per branch?' — but Marks has some gaps",
+    input: { fname: "df", headers: ["Branch","Marks"], rows: [["IT","85"],["IT","NaN"],["CE","78"]] },
+    code: [ 'print(df.groupby("Branch").size())', "print(df.groupby(\"Branch\")[\"Marks\"].count())" ],
+    out: { 0: ["IT    2","CE    1"], 1: ["IT    1","CE    1"] },
+    why: "size() counts ROWS per group no matter what (2 for IT); count() counts only NON-missing values in a chosen column (1 for IT, since one Marks was NaN) — easy to mix up, costly if you do."
+  },
+  {
+    title: "Program 6 — Passing a NumPy function straight to agg()",
+    usecase: "📏 Branch-wise median marks, calculated with NumPy's own function",
+    input: { fname: "df", headers: ["Branch","Marks"], rows: [["IT","85"],["IT","60"],["CE","78"],["CE","92"]] },
+    code: [ 'print(df.groupby("Branch")["Marks"].agg(np.median))' ],
+    out: { 0: ["IT    72.5","CE    85.0"] },
+    why: "agg() isn't limited to string names like 'mean' — it happily accepts an actual NumPy function object like np.median."
   }
 ]
 
