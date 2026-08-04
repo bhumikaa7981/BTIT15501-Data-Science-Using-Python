@@ -2144,9 +2144,14 @@ const PROGRAMS = {
     title: "Program 2 — Selecting by position with iloc",
     usecase: "🔢 Grabbing the first few rows/columns by pure position",
     input: { fname: "df", headers: ["Name","Marks","City"], rows: [["Alice","85","Surat"],["Bob","90","Mumbai"],["Charlie","78","Delhi"]] },
-    code: [ "print(df.iloc[0:3, 0:2])" ],
-    out: { 0: ["first 3 rows,","first 2 columns"] },
-    why: "iloc uses pure position — exactly like Python list slicing, end excluded."
+    code: [
+      "# iloc selects by POSITION, not by label",
+      "# rows 0:3  -> positions 0,1,2  (there is no row 3, so nothing extra to exclude here)",
+      "# cols 0:2  -> columns at position 0 and 1 (Name, Marks); City sits at position 2 and is EXCLUDED",
+      "print(df.iloc[0:3, 0:2])"
+    ],
+    out: { 3: ["      Name  Marks","0    Alice     85","1      Bob     90","2  Charlie     78"] },
+    why: "iloc uses pure position — exactly like Python list slicing, end excluded. That's why City (position 2) is left out even though all 3 rows are kept."
   },
   {
     title: "Program 3 — Reading/updating one cell with at",
@@ -2184,10 +2189,14 @@ const PROGRAMS = {
   {
     title: "Program 1 — Counting missing values per column",
     usecase: "🔍 First scan of a freshly loaded dataset",
-    input: { fname: "df (50 rows)", headers: ["Name","Marks","Branch"], rows: [["…","…","…"]] },
-    code: [ "print(df.isnull().sum())" ],
-    out: { 0: ["Name      0","Marks     3","Branch    1","dtype: int64"] },
-    why: "Shows the missing-value count for every column at a single glance."
+    input: { fname: "df (6-row sample)", headers: ["Name","Marks","Branch"], rows: [["Alice","85","IT"],["Bob","NaN","CE"],["Charlie","78","NaN"],["David","NaN","IT"],["Eva","90","CE"],["Frank","NaN","ME"]] },
+    code: [
+      "# Step 1 (inner call): isnull() marks every cell True (missing) or False (present)",
+      "# Step 2 (outer call): .sum() then adds up the True values, column by column (True=1, False=0)",
+      "print(df.isnull().sum())"
+    ],
+    out: { 2: ["Name      0","Marks     3","Branch    1","dtype: int64"] },
+    why: "Shows the missing-value count for every column at a single glance — Marks is missing for Bob, David, Frank (3); Branch is missing for Charlie (1); Name has no gaps (0)."
   },
   {
     title: "Program 2 — Viewing only the problem rows",
@@ -2200,10 +2209,14 @@ const PROGRAMS = {
   {
     title: "Program 3 — Counting valid (non-missing) entries",
     usecase: "✅ Confirming how much clean data you actually have",
-    input: { fname: "df (50 rows)", headers: ["Name","Marks","Branch"], rows: [["…","…","…"]] },
-    code: [ "print(df.notnull().sum())" ],
-    out: { 0: ["Name      50","Marks     47","Branch    49","dtype: int64"] },
-    why: "notnull() is the mirror image of isnull() — confirms exactly how many complete entries exist."
+    input: { fname: "df (same 6-row sample as Program 1)", headers: ["Name","Marks","Branch"], rows: [["Alice","85","IT"],["Bob","NaN","CE"],["Charlie","78","NaN"],["David","NaN","IT"],["Eva","90","CE"],["Frank","NaN","ME"]] },
+    code: [
+      "# Step 1 (inner call): notnull() marks every cell True (present) or False (missing) — the OPPOSITE of isnull()",
+      "# Step 2 (outer call): .sum() adds up the True values per column",
+      "print(df.notnull().sum())"
+    ],
+    out: { 2: ["Name      6","Marks     3","Branch    5","dtype: int64"] },
+    why: "notnull() is the mirror image of isnull() — out of 6 rows, all 6 Names are present, only 3 Marks are present (3 are missing), and 5 Branches are present (1 is missing)."
   },
   {
     title: "Program 4 — Flagging any row with a gap anywhere",
@@ -2219,13 +2232,17 @@ const PROGRAMS = {
   {
     title: "Program 5 — Turning gaps into a % data-quality report",
     usecase: "📊 Ranking which column is the biggest problem",
-    input: { fname: "customers.csv (100 rows)", headers: ["Column","Missing"], rows: [["Name","0"],["Email","5"],["Phone","12"]] },
+    input: { fname: "customers.csv (10-row sample)", headers: ["Name","Email","Phone"], rows: [["Alice","alice@x.com","9998887771"],["Bob","NaN","9998887772"],["Charlie","charlie@x.com","NaN"],["David","david@x.com","9998887774"],["Eva","NaN","9998887775"],["Frank","frank@x.com","NaN"],["Grace","grace@x.com","9998887777"],["Helen","helen@x.com","NaN"],["Ivan","ivan@x.com","9998887779"],["Jack","jack@x.com","9998887780"]] },
     code: [
+      "# Step 1 (innermost): df.isnull().sum() -> missing COUNT per column",
+      "#   Name=0, Email=2 (Bob, Eva missing), Phone=3 (Charlie, Frank, Helen missing)",
+      "# Step 2: divide by len(df) -> the FRACTION missing, e.g. 2/10 = 0.2",
+      "# Step 3 (outermost): multiply by 100 -> convert the fraction into a percentage",
       "missing_pct = (df.isnull().sum() / len(df)) * 100",
       "print(missing_pct.round(1))"
     ],
-    out: { 1: ["Name      0.0","Email     5.0","Phone    12.0","dtype: float64"] },
-    why: "Turning raw counts into percentages instantly shows which column is the biggest problem — 12% missing phones is a real red flag."
+    out: { 5: ["Name      0.0","Email    20.0","Phone    30.0","dtype: float64"] },
+    why: "Turning raw counts into percentages instantly shows which column is the biggest problem — with 10 rows, Email is missing for Bob & Eva (2/10 = 20.0%) and Phone is missing for Charlie, Frank & Helen (3/10 = 30.0%)."
   }
 ],
 
@@ -2294,12 +2311,18 @@ const PROGRAMS = {
     usecase: "🧮 Analyst: treating both NaN and a placeholder -1 as \"missing\" together",
     input: { fname: "df", headers: ["Name","Marks"], rows: [["Alice","85"],["Bob","-1"],["Charlie","NaN"],["David","92"]] },
     code: [
+      "# Step 1: -1 is a FAKE placeholder for 'missing' (not a real mark) -> convert it to a real NaN",
+      '#          so Pandas treats it as missing too, instead of a valid score of -1',
       'df["Marks"] = df["Marks"].replace(-1, np.nan)',
+      "# Step 2 (inner call runs FIRST): np.nanmean(df[\"Marks\"]) computes the average while",
+      "#          IGNORING every NaN -> only 85 and 92 remain -> (85+92)/2 = 88.5",
+      "# Step 2 (outer call runs SECOND): fillna(88.5) replaces every NaN with that 88.5 average",
       'df["Marks"] = df["Marks"].fillna(np.nanmean(df["Marks"]))',
+      "# Step 3: print the fully-cleaned Marks column",
       'print(df["Marks"])'
     ],
-    out: { 2: ["Alice     85.000000","Bob       88.500000","Charlie   88.500000","David     92.000000"] },
-    why: "np.nan gives every 'missing' sentinel (both blanks and a fake -1) one common shape, and np.nanmean() safely averages around them."
+    out: { 8: ["Alice     85.000000","Bob       88.500000","Charlie   88.500000","David     92.000000"] },
+    why: "np.nan gives every 'missing' sentinel (both blanks and a fake -1) one common shape, and np.nanmean() safely averages around them. Note the nested call: np.nanmean(df[\"Marks\"]) must fully finish computing 88.5 BEFORE fillna() can use it."
   }
 ],
 
@@ -2307,34 +2330,60 @@ const PROGRAMS = {
   {
     title: "Program 1 — Dropping all incomplete rows",
     usecase: "🧹 Quick, strict cleanup before analysis",
-    input: { fname: "df (50 rows)", headers: ["Name","Marks","City"], rows: [["…","…","…"]] },
-    code: [ "df_clean = df.dropna()", "print(df_clean.shape)" ],
-    out: { 1: ["(46, 3)"] },
-    why: "Any row with even one missing value is removed — the row count naturally shrinks from 50 to 46."
+    input: { fname: "df (6-row sample)", headers: ["Name","Marks","City"], rows: [["Alice","85","Surat"],["Bob","NaN","Mumbai"],["Charlie","78","NaN"],["David","90","Delhi"],["Eva","65","Pune"],["Frank","NaN","NaN"]] },
+    code: [
+      "# dropna() with no arguments = axis=0 (rows) by default:",
+      "# ANY row containing even ONE missing value anywhere gets removed",
+      "df_clean = df.dropna()",
+      "print(df_clean.shape)"
+    ],
+    out: { 3: ["(3, 3)"] },
+    why: "Bob (missing Marks), Charlie (missing City) and Frank (missing both) are dropped, leaving Alice, David and Eva — 3 clean rows out of the original 6, so shape is (3, 3)."
   },
   {
     title: "Program 2 — Dropping based on one column only",
     usecase: "🎯 Only Marks really matters for this report",
-    input: { fname: "df (50 rows)", headers: ["Name","Marks","City"], rows: [["…","…","…"]] },
-    code: [ 'df_clean2 = df.dropna(subset=["Marks"])', "print(df_clean2.shape)" ],
-    out: { 1: ["(47, 3)"] },
-    why: "Only rows missing \"Marks\" specifically get dropped — gaps in other columns are ignored, so fewer rows are lost."
+    input: { fname: "df (same 6-row sample as Program 1)", headers: ["Name","Marks","City"], rows: [["Alice","85","Surat"],["Bob","NaN","Mumbai"],["Charlie","78","NaN"],["David","90","Delhi"],["Eva","65","Pune"],["Frank","NaN","NaN"]] },
+    code: [
+      '# subset=["Marks"] tells dropna() to ONLY check the Marks column for gaps',
+      '# (unlike Program 1, a gap in Name or City is now IGNORED and does not cause a drop)',
+      'df_clean2 = df.dropna(subset=["Marks"])',
+      "print(df_clean2.shape)"
+    ],
+    out: { 3: ["(4, 3)"] },
+    why: "Only Bob and Frank are missing Marks, so only those 2 rows are dropped. Charlie's missing City is ignored this time — leaving 4 rows (Alice, Charlie, David, Eva) instead of the stricter 3 from Program 1."
   },
   {
     title: "Program 3 — Dropping incomplete columns",
     usecase: "🗑️ Removing columns too broken to trust",
-    input: { fname: "df", headers: ["Name","Marks","City","Branch"], rows: [["…","…","…","…"]] },
-    code: [ "df_clean3 = df.dropna(axis=1)", "print(df_clean3.columns.tolist())" ],
-    out: { 1: ["['Name', 'Branch']"] },
-    why: "axis=1 removes entire columns that contain even a single missing value — here Marks and City got wiped."
+    input: { fname: "df (4-row sample)", headers: ["Name","Marks","City","Branch"], rows: [["Alice","85","Surat","IT"],["Bob","NaN","Mumbai","CE"],["Charlie","78","NaN","IT"],["David","90","Delhi","ME"]] },
+    code: [
+      '# axis=1 tells dropna() to check COLUMNS instead of rows',
+      '# (axis=0, the default, checks rows — see Program 1)',
+      '# any COLUMN containing even ONE missing value anywhere gets removed entirely',
+      "df_clean3 = df.dropna(axis=1)",
+      "print(df_clean3.columns.tolist())"
+    ],
+    out: { 4: ["['Name', 'Branch']"] },
+    why: "Marks has a gap (Bob) and City has a gap (Charlie), so BOTH columns are dropped entirely — only Name and Branch, which are fully complete, survive."
   },
   {
     title: "Program 4 — Keeping rows with 'enough' answers",
     usecase: "📝 Survey: keep responses answering at least 3 of 4 questions",
     input: { fname: "survey.csv", headers: ["Q1","Q2","Q3","Q4"], rows: [["Yes","No","Yes","Yes"],["Yes","No","Yes","NaN"],["Yes","NaN","NaN","No"],["NaN","NaN","NaN","NaN"]] },
-    code: [ "cleaned = df.dropna(thresh=3)", "print(cleaned.shape)" ],
-    out: { 1: ["(2, 4)"] },
-    why: "thresh=3 keeps a row only if it has at least 3 real answers — a fairer cutoff than demanding a perfectly complete response."
+    code: [
+      '# thresh=3 (the library/parameter variable being highlighted here) means:',
+      '# "KEEP a row only if it has AT LEAST 3 non-missing (non-NaN) answers out of 4"',
+      '# Row 0: Yes,No,Yes,Yes  -> 4 answered -> 4 >= 3 -> KEPT',
+      '# Row 1: Yes,No,Yes,NaN  -> 3 answered -> 3 >= 3 -> KEPT',
+      '# Row 2: Yes,NaN,NaN,No  -> 2 answered -> 2 <  3 -> DROPPED',
+      '# Row 3: NaN,NaN,NaN,NaN -> 0 answered -> 0 <  3 -> DROPPED',
+      '# Result: 2 rows kept (Row 0 and Row 1), out of the original 4',
+      "cleaned = df.dropna(thresh=3)",
+      "print(cleaned.shape)"
+    ],
+    out: { 8: ["(2, 4)"] },
+    why: "thresh=3 keeps a row only if it has at least 3 real answers — a fairer cutoff than demanding a perfectly complete response. Verified above row-by-row: only Row 0 (4 answers) and Row 1 (3 answers) clear the bar, so cleaned.shape correctly comes out to (2, 4) — 2 rows survive, all 4 original columns remain."
   },
   {
     title: "Program 5 — Removing only fully-blank rows",
@@ -2371,9 +2420,14 @@ const PROGRAMS = {
     title: "Program 3 — Matching against a list",
     usecase: "📋 Registrar: shortlisting two specific branches at once",
     input: { fname: "df", headers: ["Name","Branch"], rows: [["Riya","IT"],["Aman","ME"],["Zoya","CE"],["John","IT"]] },
-    code: [ 'selected = df[df["Branch"].isin(["IT","CE"])]', "print(selected.shape)" ],
-    out: { 1: ["(34, 4)"] },
-    why: "isin() keeps every row whose Branch is either \"IT\" or \"CE\" — replacing a long chain of OR conditions with one clean call."
+    code: [
+      '# isin(["IT","CE"]) checks each Branch value against the list',
+      '# keeps the row if Branch is EITHER "IT" OR "CE" (Aman\'s "ME" does not match, so he is dropped)',
+      'selected = df[df["Branch"].isin(["IT","CE"])]',
+      "print(selected)"
+    ],
+    out: { 3: ["   Name Branch","0  Riya     IT","2  Zoya     CE","3  John     IT"] },
+    why: "isin() keeps every row whose Branch is either \"IT\" or \"CE\" — replacing a long chain of OR conditions with one clean call. Riya, Zoya and John match; Aman (\"ME\") is filtered out."
   },
   {
     title: "Program 4 — Either/or with the | operator",
@@ -2418,9 +2472,19 @@ const PROGRAMS = {
     title: "Program 2 — Sorting by two columns",
     usecase: "🗂️ Branch-wise leaderboard, ranked within each branch",
     input: { fname: "df", headers: ["Branch","Marks"], rows: [["IT","90"],["CE","75"],["IT","88"],["CE","95"]] },
-    code: [ 'print(df.sort_values(["Branch","Marks"],', "            ascending=[True, False]))" ],
-    out: { 1: ["grouped by branch,","marks high-to-low within each"] },
-    why: "Sorting by two columns at once creates a nested, easy-to-read ranking — the second column breaks ties in the first."
+    code: [
+      '# Step 1: sort_values() takes a LIST of columns -> ["Branch","Marks"]',
+      '#         Branch is the PRIMARY sort key; Marks only breaks ties WITHIN a branch',
+      '# Step 2: ascending=[True, False] applies one setting PER column, in the same order:',
+      '#         Branch -> True  (A to Z)      Marks -> False (high to low)',
+      '# Trace: rows sorted by Branch first (CE before IT alphabetically),',
+      '#        then by Marks descending inside each branch group:',
+      '#        CE group: 95 (row3) before 75 (row1)',
+      '#        IT group: 90 (row0) before 88 (row2)',
+      'print(df.sort_values(["Branch","Marks"], ascending=[True, False]))'
+    ],
+    out: { 8: ["  Branch  Marks","3     CE     95","1     CE     75","0     IT     90","2     IT     88"] },
+    why: "Sorting by two columns at once creates a nested, easy-to-read ranking — the second column (Marks) breaks ties in the first (Branch). Branch goes A→Z (CE before IT), and within each branch Marks goes high→low."
   },
   {
     title: "Program 3 — Restoring the original order",
@@ -2441,22 +2505,33 @@ const PROGRAMS = {
   {
     title: "Program 5 — Quick top-N with nlargest()",
     usecase: "⚡ Instantly grabbing just the top 3 without a full sort + head()",
-    input: { fname: "df (200 rows)", headers: ["Name","Marks"], rows: [["…","…"]] },
-    code: [ 'print(df.nlargest(3, "Marks"))' ],
-    out: { 0: ["the 3 highest-scoring","rows, already sorted"] },
-    why: "nlargest(n, col) is a faster, one-line shortcut for sort_values(...).head(n) — same result, less typing, less memory churn on huge tables."
+    input: { fname: "df (6-row sample)", headers: ["Name","Marks"], rows: [["Alice","85"],["Bob","92"],["Charlie","78"],["David","95"],["Eva","88"],["Frank","60"]] },
+    code: [
+      '# nlargest(3, "Marks") is a shortcut for sort_values("Marks", ascending=False).head(3)',
+      '# it directly returns the 3 rows with the highest Marks, already sorted highest-first',
+      'print(df.nlargest(3, "Marks"))'
+    ],
+    out: { 2: ["    Name  Marks","3  David     95","1    Bob     92","4    Eva     88"] },
+    why: "nlargest(n, col) is a faster, one-line shortcut for sort_values(...).head(n) — same result, less typing, less memory churn on huge tables. Out of the 6 students, David (95), Bob (92) and Eva (88) are the top 3."
   },
   {
     title: "Program 6 — Sorting by closeness to the class average",
     usecase: "🎯 Finding the students whose marks sit closest to the mean",
     input: { fname: "df", headers: ["Name","Marks"], rows: [["Alice","85"],["Bob","60"],["Charlie","81"],["David","70"]] },
     code: [
-      "avg = np.mean(df[\"Marks\"])",
+      '# Step 1: np.mean() runs FIRST and computes the class average',
+      '# avg = (85 + 60 + 81 + 70) / 4 = 296 / 4 = 74.0',
+      'avg = np.mean(df["Marks"])',
+      '# Step 2a (innermost): df["Marks"] - avg -> how far each mark is from 74',
+      '#          Alice: 85-74=11 | Bob: 60-74=-14 | Charlie: 81-74=7 | David: 70-74=-4',
+      '# Step 2b (outer call): np.abs() strips the minus sign, so distance is always positive',
+      '#          Alice: 11 | Bob: 14 | Charlie: 7 | David: 4',
       'df["diff_from_avg"] = np.abs(df["Marks"] - avg)',
+      '# Step 3: sort ascending (smallest first) by diff_from_avg -> closest to the mean appears first',
       'print(df.sort_values("diff_from_avg"))'
     ],
-    out: { 2: ["rows ordered from closest","to farthest from the mean"] },
-    why: "np.abs() strips the +/- sign so a student 5 marks above and 5 marks below the average rank equally close — pure NumPy math feeding a Pandas sort."
+    out: { 9: ["      Name  Marks  diff_from_avg","3    David     70               4","2  Charlie     81               7","0    Alice     85              11","1      Bob     60              14"] },
+    why: "np.abs() strips the +/- sign so a student 5 marks above and 5 marks below the average rank equally close — pure NumPy math feeding a Pandas sort. David (70) sits closest to the 74.0 average, Bob (60) sits furthest."
   }
 ],
 
