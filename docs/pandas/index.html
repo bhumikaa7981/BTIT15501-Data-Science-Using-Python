@@ -501,7 +501,7 @@
   <p class="sub">A messy sales sheet, a confused analyst (you), and sixteen superpowers that turn chaos into clean, trustworthy answers — explained like a story, not a manual.</p>
   <div class="hero-stats">
     <div class="stat-chip"><b>16</b><span>Core Functions</span></div>
-    <div class="stat-chip"><b>80+</b><span>Practice Programs</span></div>
+    <div class="stat-chip"><b>89</b><span>Practice Programs</span></div>
     <div class="stat-chip"><b>3</b><span>Real-World Projects</span></div>
   </div>
 </section>
@@ -1834,7 +1834,7 @@ Cleaned file saved.</pre>
     <div class="section-head reveal">
       <span class="kicker">Quick Reference</span>
       <h2>📋 Your pocket cheat sheet</h2>
-      <p>Everything from Foundations through Selecting &amp; Cleaning — one line each.</p>
+      <p>All 16 functions, Foundations through Real-World pipelines — one line each. (Assumes <code>import pandas as pd</code> + <code>import numpy as np</code> already ran.)</p>
     </div>
     <div class="cheat-grid reveal">
       <div class="cheat-card"><div class="t">🐼 Series &amp; DataFrame</div><code>pd.Series([10,20,30])</code></div>
@@ -1845,15 +1845,23 @@ Cleaned file saved.</pre>
       <div class="cheat-card"><div class="t">❓ Detecting gaps</div><code>df.isnull().sum()</code></div>
       <div class="cheat-card"><div class="t">🩹 Filling gaps</div><code>df.fillna(value)</code></div>
       <div class="cheat-card"><div class="t">🗑️ Dropping gaps</div><code>df.dropna()</code></div>
+      <div class="cheat-card"><div class="t">🔎 Filtering Rows</div><code>df[df["col"] > value]</code></div>
+      <div class="cheat-card"><div class="t">↕️ Sorting Data</div><code>df.sort_values("col", ascending=False)</code></div>
+      <div class="cheat-card"><div class="t">⚙️ apply() and map()</div><code>df["col"].apply(function)</code></div>
+      <div class="cheat-card"><div class="t">✂️ Modifying Columns</div><code>df.drop("col", axis=1)</code></div>
+      <div class="cheat-card"><div class="t">🔢 Unique Values &amp; Counts</div><code>df["col"].unique()</code></div>
+      <div class="cheat-card"><div class="t">👯 Duplicates</div><code>df.duplicated()</code></div>
+      <div class="cheat-card"><div class="t">🔗 Combining Data</div><code>pd.concat([df1, df2])</code></div>
+      <div class="cheat-card"><div class="t">📊 Grouping &amp; Pivoting</div><code>df.groupby("col")["target"].mean()</code></div>
     </div>
   </div>
 </section>
 
 <footer>
   <span class="panda">🐼</span>
-  <h3>You now speak (some) Pandas.</h3>
-  <p>8 core functions mastered · 40 practice programs · 1 sales sheet finally under control</p>
-  <div class="credit">BTIT15501 · Data Science using Python · Prof. Bhumika — Foundations through Selecting &amp; Cleaning Data</div>
+  <h3>You now speak Pandas.</h3>
+  <p>16 core functions mastered · 89 practice programs · 3 real-world pipelines · 1 sales sheet finally under control</p>
+  <div class="credit">BTIT15501 · Data Science using Python · Prof. Bhumika — Foundations through Real-World Application Programs</div>
 </footer>
 
 <div id="toTop">↑</div>
