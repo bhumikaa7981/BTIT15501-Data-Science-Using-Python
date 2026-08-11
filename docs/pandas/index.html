@@ -125,7 +125,8 @@
   .stat-chip span{color:var(--ink-soft); font-weight:600; font-size:12.5px;}
 
   /* ---------- generic section wrapper ---------- */
-  section{padding:90px 0; position:relative;}
+  section{padding:90px 0; position:relative; scroll-margin-top:78px;}
+  .chapter{scroll-margin-top:78px;}
   .section-head{max-width:760px; margin:0 auto 54px; text-align:center;}
   .section-head .kicker{
     font-weight:700; color:var(--bamboo-dark); text-transform:uppercase; letter-spacing:2px; font-size:13px;
@@ -276,8 +277,9 @@
   .why-strip b{color:var(--sun-deep); flex-shrink:0;}
 
   /* ---------- excel table ---------- */
-  .excel-wrap{overflow-x:auto; margin:18px 0 6px; border-radius:14px; box-shadow:0 4px 14px rgba(20,30,25,.08);}
-  table.excel{border-collapse:collapse; width:100%; font-family:var(--mono); font-size:13.5px; min-width:420px;}
+  .excel-wrap{overflow-x:auto; max-width:100%; margin:18px 0 6px; border-radius:14px; box-shadow:0 4px 14px rgba(20,30,25,.08);}
+  table.excel{border-collapse:collapse; width:100%; font-family:var(--mono); font-size:13.5px; min-width:0;}
+  @media(min-width:520px){ table.excel{min-width:min(420px, 100%);} }
   table.excel th{
     background:#2f6f52; color:#fff; padding:9px 14px; text-align:left; font-weight:600; border:1px solid #1f5a3f;
     position:sticky; top:0;
@@ -501,7 +503,7 @@
   <p class="sub">A messy sales sheet, a confused analyst (you), and sixteen superpowers that turn chaos into clean, trustworthy answers — explained like a story, not a manual.</p>
   <div class="hero-stats">
     <div class="stat-chip"><b>16</b><span>Core Functions</span></div>
-    <div class="stat-chip"><b>89</b><span>Practice Programs</span></div>
+    <div class="stat-chip"><b>80+</b><span>Practice Programs</span></div>
     <div class="stat-chip"><b>3</b><span>Real-World Projects</span></div>
   </div>
 </section>
@@ -513,7 +515,7 @@
       <pre><span class="kw">import</span> pandas <span class="kw">as</span> pd
 <span class="kw">import</span> numpy <span class="kw">as</span> np</pre>
     </div>
-    <div class="note">🧪 Run this ONCE at the top of your script / notebook. Every program on this page — from Series &amp; DataFrame all the way to the Real-World pipelines — assumes both lines already ran. <code style="background:rgba(255,255,255,.08); padding:2px 6px; border-radius:6px;">numpy</code> shows up the moment you need <code style="background:rgba(255,255,255,.08); padding:2px 6px; border-radius:6px;">np.nan</code>, numeric arrays, or any math Pandas itself borrows from it.</div>
+    <div class="note">🧪 Every program on this page is now fully self-contained and runnable on its own — each one builds its own sample data with <code style="background:rgba(255,255,255,.08); padding:2px 6px; border-radius:6px;">pd.DataFrame(...)</code>, so you can copy just one code block into a fresh <code style="background:rgba(255,255,255,.08); padding:2px 6px; border-radius:6px;">.py</code> file or notebook and it will run immediately — no external CSV/Excel file required. <code style="background:rgba(255,255,255,.08); padding:2px 6px; border-radius:6px;">numpy</code> shows up the moment a program needs <code style="background:rgba(255,255,255,.08); padding:2px 6px; border-radius:6px;">np.nan</code>, numeric arrays, or any math Pandas itself borrows from it.</div>
   </div>
 </div>
 
@@ -1182,6 +1184,17 @@ df[<span class="str">"col"</span>].fillna(df[<span class="str">"col"</span>].mea
 df.fillna(method=<span class="str">"ffill"</span>)</pre>
     </div>
 
+    <p class="reveal" style="text-align:center; color:var(--ink-soft); margin-bottom:10px;">Our starting table for this topic:</p>
+    <div class="excel-wrap reveal" style="max-width:400px; margin:0 auto 30px;">
+      <table class="excel">
+        <tr><th>Name</th><th>Marks</th></tr>
+        <tr><td>Alice</td><td>85</td></tr>
+        <tr><td>Bob</td><td class="hl-red">NaN</td></tr>
+        <tr><td>Charlie</td><td>78</td></tr>
+        <tr><td>David</td><td class="hl-red">NaN</td></tr>
+      </table>
+    </div>
+
     <div class="trace reveal">
       <div class="trace-title">🔎 Nested trace — <code>df["Marks"].fillna(df["Marks"].mean())</code></div>
       <div class="trace-steps">
@@ -1189,7 +1202,7 @@ df.fillna(method=<span class="str">"ffill"</span>)</pre>
           <div class="step-num">1</div>
           <div class="step-content">
             <div class="step-label">Start: Marks column has gaps</div>
-            <div class="excel-wrap" style="max-width:100%;"><table class="excel" style="min-width:0; width:auto;">
+            <div class="excel-wrap" style="max-width:400px;"><table class="excel">
               <tr><th>Name</th><th>Marks</th></tr>
               <tr><td>Alice</td><td>85</td></tr>
               <tr><td>Bob</td><td class="hl-red">NaN</td></tr>
@@ -1209,7 +1222,7 @@ df.fillna(method=<span class="str">"ffill"</span>)</pre>
           <div class="step-num">3</div>
           <div class="step-content">
             <div class="step-label">Outer call: every NaN becomes 81.5</div>
-            <div class="excel-wrap" style="max-width:100%;"><table class="excel" style="min-width:0; width:auto;">
+            <div class="excel-wrap" style="max-width:400px;"><table class="excel">
               <tr><th>Name</th><th>Marks</th></tr>
               <tr><td>Alice</td><td>85</td></tr>
               <tr><td>Bob</td><td class="hl-green">81.5</td></tr>
@@ -1677,43 +1690,55 @@ pd.<span class="fn">pivot_table</span>(df, values=<span class="str">"v"</span>, 
           <li>Group by Branch to find the average Marks per branch</li>
         </ol>
         <div class="pipeline-code">
-          <pre><span class="kw">import</span> pandas <span class="kw">as</span> pd
+          <pre><span class="cm"># --- Runnable end-to-end: builds a small sample dataset in-memory ---</span>
+<span class="cm"># (swap the pd.DataFrame(...) block below for pd.read_csv("students.csv")</span>
+<span class="cm">#  once you have the real file)</span>
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
 <span class="kw">import</span> numpy <span class="kw">as</span> np
 
-df = pd.<span class="fn">read_csv</span>(<span class="str">"students.csv"</span>)
+df = pd.<span class="fn">DataFrame</span>({
+    <span class="str">"Name"</span>:   [<span class="str">"Zoya"</span>,<span class="str">"Riya"</span>,<span class="str">"Kabir"</span>,<span class="str">"Aman"</span>,<span class="str">"John"</span>],
+    <span class="str">"Marks"</span>:  [95, 88, np.nan, 35, np.nan],
+    <span class="str">"Branch"</span>: [<span class="str">"IT"</span>,<span class="str">"CE"</span>,<span class="str">"IT"</span>,<span class="str">"ME"</span>,<span class="str">"CE"</span>]
+})
+
+<span class="cm"># Step 1-2: fill missing marks with the column average</span>
 df[<span class="str">"Marks"</span>] = df[<span class="str">"Marks"</span>].<span class="fn">fillna</span>(df[<span class="str">"Marks"</span>].<span class="fn">mean</span>())
 
+<span class="cm"># Step 3: derive a letter grade for every student</span>
 df[<span class="str">"Grade"</span>] = df[<span class="str">"Marks"</span>].<span class="fn">apply</span>(
     <span class="kw">lambda</span> m: <span class="str">"A"</span> <span class="kw">if</span> m&gt;=80 <span class="kw">else</span>
               (<span class="str">"B"</span> <span class="kw">if</span> m&gt;=60 <span class="kw">else</span>
               (<span class="str">"C"</span> <span class="kw">if</span> m&gt;=40 <span class="kw">else</span> <span class="str">"F"</span>)))
 
+<span class="cm"># Step 4-5: keep only passing students, ranked highest first</span>
 passed = df[df[<span class="str">"Marks"</span>] &gt;= 40]
 ranked = passed.<span class="fn">sort_values</span>(<span class="str">"Marks"</span>, ascending=<span class="kw">False</span>)
+
+<span class="cm"># Step 6: branch-wise average (calculated on ALL students, pass or fail)</span>
 summary = df.<span class="fn">groupby</span>(<span class="str">"Branch"</span>)[<span class="str">"Marks"</span>].<span class="fn">mean</span>()
 
-<span class="fn">print</span>(ranked.head())
+<span class="fn">print</span>(ranked)
 <span class="fn">print</span>(summary)</pre>
         </div>
         <div class="pipeline-output">
           <div class="lbl">▶ Output</div>
-          <pre>   Name    Marks  Branch  Grade
-   Zoya    95.0   IT      A
-   Riya    88.0   CE      A
-   Kabir   84.5   IT      A
-   ...
+          <pre>    Name  Marks Branch Grade
+0   Zoya   95.0     IT     A
+1   Riya   88.0     CE     A
+2  Kabir   72.5     IT     B
 
 Branch
-CE    78.1
-IT    82.4
-ME    74.6
+CE    88.0
+IT    83.75
+ME    35.0
 Name: Marks, dtype: float64</pre>
         </div>
         <div class="pipeline-walk">
-          <div class="wline">Step 1–2: read_csv() loads the file; fillna(mean()) removes every gap in Marks.</div>
+          <div class="wline">Step 1–2: the sample DataFrame is built in-memory (swap for read_csv() on the real file); fillna(mean()) removes every gap in Marks — Kabir's and John's blanks both become the class average, 72.5.</div>
           <div class="wline">Step 3: apply() with nested conditions turns each numeric mark into a letter grade.</div>
-          <div class="wline">Step 4–5: boolean filtering keeps only passing students; sort_values() ranks them.</div>
-          <div class="wline">Step 6: groupby().mean() produces the final branch-wise performance summary.</div>
+          <div class="wline">Step 4–5: boolean filtering drops Aman (35 &lt; 40); sort_values() ranks the rest highest first.</div>
+          <div class="wline">Step 6: groupby().mean() produces the final branch-wise performance summary, using every student (including the one who failed).</div>
         </div>
       </div>
     </div>
@@ -1735,18 +1760,26 @@ Name: Marks, dtype: float64</pre>
           <li>Sort categories by total revenue, highest first</li>
         </ol>
         <div class="pipeline-code">
-          <pre><span class="kw">import</span> pandas <span class="kw">as</span> pd
+          <pre><span class="cm"># --- Runnable end-to-end: builds sample jan/feb/product tables in-memory ---</span>
+<span class="cm"># (swap each pd.DataFrame(...) below for pd.read_csv("sales_jan.csv") etc.)</span>
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
 <span class="kw">import</span> numpy <span class="kw">as</span> np
 
-jan = pd.<span class="fn">read_csv</span>(<span class="str">"sales_jan.csv"</span>)
-feb = pd.<span class="fn">read_csv</span>(<span class="str">"sales_feb.csv"</span>)
-sales = pd.<span class="fn">concat</span>([jan, feb])
+jan = pd.<span class="fn">DataFrame</span>({<span class="str">"product_id"</span>:[1,2,3], <span class="str">"Quantity"</span>:[10,5,8]})
+feb = pd.<span class="fn">DataFrame</span>({<span class="str">"product_id"</span>:[1,2,3], <span class="str">"Quantity"</span>:[6,12,4]})
+sales = pd.<span class="fn">concat</span>([jan, feb], ignore_index=<span class="kw">True</span>)
 
-products = pd.<span class="fn">read_csv</span>(<span class="str">"products.csv"</span>)
+products = pd.<span class="fn">DataFrame</span>({
+    <span class="str">"product_id"</span>: [1, 2, 3],
+    <span class="str">"Category"</span>:   [<span class="str">"Electronics"</span>, <span class="str">"Groceries"</span>, <span class="str">"Apparel"</span>],
+    <span class="str">"Price"</span>:      [15000, 400, 900]
+})
 merged = pd.<span class="fn">merge</span>(sales, products, on=<span class="str">"product_id"</span>)
 
+<span class="cm"># Step 4: revenue for every sale row</span>
 merged[<span class="str">"Revenue"</span>] = merged[<span class="str">"Quantity"</span>] * merged[<span class="str">"Price"</span>]
 
+<span class="cm"># Step 5-6: total revenue per category, highest first</span>
 report = merged.<span class="fn">groupby</span>(<span class="str">"Category"</span>)[<span class="str">"Revenue"</span>] \
                 .<span class="fn">sum</span>().<span class="fn">sort_values</span>(ascending=<span class="kw">False</span>)
 
@@ -1755,15 +1788,14 @@ report = merged.<span class="fn">groupby</span>(<span class="str">"Category"</sp
         <div class="pipeline-output">
           <div class="lbl">▶ Output</div>
           <pre>Category
-Electronics    482300
-Groceries      215600
-Apparel        168900
-Stationery      54200
+Electronics    240000
+Apparel         10800
+Groceries        6800
 Name: Revenue, dtype: int64</pre>
         </div>
         <div class="pipeline-walk">
-          <div class="wline">Step 1–2: two monthly CSVs are loaded, then concat() stacks them into one sales table.</div>
-          <div class="wline">Step 3: merge() attaches Category and Price from products.csv using product_id.</div>
+          <div class="wline">Step 1–2: two monthly tables are built (swap for read_csv() on real files), then concat() stacks them into one sales table.</div>
+          <div class="wline">Step 3: merge() attaches Category and Price from products using product_id.</div>
           <div class="wline">Step 4: a new Revenue column is calculated directly from Quantity and Price.</div>
           <div class="wline">Step 5–6: groupby().sum() totals revenue per category, sort_values() ranks the categories.</div>
         </div>
@@ -1787,35 +1819,47 @@ Name: Revenue, dtype: int64</pre>
           <li>Export the cleaned file for HR</li>
         </ol>
         <div class="pipeline-code">
-          <pre><span class="kw">import</span> pandas <span class="kw">as</span> pd
+          <pre><span class="cm"># --- Runnable end-to-end: builds a sample employee table in-memory ---</span>
+<span class="cm"># (swap the pd.DataFrame(...) block below for pd.read_csv("employees.csv"))</span>
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
 <span class="kw">import</span> numpy <span class="kw">as</span> np
 
-emp = pd.<span class="fn">read_csv</span>(<span class="str">"employees.csv"</span>)
+emp = pd.<span class="fn">DataFrame</span>({
+    <span class="str">"EmpID"</span>:      [101, 102, 103, 101, 104],
+    <span class="str">"Name"</span>:       [<span class="str">"Aman"</span>, <span class="str">"Riya"</span>, <span class="str">"John"</span>, <span class="str">"Aman"</span>, <span class="str">"Zoya"</span>],
+    <span class="str">"Department"</span>: [<span class="str">"Sales"</span>, np.nan, <span class="str">"Engineering"</span>, <span class="str">"Sales"</span>, np.nan]
+})
+
 <span class="fn">print</span>(<span class="str">"Duplicates found:"</span>, emp.<span class="fn">duplicated</span>().<span class="fn">sum</span>())
 
+<span class="cm"># Step 3: keep only the first row per EmpID</span>
 emp = emp.<span class="fn">drop_duplicates</span>(subset=[<span class="str">"EmpID"</span>])
+
+<span class="cm"># Step 4: patch missing departments with a clear placeholder</span>
 emp[<span class="str">"Department"</span>] = emp[<span class="str">"Department"</span>].<span class="fn">fillna</span>(<span class="str">"Unassigned"</span>)
 
+<span class="cm"># Step 5: headcount per department</span>
 <span class="fn">print</span>(emp[<span class="str">"Department"</span>].<span class="fn">value_counts</span>())
 
+<span class="cm"># Step 6: write the cleaned file back out for HR</span>
 emp.<span class="fn">to_csv</span>(<span class="str">"employees_clean.csv"</span>, index=<span class="kw">False</span>)
 <span class="fn">print</span>(<span class="str">"Cleaned file saved."</span>)</pre>
         </div>
         <div class="pipeline-output">
           <div class="lbl">▶ Output</div>
-          <pre>Duplicates found: 7
+          <pre>Duplicates found: 1
 
-Sales          42
-Engineering    38
-HR             15
-Unassigned      6
+Department
+Unassigned     2
+Sales          1
+Engineering    1
 Name: Department, dtype: int64
 
 Cleaned file saved.</pre>
         </div>
         <div class="pipeline-walk">
-          <div class="wline">Step 1–2: the file loads, and duplicated().sum() reports exactly 7 repeated rows.</div>
-          <div class="wline">Step 3: drop_duplicates(subset=["EmpID"]) removes them, keeping one row per employee.</div>
+          <div class="wline">Step 1–2: the table loads, and duplicated().sum() reports 1 repeated row (Aman, EmpID 101).</div>
+          <div class="wline">Step 3: drop_duplicates(subset=["EmpID"]) removes it, keeping one row per employee.</div>
           <div class="wline">Step 4: fillna("Unassigned") replaces every missing Department with a clear placeholder.</div>
           <div class="wline">Step 5–6: value_counts() summarises staffing per department; to_csv() saves the result.</div>
         </div>
@@ -1834,7 +1878,7 @@ Cleaned file saved.</pre>
     <div class="section-head reveal">
       <span class="kicker">Quick Reference</span>
       <h2>📋 Your pocket cheat sheet</h2>
-      <p>All 16 functions, Foundations through Real-World pipelines — one line each. (Assumes <code>import pandas as pd</code> + <code>import numpy as np</code> already ran.)</p>
+      <p>Everything from Foundations through Selecting &amp; Cleaning — one line each.</p>
     </div>
     <div class="cheat-grid reveal">
       <div class="cheat-card"><div class="t">🐼 Series &amp; DataFrame</div><code>pd.Series([10,20,30])</code></div>
@@ -1845,29 +1889,26 @@ Cleaned file saved.</pre>
       <div class="cheat-card"><div class="t">❓ Detecting gaps</div><code>df.isnull().sum()</code></div>
       <div class="cheat-card"><div class="t">🩹 Filling gaps</div><code>df.fillna(value)</code></div>
       <div class="cheat-card"><div class="t">🗑️ Dropping gaps</div><code>df.dropna()</code></div>
-      <div class="cheat-card"><div class="t">🔎 Filtering Rows</div><code>df[df["col"] > value]</code></div>
-      <div class="cheat-card"><div class="t">↕️ Sorting Data</div><code>df.sort_values("col", ascending=False)</code></div>
-      <div class="cheat-card"><div class="t">⚙️ apply() and map()</div><code>df["col"].apply(function)</code></div>
-      <div class="cheat-card"><div class="t">✂️ Modifying Columns</div><code>df.drop("col", axis=1)</code></div>
-      <div class="cheat-card"><div class="t">🔢 Unique Values &amp; Counts</div><code>df["col"].unique()</code></div>
-      <div class="cheat-card"><div class="t">👯 Duplicates</div><code>df.duplicated()</code></div>
-      <div class="cheat-card"><div class="t">🔗 Combining Data</div><code>pd.concat([df1, df2])</code></div>
-      <div class="cheat-card"><div class="t">📊 Grouping &amp; Pivoting</div><code>df.groupby("col")["target"].mean()</code></div>
     </div>
   </div>
 </section>
 
 <footer>
   <span class="panda">🐼</span>
-  <h3>You now speak Pandas.</h3>
-  <p>16 core functions mastered · 89 practice programs · 3 real-world pipelines · 1 sales sheet finally under control</p>
-  <div class="credit">BTIT15501 · Data Science using Python · Prof. Bhumika — Foundations through Real-World Application Programs</div>
+  <h3>You now speak (some) Pandas.</h3>
+  <p>8 core functions mastered · 40 practice programs · 1 sales sheet finally under control</p>
+  <div class="credit">BTIT15501 · Data Science using Python · Prof. Bhumika — Foundations through Selecting &amp; Cleaning Data</div>
 </footer>
 
 <div id="toTop">↑</div>
 
 <script>
 // ======================= ANIMATED PROGRAM RUNNER ENGINE =======================
+// NOTE: every program below is a COMPLETE, standalone, runnable Python program.
+// Copy any single code block into a .py file or notebook cell and run it as-is —
+// each one builds its own sample data with pd.DataFrame()/pd.Series(), so no
+// external CSV/Excel file is required (the "reading"/"saving" topics create a
+// small sample file first, then read it back, so those are runnable too).
 const PROGRAMS = {
 
 "series-dataframe": [
@@ -1876,12 +1917,14 @@ const PROGRAMS = {
     usecase: "🏪 Retail: track daily units sold per item",
     input: { fname: "raw list: [45, 67, 89, 32]", headers: ["Units Sold (row order)"], rows: [["45"],["67"],["89"],["32"]] },
     code: [
-      "import pandas as pd",
-      "",
-      "units = pd.Series([45, 67, 89, 32])",
-      "print(units)"
+      'import pandas as pd',
+      '',
+      '# a Series is a labelled 1-D array; Pandas auto-generates',
+      '# the index labels 0, 1, 2, 3 since none were given',
+      'units = pd.Series([45, 67, 89, 32])',
+      'print(units)'
     ],
-    out: { 3: ["0    45","1    67","2    89","3    32","dtype: int64"] },
+    out: { 5: ["0    45","1    67","2    89","3    32","dtype: int64"] },
     why: "Pandas silently generates index labels 0,1,2,3 next to every value — you never asked for them, but you get them for free."
   },
   {
@@ -1889,13 +1932,16 @@ const PROGRAMS = {
     usecase: "🛒 Grocery store: stock count per fruit",
     input: { fname: "stock sheet", headers: ["Fruit","Stock"], rows: [["Apple","120"],["Banana","90"],["Mango","75"]] },
     code: [
-      "fruits = pd.Series(",
-      "    [120, 90, 75],",
+      'import pandas as pd',
+      '',
+      '# custom index labels replace the default 0,1,2...',
+      'fruits = pd.Series(',
+      '    [120, 90, 75],',
       '    index=["Apple", "Banana", "Mango"]',
-      ")",
-      'print(fruits["Banana"])'
+      ')',
+      'print(fruits["Banana"])   # look up by label, not position'
     ],
-    out: { 4: ["90"] },
+    out: { 7: ["90"] },
     why: 'A custom index lets you fetch a value by a meaningful name instead of remembering "it was the 2nd item".'
   },
   {
@@ -1903,12 +1949,15 @@ const PROGRAMS = {
     usecase: "🎓 School: building a class roster with marks",
     input: { fname: "raw dict", headers: ["Name","Marks"], rows: [["Riya","88"],["Aman","72"],["Zoya","95"]] },
     code: [
+      'import pandas as pd',
+      '',
+      '# a dict of lists becomes a full table: each key -> one column',
       'data = {"Name": ["Riya","Aman","Zoya"],',
       '        "Marks": [88, 72, 95]}',
-      "df = pd.DataFrame(data)",
-      "print(df)"
+      'df = pd.DataFrame(data)',
+      'print(df)'
     ],
-    out: { 3: ["   Name  Marks","0  Riya     88","1  Aman     72","2  Zoya     95"] },
+    out: { 6: ["   Name  Marks","0  Riya     88","1  Aman     72","2  Zoya     95"] },
     why: "A dictionary of lists becomes a full table — each dictionary key becomes a column name, each list becomes that column's values."
   },
   {
@@ -1916,12 +1965,16 @@ const PROGRAMS = {
     usecase: "🏷️ E-commerce: applying a 10% festive discount",
     input: { fname: "price list", headers: ["Item","Price"], rows: [["Shirt","500"],["Jeans","700"],["Jacket","1200"]] },
     code: [
+      'import pandas as pd',
+      '',
       'prices = pd.Series([500, 700, 1200],',
       '    index=["Shirt","Jeans","Jacket"])',
-      "discounted = prices * 0.9",
-      "print(discounted)"
+      '',
+      '# math applies element-wise, to every value at once',
+      'discounted = prices * 0.9',
+      'print(discounted)'
     ],
-    out: { 3: ["Shirt      450.0","Jeans      630.0","Jacket    1080.0","dtype: float64"] },
+    out: { 7: ["Shirt      450.0","Jeans      630.0","Jacket    1080.0","dtype: float64"] },
     why: "Series math applies to every value at once — no manual loop needed to discount all three prices."
   },
   {
@@ -1929,13 +1982,16 @@ const PROGRAMS = {
     usecase: "🏥 Hospital: turning separate intake forms into one table",
     input: { fname: "3 intake forms", headers: ["Patient","Age"], rows: [["Aman","34"],["Riya","28"],["John","45"]] },
     code: [
+      'import pandas as pd',
+      '',
+      '# each dict in the list becomes one row',
       'records = [{"Patient":"Aman","Age":34},',
       '           {"Patient":"Riya","Age":28},',
       '           {"Patient":"John","Age":45}]',
-      "df = pd.DataFrame(records)",
-      "print(df)"
+      'df = pd.DataFrame(records)',
+      'print(df)'
     ],
-    out: { 4: ["  Patient  Age","0    Aman   34","1    Riya   28","2    John   45"] },
+    out: { 7: ["  Patient  Age","0    Aman   34","1    Riya   28","2    John   45"] },
     why: "Each dictionary in the list becomes one row — ideal when data arrives form-by-form instead of column-by-column."
   }
 ],
@@ -1944,58 +2000,98 @@ const PROGRAMS = {
   {
     title: "Program 1 — Previewing rows with head()",
     usecase: "🎓 Teacher: quickly peek at a freshly loaded class list",
-    input: { fname: "students.csv", headers: ["roll","name","age","city"], rows: [["1","aaa","33","a"],["2","sss","44","s"],["3","ddd","22","d"],["4","fff","21","f"],["5","ggg","23","g"]] },
+    input: { fname: "students (in-memory)", headers: ["roll","name","age","city"], rows: [["1","aaa","33","a"],["2","sss","44","s"],["3","ddd","22","d"],["4","fff","21","f"],["5","ggg","23","g"]] },
     code: [
-      'df = pd.read_csv("students.csv")',
-      "print(df.head(3))  # default is 5 rows"
+      'import pandas as pd',
+      '',
+      'df = pd.DataFrame({',
+      '    "roll": [1, 2, 3, 4, 5],',
+      '    "name": ["aaa","sss","ddd","fff","ggg"],',
+      '    "age":  [33, 44, 22, 21, 23],',
+      '    "city": ["a","s","d","f","g"]',
+      '})',
+      'print(df.head(3))   # default is 5 rows'
     ],
-    out: { 1: ["   roll name  age city","0     1  aaa   33    a","1     2  sss   44    s","2     3  ddd   22    d"] },
+    out: { 8: ["   roll name  age city","0     1  aaa   33    a","1     2  sss   44    s","2     3  ddd   22    d"] },
     why: "head(3) previews just the first 3 rows out of however many exist — a lifesaver on files with 50,000 rows."
   },
   {
     title: "Program 2 — Peeking at the end with tail()",
     usecase: "🛍️ Store manager: checking the last few sales before closing",
-    input: { fname: "sales_log.csv", headers: ["Time","Item","Amount"], rows: [["9:10","Pen","20"],["9:45","Bag","450"],["10:30","Book","120"],["11:05","Pen","20"],["11:40","Bottle","180"]] },
+    input: { fname: "sales_log (in-memory)", headers: ["Time","Item","Amount"], rows: [["9:10","Pen","20"],["9:45","Bag","450"],["10:30","Book","120"],["11:05","Pen","20"],["11:40","Bottle","180"]] },
     code: [
-      'sales = pd.read_csv("sales_log.csv")',
-      "print(sales.tail(2))"
+      'import pandas as pd',
+      '',
+      'sales = pd.DataFrame({',
+      '    "Time":   ["9:10","9:45","10:30","11:05","11:40"],',
+      '    "Item":   ["Pen","Bag","Book","Pen","Bottle"],',
+      '    "Amount": [20, 450, 120, 20, 180]',
+      '})',
+      'print(sales.tail(2))'
     ],
-    out: { 1: ["    Time    Item  Amount","3  11:05     Pen      20","4  11:40  Bottle     180"] },
+    out: { 7: ["    Time    Item  Amount","3  11:05     Pen      20","4  11:40  Bottle     180"] },
     why: "tail() mirrors head() but from the bottom — perfect for checking the most recent entries in a running log."
   },
   {
     title: "Program 3 — Checking size & column names",
     usecase: "📋 Analyst: sanity-checking a dataset before starting work",
-    input: { fname: "students.csv (50 rows)", headers: ["Name","Marks","Branch","City"], rows: [["…","…","…","…"]] },
+    input: { fname: "50-student sample (generated)", headers: ["Name","Marks","Branch","City"], rows: [["…","…","…","…"]] },
     code: [
-      "print(df.shape)",
-      "print(df.columns.tolist())"
+      'import pandas as pd',
+      'import numpy as np',
+      '',
+      'np.random.seed(1)   # makes the random sample reproducible',
+      '',
+      '# 50 students, 4 columns — a stand-in for a real 50-row file',
+      'df = pd.DataFrame({',
+      '    "Name":   [f"Student{i}" for i in range(1, 51)],',
+      '    "Marks":  np.random.randint(40, 100, 50),',
+      '    "Branch": np.random.choice(["IT","CE","ME"], 50),',
+      '    "City":   np.random.choice(["Surat","Delhi","Mumbai"], 50)',
+      '})',
+      '',
+      'print(df.shape)',
+      'print(df.columns.tolist())'
     ],
-    out: { 0: ["(50, 4)"], 1: ["['Name', 'Marks', 'Branch', 'City']"] },
+    out: { 13: ["(50, 4)"], 14: ["['Name', 'Marks', 'Branch', 'City']"] },
     why: "shape = (rows, columns) at a glance; columns.tolist() lists every column name — handy when a dataset has 40 columns and you can't remember one."
   },
   {
     title: "Program 4 — Catching wrong data types with dtypes",
     usecase: "💼 HR: catching salary stored as text before doing payroll math",
-    input: { fname: "employees.csv", headers: ["Name","Salary"], rows: [["Aman","45000"],["Riya","39000"],["John","'50000'"]] },
+    input: { fname: "employees (in-memory)", headers: ["Name","Salary"], rows: [["Aman","45000"],["Riya","39000"],["John","'50000'"]] },
     code: [
-      'emp = pd.read_csv("employees.csv")',
-      "print(emp.dtypes)"
+      'import pandas as pd',
+      '',
+      "# John's Salary was typed with stray quotes -> stays TEXT, not a number",
+      'emp = pd.DataFrame({',
+      '    "Name":   ["Aman","Riya","John"],',
+      "    \"Salary\": [\"45000\",\"39000\",\"'50000'\"]",
+      '})',
+      'print(emp.dtypes)'
     ],
-    out: { 1: ["Name      object","Salary    object","dtype: object"] },
+    out: { 7: ["Name      object","Salary    object","dtype: object"] },
     why: 'dtypes reveals Salary loaded as text (object), not a number — until fixed with astype(), "45000"+"39000" would glue into "4500039000" instead of adding.'
   },
   {
     title: "Program 5 — The full health check: info() + describe()",
     usecase: "🩺 New dataset, first 30 seconds of due-diligence",
-    input: { fname: "students.csv", headers: ["Name","Age","Marks"], rows: [["John","20","85"],["Alice","22","90"],["Bob","21","78"]] },
+    input: { fname: "students (in-memory)", headers: ["Name","Age","Marks"], rows: [["John","20","85"],["Alice","22","90"],["Bob","21","78"]] },
     code: [
-      "print(df.info())",
-      "print(df.describe())"
+      'import pandas as pd',
+      '',
+      'df = pd.DataFrame({',
+      '    "Name":  ["John","Alice","Bob"],',
+      '    "Age":   [20, 22, 21],',
+      '    "Marks": [85, 90, 78]',
+      '})',
+      '',
+      'df.info()          # info() already prints; no need to wrap in print()',
+      'print(df.describe())'
     ],
     out: {
-      0: ["<class 'pandas.core.frame.DataFrame'>","RangeIndex: 3 entries, 0 to 2","Data columns (total 3 columns):"," #   Column  Non-Null Count  Dtype","---  ------  --------------  -----"," 0   Name    3 non-null      object"," 1   Age     3 non-null      int64"," 2   Marks   3 non-null      int64"],
-      1: ["        Age      Marks","count   3.0   3.000000","mean   21.0  84.333333","std     1.0   6.027714","min    20.0  78.000000","25%    20.5  81.500000","50%    21.0  85.000000","75%    21.5  87.500000","max    22.0  90.000000"]
+      8: ["<class 'pandas.core.frame.DataFrame'>","RangeIndex: 3 entries, 0 to 2","Data columns (total 3 columns):"," #   Column  Non-Null Count  Dtype ","---  ------  --------------  ----- "," 0   Name    3 non-null      object"," 1   Age     3 non-null      int64 "," 2   Marks   3 non-null      int64 ","dtypes: int64(2), object(1)","memory usage: 204.0+ bytes"],
+      9: ["        Age      Marks","count   3.0   3.000000","mean   21.0  84.333333","std     1.0   6.027714","min    20.0  78.000000","25%    20.5  81.500000","50%    21.0  85.000000","75%    21.5  87.500000","max    22.0  90.000000"]
     },
     why: "info() flags missing data early; describe() gives instant statistics for every numeric column — no formulas needed."
   }
@@ -2005,65 +2101,114 @@ const PROGRAMS = {
   {
     title: "Program 1 — Reading a CSV file",
     usecase: "📥 Analyst: loading the raw dataset for the first time",
-    input: { fname: "students.csv (on disk)", headers: ["Name","Marks","Branch","City"], rows: [["…50 rows…","","",""]] },
+    input: { fname: "students.csv (created below, then read)", headers: ["Name","Marks","Branch","City"], rows: [["…50 rows…","","",""]] },
     code: [
+      'import pandas as pd',
+      'import numpy as np',
+      '',
+      'np.random.seed(1)',
+      '',
+      '# --- create a sample file first (in real life it already exists) ---',
+      'sample = pd.DataFrame({',
+      '    "Name":   [f"Student{i}" for i in range(1, 51)],',
+      '    "Marks":  np.random.randint(40, 100, 50),',
+      '    "Branch": np.random.choice(["IT","CE","ME"], 50),',
+      '    "City":   np.random.choice(["Surat","Delhi","Mumbai"], 50)',
+      '})',
+      'sample.to_csv("students.csv", index=False)',
+      '',
+      '# --- the actual reading step ---',
       'df = pd.read_csv("students.csv")',
-      "print(df.shape)"
+      'print(df.shape)'
     ],
-    out: { 1: ["(50, 4)"] },
+    out: { 16: ["(50, 4)"] },
     why: "Checking .shape right after loading instantly confirms the file actually came in correctly."
   },
   {
     title: "Program 2 — Reading a specific Excel sheet",
     usecase: "📥 Teacher: loading marks from a specific tab in a workbook",
-    input: { fname: "marks.xlsx → Sheet1", headers: ["Name","Marks","Grade"], rows: [["Riya","88","A"],["Aman","72","B"],["Zoya","95","A+"]] },
+    input: { fname: "marks.xlsx → Sheet1 (created below, then read)", headers: ["Name","Marks","Grade"], rows: [["Riya","88","A"],["Aman","72","B"],["Zoya","95","A+"]] },
     code: [
-      'df2 = pd.read_excel(',
-      '    "marks.xlsx", sheet_name="Sheet1"',
-      ")",
-      "print(df2.columns.tolist())"
+      'import pandas as pd',
+      '',
+      '# --- create a sample workbook first ---',
+      'sample = pd.DataFrame({',
+      '    "Name":  ["Riya","Aman","Zoya"],',
+      '    "Marks": [88, 72, 95],',
+      '    "Grade": ["A","B","A+"]',
+      '})',
+      'sample.to_excel("marks.xlsx", sheet_name="Sheet1", index=False)',
+      '',
+      '# --- the actual reading step ---',
+      'df2 = pd.read_excel("marks.xlsx", sheet_name="Sheet1")',
+      'print(df2.columns.tolist())'
     ],
-    out: { 3: ["['Name', 'Marks', 'Grade']"] },
+    out: { 11: ["['Name', 'Marks', 'Grade']"] },
     why: "sheet_name picks exactly which sheet to load out of a multi-sheet workbook."
   },
   {
     title: "Program 3 — Loading only the columns you need",
-    usecase: "⚡ Speed: skipping 38 unneeded columns on a huge file",
-    input: { fname: "sales.csv (40 columns)", headers: ["Date","Amount","...(38 more)"], rows: [["01-Jan","1200","…"],["02-Jan","950","…"]] },
+    usecase: "⚡ Speed: skipping unneeded columns on a wide file",
+    input: { fname: "sales.csv (created below, then read)", headers: ["Date","Amount","Extra1","Extra2"], rows: [["01-Jan","1200","x","x"],["02-Jan","950","y","y"]] },
     code: [
-      "sales = pd.read_csv(",
-      '    "sales.csv", usecols=["Date","Amount"]',
-      ")",
-      "print(sales.head(2))"
+      'import pandas as pd',
+      '',
+      '# --- create a sample file with several columns ---',
+      'sample = pd.DataFrame({',
+      '    "Date":   ["01-Jan","02-Jan"],',
+      '    "Amount": [1200, 950],',
+      '    "Extra1": ["x","y"],',
+      '    "Extra2": ["x","y"]',
+      '})',
+      'sample.to_csv("sales.csv", index=False)',
+      '',
+      '# --- only load the 2 columns we actually need ---',
+      'sales = pd.read_csv("sales.csv", usecols=["Date","Amount"])',
+      'print(sales.head(2))'
     ],
-    out: { 3: ["     Date  Amount","0  01-Jan    1200","1  02-Jan     950"] },
+    out: { 12: ["     Date  Amount","0  01-Jan    1200","1  02-Jan     950"] },
     why: "usecols loads just the columns you actually need — much faster on huge files with 40+ columns."
   },
   {
     title: "Program 4 — Reading a semicolon-separated bank statement",
     usecase: "🏦 Bank: reading a statement exported in European CSV format",
-    input: { fname: "bank_statement.csv (raw text)", headers: ["Date;Description;Amount"], rows: [["01-07-2026;Grocery;-1200"],["02-07-2026;Salary;45000"]] },
+    input: { fname: "bank_statement.csv (created below, then read)", headers: ["Date;Description;Amount"], rows: [["01-07-2026;Grocery;-1200"],["02-07-2026;Salary;45000"]] },
     code: [
-      'bank = pd.read_csv(',
-      '    "bank_statement.csv", sep=";"',
-      ")",
-      "print(bank.head(2))"
+      'import pandas as pd',
+      '',
+      '# --- create a sample semicolon-separated file ---',
+      '# (European CSV exports often use ; instead of ,)',
+      'with open("bank_statement.csv", "w") as f:',
+      '    f.write("Date;Description;Amount\\n")',
+      '    f.write("01-07-2026;Grocery;-1200\\n")',
+      '    f.write("02-07-2026;Salary;45000\\n")',
+      '',
+      '# --- the actual reading step ---',
+      'bank = pd.read_csv("bank_statement.csv", sep=";")',
+      'print(bank.head(2))'
     ],
-    out: { 3: ["         Date Description  Amount","0  01-07-2026    Grocery   -1200","1  02-07-2026     Salary   45000"] },
+    out: { 10: ["         Date Description  Amount","0  01-07-2026     Grocery   -1200","1  02-07-2026      Salary   45000"] },
     why: 'European bank exports often use semicolons instead of commas — sep=";" tells Pandas exactly where one column ends and the next begins.'
   },
   {
     title: "Program 5 — Loading every sheet from a workbook at once",
     usecase: "🏫 School office: a workbook with one attendance sheet per month",
-    input: { fname: "attendance.xlsx (3 sheets)", headers: ["Sheet","Rows"], rows: [["Jan","30"],["Feb","28"],["Mar","31"]] },
+    input: { fname: "attendance.xlsx (created below, then read)", headers: ["Sheet","Rows"], rows: [["Jan","30"],["Feb","28"],["Mar","31"]] },
     code: [
-      "sheets = pd.read_excel(",
-      '    "attendance.xlsx", sheet_name=None',
-      ")",
-      "print(sheets.keys())",
+      'import pandas as pd',
+      '',
+      '# --- create a 3-sheet sample workbook ---',
+      'with pd.ExcelWriter("attendance.xlsx") as writer:',
+      '    pd.DataFrame({"Roll": range(1,31)}).to_excel(writer, sheet_name="Jan", index=False)',
+      '    pd.DataFrame({"Roll": range(1,29)}).to_excel(writer, sheet_name="Feb", index=False)',
+      '    pd.DataFrame({"Roll": range(1,32)}).to_excel(writer, sheet_name="Mar", index=False)',
+      '',
+      '# --- the actual reading step: load every sheet at once ---',
+      'sheets = pd.read_excel("attendance.xlsx", sheet_name=None)',
+      'print(sheets.keys())',
       'print(sheets["Feb"].shape)'
     ],
-    out: { 3: ["dict_keys(['Jan', 'Feb', 'Mar'])"], 4: ["(28, 5)"] },
+    out: { 9: ["dict_keys(['Jan', 'Feb', 'Mar'])"], 10: ["(28, 1)"] },
     why: "sheet_name=None loads every sheet at once into a dictionary of DataFrames, keyed by sheet name — perfect for month-by-month workbooks."
   }
 ],
@@ -2074,10 +2219,13 @@ const PROGRAMS = {
     usecase: "💾 Handing off cleaned data to a teammate",
     input: { fname: "df (in memory)", headers: ["Name","Marks"], rows: [["Riya","88"],["Aman","72"]] },
     code: [
+      'import pandas as pd',
+      '',
+      'df = pd.DataFrame({"Name": ["Riya","Aman"], "Marks": [88, 72]})',
       'df.to_csv("clean_students.csv", index=False)',
       'print("Saved!")'
     ],
-    out: { 1: ["Saved!","(file written to disk)"] },
+    out: { 4: ["Saved!"] },
     why: "index=False keeps the output file clean — no stray, meaningless \"0,1,2...\" column tacked onto the front."
   },
   {
@@ -2085,48 +2233,70 @@ const PROGRAMS = {
     usecase: "🏅 Publishing just the topper list",
     input: { fname: "df", headers: ["Name","Marks"], rows: [["John","90"],["Alice","75"],["Bob","88"],["David","60"]] },
     code: [
+      'import pandas as pd',
+      '',
+      'df = pd.DataFrame({',
+      '    "Name":  ["John","Alice","Bob","David"],',
+      '    "Marks": [90, 75, 88, 60]',
+      '})',
+      '',
       'toppers = df[df["Marks"] > 85]',
-      'toppers.to_csv("toppers.csv", index=False)'
+      'toppers.to_csv("toppers.csv", index=False)',
+      'print(toppers)'
     ],
-    out: { 1: ["file 'toppers.csv' created,","containing only John & Bob"] },
-    why: "You can export any filtered slice of your data, not just the whole table."
+    out: { 8: ["   Name  Marks","0  John     90","2   Bob     88"] },
+    why: "You can export any filtered slice of your data, not just the whole table — only John & Bob land in toppers.csv."
   },
   {
     title: "Program 3 — Saving to Excel",
     usecase: "📊 Delivering a polished .xlsx report",
     input: { fname: "df", headers: ["Name","Marks"], rows: [["Riya","88"],["Aman","72"]] },
     code: [
-      "df.to_excel(",
-      '    "report.xlsx", sheet_name="FinalReport", index=False',
-      ")",
+      'import pandas as pd',
+      '',
+      'df = pd.DataFrame({"Name": ["Riya","Aman"], "Marks": [88, 72]})',
+      'df.to_excel("report.xlsx", sheet_name="FinalReport", index=False)',
       'print("Excel ready")'
     ],
-    out: { 3: ["Excel ready"] },
-    why: "to_excel() needs the same openpyxl package installed as read_excel()."
+    out: { 4: ["Excel ready"] },
+    why: "to_excel() needs the openpyxl package installed (pip install openpyxl), same as read_excel()."
   },
   {
     title: "Program 4 — Exporting only selected columns",
     usecase: "📄 Registrar: printing report cards with just Name & Grade",
     input: { fname: "df (full table)", headers: ["Name","Marks","Grade","City"], rows: [["Riya","88","A","Surat"],["Aman","72","B","Delhi"]] },
     code: [
-      'df.to_csv("report_cards.csv",',
-      '    columns=["Name","Grade"], index=False)',
+      'import pandas as pd',
+      '',
+      'df = pd.DataFrame({',
+      '    "Name":  ["Riya","Aman"],',
+      '    "Marks": [88, 72],',
+      '    "Grade": ["A","B"],',
+      '    "City":  ["Surat","Delhi"]',
+      '})',
+      '',
+      'df.to_csv("report_cards.csv", columns=["Name","Grade"], index=False)',
       'print("Saved report cards")'
     ],
-    out: { 2: ["Saved report cards","(file has only Name, Grade)"] },
+    out: { 9: ["Saved report cards"] },
     why: "columns=[...] exports a narrow slice of a wide table without building a separate filtered DataFrame first."
   },
   {
     title: "Program 5 — Saving two sheets in ONE workbook",
     usecase: "🧾 HR: delivering the cleaned data + a summary together",
-    input: { fname: "cleaned + summary (in memory)", headers: ["DataFrame","Rows"], rows: [["cleaned","46"],["summary","3"]] },
+    input: { fname: "cleaned + summary (in memory)", headers: ["DataFrame","Rows"], rows: [["cleaned","2"],["summary","3"]] },
     code: [
+      'import pandas as pd',
+      '',
+      'cleaned = pd.DataFrame({"EmpID": [101, 102], "Name": ["Aman","Riya"]})',
+      'summary = pd.DataFrame({"Department": ["Sales","HR","Engineering"], "Count": [10, 5, 8]})',
+      '',
       'with pd.ExcelWriter("hr_report.xlsx") as writer:',
       '    cleaned.to_excel(writer, sheet_name="Cleaned", index=False)',
       '    summary.to_excel(writer, sheet_name="Summary", index=False)',
       'print("hr_report.xlsx ready with 2 sheets")'
     ],
-    out: { 3: ["hr_report.xlsx ready with 2 sheets"] },
+    out: { 8: ["hr_report.xlsx ready with 2 sheets"] },
     why: "ExcelWriter lets multiple DataFrames land as separate tabs inside a single workbook — one file to email instead of two."
   }
 ],
@@ -2136,8 +2306,16 @@ const PROGRAMS = {
     title: "Program 1 — Selecting by label with loc",
     usecase: "🏷️ Fetching a value by its meaningful row label",
     input: { fname: "df", headers: ["Index","Name","Marks"], rows: [["0","Riya","88"],["1","Aman","72"],["2","Zoya","95"]] },
-    code: [ 'print(df.loc[2, "Name"])' ],
-    out: { 0: ["'Zoya'"] },
+    code: [
+      'import pandas as pd',
+      '',
+      'df = pd.DataFrame({',
+      '    "Name":  ["Riya","Aman","Zoya"],',
+      '    "Marks": [88, 72, 95]',
+      '})',
+      'print(df.loc[2, "Name"])   # row labelled 2, column "Name"'
+    ],
+    out: { 6: ["Zoya"] },
     why: 'loc[2, "Name"] reads the row labelled 2, in the column labelled "Name".'
   },
   {
@@ -2145,23 +2323,34 @@ const PROGRAMS = {
     usecase: "🔢 Grabbing the first few rows/columns by pure position",
     input: { fname: "df", headers: ["Name","Marks","City"], rows: [["Alice","85","Surat"],["Bob","90","Mumbai"],["Charlie","78","Delhi"]] },
     code: [
-      "# iloc selects by POSITION, not by label",
-      "# rows 0:3  -> positions 0,1,2  (there is no row 3, so nothing extra to exclude here)",
-      "# cols 0:2  -> columns at position 0 and 1 (Name, Marks); City sits at position 2 and is EXCLUDED",
-      "print(df.iloc[0:3, 0:2])"
+      'import pandas as pd',
+      '',
+      'df = pd.DataFrame({',
+      '    "Name":  ["Alice","Bob","Charlie"],',
+      '    "Marks": [85, 90, 78],',
+      '    "City":  ["Surat","Mumbai","Delhi"]',
+      '})',
+      'print(df.iloc[0:3, 0:2])   # first 3 rows, first 2 columns'
     ],
-    out: { 3: ["      Name  Marks","0    Alice     85","1      Bob     90","2  Charlie     78"] },
-    why: "iloc uses pure position — exactly like Python list slicing, end excluded. That's why City (position 2) is left out even though all 3 rows are kept."
+    out: { 7: ["      Name  Marks","0    Alice     85","1      Bob     90","2  Charlie     78"] },
+    why: "iloc uses pure position — exactly like Python list slicing, end excluded."
   },
   {
     title: "Program 3 — Reading/updating one cell with at",
     usecase: "✏️ Correcting one score after a re-check",
     input: { fname: "df", headers: ["Index","Name","Marks"], rows: [["0","Alice","85"],["1","Bob","90"],["2","Charlie","78"]] },
     code: [
+      'import pandas as pd',
+      '',
+      'df = pd.DataFrame({',
+      '    "Name":  ["Alice","Bob","Charlie"],',
+      '    "Marks": [85, 90, 78]',
+      '})',
+      '',
       'df.at[1, "Marks"] = 100',
       'print(df.at[1, "Marks"])'
     ],
-    out: { 1: ["100"] },
+    out: { 8: ["100"] },
     why: "at[] (and its position-based twin iat[]) is the fastest way to read or update a single cell in a huge table."
   },
   {
@@ -2169,18 +2358,35 @@ const PROGRAMS = {
     usecase: "🏅 Principal: pulling names of students scoring 80+",
     input: { fname: "df", headers: ["Name","Marks"], rows: [["John","90"],["Alice","75"],["Bob","88"],["David","60"]] },
     code: [
+      'import pandas as pd',
+      '',
+      'df = pd.DataFrame({',
+      '    "Name":  ["John","Alice","Bob","David"],',
+      '    "Marks": [90, 75, 88, 60]',
+      '})',
+      '',
       'honor_roll = df.loc[df["Marks"] >= 80, "Name"]',
-      "print(honor_roll)"
+      'print(honor_roll)'
     ],
-    out: { 1: ["0    John","2     Bob","Name: Name, dtype: object"] },
+    out: { 8: ["0    John","2     Bob","Name: Name, dtype: object"] },
     why: 'loc accepts a True/False condition as the row-selector — it\'s not just for named rows, it\'s for "which rows match this rule".'
   },
   {
     title: "Program 5 — Fastest single-cell read with iat",
     usecase: "🏥 Reception: instantly fetching the first patient in today's queue",
     input: { fname: "df", headers: ["Token","Patient"], rows: [["1","Aman"],["2","Riya"],["3","John"]] },
-    code: [ "first_patient = df.iat[0, 1]", "print(first_patient)" ],
-    out: { 1: ["'Aman'"] },
+    code: [
+      'import pandas as pd',
+      '',
+      'df = pd.DataFrame({',
+      '    "Token":   [1, 2, 3],',
+      '    "Patient": ["Aman","Riya","John"]',
+      '})',
+      '',
+      'first_patient = df.iat[0, 1]',
+      'print(first_patient)'
+    ],
+    out: { 7: ["Aman"] },
     why: "iat is the fastest possible way to grab a single cell by pure position — built for speed in tight loops or live dashboards."
   }
 ],
@@ -2189,60 +2395,96 @@ const PROGRAMS = {
   {
     title: "Program 1 — Counting missing values per column",
     usecase: "🔍 First scan of a freshly loaded dataset",
-    input: { fname: "df (6-row sample)", headers: ["Name","Marks","Branch"], rows: [["Alice","85","IT"],["Bob","NaN","CE"],["Charlie","78","NaN"],["David","NaN","IT"],["Eva","90","CE"],["Frank","NaN","ME"]] },
+    input: { fname: "df", headers: ["Name","Marks","Branch"], rows: [["A","85","IT"],["B","NaN","CE"],["…","…","…"]] },
     code: [
-      "# Step 1 (inner call): isnull() marks every cell True (missing) or False (present)",
-      "# Step 2 (outer call): .sum() then adds up the True values, column by column (True=1, False=0)",
-      "print(df.isnull().sum())"
+      'import pandas as pd',
+      'import numpy as np',
+      '',
+      'df = pd.DataFrame({',
+      '    "Name":   ["A","B","C","D","E","F","G","H","I","J"],',
+      '    "Marks":  [85, np.nan, 78, 90, np.nan, 60, 72, np.nan, 88, 95],',
+      '    "Branch": ["IT","CE","IT", np.nan, "ME","CE","IT","ME","CE","IT"]',
+      '})',
+      'print(df.isnull().sum())'
     ],
-    out: { 2: ["Name      0","Marks     3","Branch    1","dtype: int64"] },
-    why: "Shows the missing-value count for every column at a single glance — Marks is missing for Bob, David, Frank (3); Branch is missing for Charlie (1); Name has no gaps (0)."
+    out: { 8: ["Name      0","Marks     3","Branch    1","dtype: int64"] },
+    why: "Shows the missing-value count for every column at a single glance."
   },
   {
     title: "Program 2 — Viewing only the problem rows",
     usecase: "🎯 Zooming in on exactly which students lack marks",
     input: { fname: "df", headers: ["Name","Marks"], rows: [["Alice","85"],["Bob","NaN"],["Charlie","78"]] },
-    code: [ 'print(df[df["Marks"].isnull()])' ],
-    out: { 0: ["only the rows where","Marks is missing (Bob)"] },
+    code: [
+      'import pandas as pd',
+      'import numpy as np',
+      '',
+      'df = pd.DataFrame({',
+      '    "Name":  ["Alice","Bob","Charlie"],',
+      '    "Marks": [85, np.nan, 78]',
+      '})',
+      'print(df[df["Marks"].isnull()])'
+    ],
+    out: { 7: ["  Name  Marks","1  Bob    NaN"] },
     why: "Combining isnull() with filtering shows you the exact rows causing trouble — not just a count."
   },
   {
     title: "Program 3 — Counting valid (non-missing) entries",
     usecase: "✅ Confirming how much clean data you actually have",
-    input: { fname: "df (same 6-row sample as Program 1)", headers: ["Name","Marks","Branch"], rows: [["Alice","85","IT"],["Bob","NaN","CE"],["Charlie","78","NaN"],["David","NaN","IT"],["Eva","90","CE"],["Frank","NaN","ME"]] },
+    input: { fname: "df", headers: ["Name","Marks","Branch"], rows: [["A","85","IT"],["B","NaN","CE"],["…","…","…"]] },
     code: [
-      "# Step 1 (inner call): notnull() marks every cell True (present) or False (missing) — the OPPOSITE of isnull()",
-      "# Step 2 (outer call): .sum() adds up the True values per column",
-      "print(df.notnull().sum())"
+      'import pandas as pd',
+      'import numpy as np',
+      '',
+      'df = pd.DataFrame({',
+      '    "Name":   ["A","B","C","D","E","F","G","H","I","J"],',
+      '    "Marks":  [85, np.nan, 78, 90, np.nan, 60, 72, np.nan, 88, 95],',
+      '    "Branch": ["IT","CE","IT", np.nan, "ME","CE","IT","ME","CE","IT"]',
+      '})',
+      'print(df.notnull().sum())'
     ],
-    out: { 2: ["Name      6","Marks     3","Branch    5","dtype: int64"] },
-    why: "notnull() is the mirror image of isnull() — out of 6 rows, all 6 Names are present, only 3 Marks are present (3 are missing), and 5 Branches are present (1 is missing)."
+    out: { 8: ["Name      10","Marks      7","Branch     9","dtype: int64"] },
+    why: "notnull() is the mirror image of isnull() — confirms exactly how many complete entries exist."
   },
   {
     title: "Program 4 — Flagging any row with a gap anywhere",
     usecase: "🏦 Loan officer: flagging incomplete applications before approval",
-    input: { fname: "loan_apps.csv", headers: ["Name","Income","ID_Proof"], rows: [["Aman","45000","Yes"],["Riya","NaN","Yes"],["John","38000","NaN"]] },
+    input: { fname: "loan_apps", headers: ["Name","Income","ID_Proof"], rows: [["Aman","45000","Yes"],["Riya","NaN","Yes"],["John","38000","NaN"]] },
     code: [
-      "incomplete = df[df.isnull().any(axis=1)]",
-      "print(incomplete)"
+      'import pandas as pd',
+      'import numpy as np',
+      '',
+      'df = pd.DataFrame({',
+      '    "Name":     ["Aman","Riya","John"],',
+      '    "Income":   [45000, np.nan, 38000],',
+      '    "ID_Proof": ["Yes","Yes", np.nan]',
+      '})',
+      '',
+      'incomplete = df[df.isnull().any(axis=1)]',
+      'print(incomplete)'
     ],
-    out: { 1: ["   Name   Income ID_Proof","1  Riya      NaN      Yes","2  John  38000.0      NaN"] },
+    out: { 9: ["   Name   Income ID_Proof","1  Riya      NaN      Yes","2  John  38000.0      NaN"] },
     why: 'any(axis=1) checks each row sideways — "does THIS row have even one gap anywhere?" — exactly what a loan officer needs to flag.'
   },
   {
     title: "Program 5 — Turning gaps into a % data-quality report",
     usecase: "📊 Ranking which column is the biggest problem",
-    input: { fname: "customers.csv (10-row sample)", headers: ["Name","Email","Phone"], rows: [["Alice","alice@x.com","9998887771"],["Bob","NaN","9998887772"],["Charlie","charlie@x.com","NaN"],["David","david@x.com","9998887774"],["Eva","NaN","9998887775"],["Frank","frank@x.com","NaN"],["Grace","grace@x.com","9998887777"],["Helen","helen@x.com","NaN"],["Ivan","ivan@x.com","9998887779"],["Jack","jack@x.com","9998887780"]] },
+    input: { fname: "customers (100 rows, generated)", headers: ["Column","Missing"], rows: [["Name","0"],["Email","5"],["Phone","12"]] },
     code: [
-      "# Step 1 (innermost): df.isnull().sum() -> missing COUNT per column",
-      "#   Name=0, Email=2 (Bob, Eva missing), Phone=3 (Charlie, Frank, Helen missing)",
-      "# Step 2: divide by len(df) -> the FRACTION missing, e.g. 2/10 = 0.2",
-      "# Step 3 (outermost): multiply by 100 -> convert the fraction into a percentage",
-      "missing_pct = (df.isnull().sum() / len(df)) * 100",
-      "print(missing_pct.round(1))"
+      'import pandas as pd',
+      'import numpy as np',
+      '',
+      'n = 100',
+      'df = pd.DataFrame({',
+      '    "Name":  [f"Cust{i}" for i in range(n)],',
+      '    "Email": [np.nan if i < 5  else f"user{i}@mail.com" for i in range(n)],',
+      '    "Phone": [np.nan if i < 12 else "9999999999" for i in range(n)]',
+      '})',
+      '',
+      'missing_pct = (df.isnull().sum() / len(df)) * 100',
+      'print(missing_pct.round(1))'
     ],
-    out: { 5: ["Name      0.0","Email    20.0","Phone    30.0","dtype: float64"] },
-    why: "Turning raw counts into percentages instantly shows which column is the biggest problem — with 10 rows, Email is missing for Bob & Eva (2/10 = 20.0%) and Phone is missing for Charlie, Frank & Helen (3/10 = 30.0%)."
+    out: { 10: ["Name      0.0","Email     5.0","Phone    12.0","dtype: float64"] },
+    why: "Turning raw counts into percentages instantly shows which column is the biggest problem — 12% missing phones is a real red flag."
   }
 ],
 
@@ -2252,12 +2494,18 @@ const PROGRAMS = {
     usecase: "🎓 Fair marks for students who missed the exam",
     input: { fname: "df", headers: ["Name","Marks"], rows: [["Alice","85"],["Bob","NaN"],["Charlie","78"],["David","NaN"]] },
     code: [
-      'df["Marks"] = df["Marks"].fillna(',
-      '    df["Marks"].mean()',
-      ")",
+      'import pandas as pd',
+      'import numpy as np',
+      '',
+      'df = pd.DataFrame({',
+      '    "Name":  ["Alice","Bob","Charlie","David"],',
+      '    "Marks": [85, np.nan, 78, np.nan]',
+      '})',
+      '',
+      'df["Marks"] = df["Marks"].fillna(df["Marks"].mean())',
       'print(df["Marks"].isnull().sum())'
     ],
-    out: { 3: ["0"] },
+    out: { 9: ["0"] },
     why: "NaNs get replaced by the column average, so zero missing values remain afterward."
   },
   {
@@ -2265,45 +2513,76 @@ const PROGRAMS = {
     usecase: "🏷️ Marking unspecified branches honestly",
     input: { fname: "df", headers: ["Name","Branch"], rows: [["Aman","IT"],["Riya","NaN"],["John","CE"]] },
     code: [
+      'import pandas as pd',
+      'import numpy as np',
+      '',
+      'df = pd.DataFrame({',
+      '    "Name":   ["Aman","Riya","John"],',
+      '    "Branch": ["IT", np.nan, "CE"]',
+      '})',
+      '',
       'df["Branch"] = df["Branch"].fillna("Unknown")',
       'print(df["Branch"].unique())'
     ],
-    out: { 1: ["array(['IT', 'CE', 'Unknown'], dtype=object)"] },
+    out: { 9: ["['IT' 'Unknown' 'CE']"] },
     why: 'Text columns usually get a placeholder label instead of a number — "Unknown" is honest about the gap.'
   },
   {
     title: "Program 3 — Forward-filling from the previous row",
     usecase: "🌡️ Filling gaps in a daily temperature log",
-    input: { fname: "weather.csv", headers: ["Day","Temp"], rows: [["Mon","30"],["Tue","NaN"],["Wed","NaN"],["Thu","32"]] },
+    input: { fname: "weather", headers: ["Day","Temp"], rows: [["Mon","30"],["Tue","NaN"],["Wed","NaN"],["Thu","32"]] },
     code: [
-      'df_filled = df.fillna(method="ffill")',
-      "print(df_filled)"
+      'import pandas as pd',
+      'import numpy as np',
+      '',
+      'df = pd.DataFrame({',
+      '    "Day":  ["Mon","Tue","Wed","Thu"],',
+      '    "Temp": [30, np.nan, np.nan, 32]',
+      '})',
+      '',
+      '# newer Pandas prefers df.ffill() over fillna(method="ffill")',
+      'df_filled = df.ffill()',
+      'print(df_filled)'
     ],
-    out: { 1: ["   Day  Temp","0  Mon  30.0","1  Tue  30.0","2  Wed  30.0","3  Thu  32.0"] },
+    out: { 10: ["   Day  Temp","0  Mon  30.0","1  Tue  30.0","2  Wed  30.0","3  Thu  32.0"] },
     why: "Forward-fill copies the last known value downward — ideal for time-series like a daily temperature or attendance log."
   },
   {
     title: "Program 4 — Filling with the median (outlier-safe)",
     usecase: "💰 Payroll: patching a missing salary without a CEO-sized outlier skewing it",
-    input: { fname: "payroll.csv", headers: ["Employee","Salary"], rows: [["Aman","45000"],["Riya","NaN"],["John","42000"],["CEO","500000"]] },
+    input: { fname: "payroll", headers: ["Employee","Salary"], rows: [["Aman","45000"],["Riya","NaN"],["John","42000"],["CEO","500000"]] },
     code: [
-      'df["Salary"] = df["Salary"].fillna(',
-      '    df["Salary"].median()',
-      ")",
+      'import pandas as pd',
+      'import numpy as np',
+      '',
+      'df = pd.DataFrame({',
+      '    "Employee": ["Aman","Riya","John","CEO"],',
+      '    "Salary":   [45000, np.nan, 42000, 500000]',
+      '})',
+      '',
+      'df["Salary"] = df["Salary"].fillna(df["Salary"].median())',
       'print(df["Salary"])'
     ],
-    out: { 3: ["Aman     45000.0","Riya     45000.0","John     42000.0","CEO     500000.0"] },
-    why: "The mean here would have been pulled way up to ₹1,95,667 by the CEO's salary — median ignores outliers and gives a realistic fill value."
+    out: { 9: ["0     45000.0","1     45000.0","2     42000.0","3    500000.0","Name: Salary, dtype: float64"] },
+    why: "The mean here would have been pulled way up by the CEO's salary — median ignores outliers and gives a realistic fill value (45000)."
   },
   {
     title: "Program 5 — Filling with a fixed business-rule value",
     usecase: "📦 Inventory: a blank order really means zero, not 'unknown'",
-    input: { fname: "orders.csv", headers: ["Product","Qty_Ordered"], rows: [["Pen","50"],["Notebook","NaN"],["Eraser","30"],["Marker","NaN"]] },
+    input: { fname: "orders", headers: ["Product","Qty_Ordered"], rows: [["Pen","50"],["Notebook","NaN"],["Eraser","30"],["Marker","NaN"]] },
     code: [
+      'import pandas as pd',
+      'import numpy as np',
+      '',
+      'df = pd.DataFrame({',
+      '    "Product":     ["Pen","Notebook","Eraser","Marker"],',
+      '    "Qty_Ordered": [50, np.nan, 30, np.nan]',
+      '})',
+      '',
       'df["Qty_Ordered"] = df["Qty_Ordered"].fillna(0)',
       'print(df["Qty_Ordered"])'
     ],
-    out: { 1: ["Pen         50","Notebook     0","Eraser      30","Marker       0"] },
+    out: { 9: ["0    50.0","1     0.0","2    30.0","3     0.0","Name: Qty_Ordered, dtype: float64"] },
     why: "Unlike marks or salary, a blank order quantity in this system specifically means \"nothing was ordered\" — filling with 0 is a business rule, not a guess."
   },
   {
@@ -2311,18 +2590,21 @@ const PROGRAMS = {
     usecase: "🧮 Analyst: treating both NaN and a placeholder -1 as \"missing\" together",
     input: { fname: "df", headers: ["Name","Marks"], rows: [["Alice","85"],["Bob","-1"],["Charlie","NaN"],["David","92"]] },
     code: [
-      "# Step 1: -1 is a FAKE placeholder for 'missing' (not a real mark) -> convert it to a real NaN",
-      '#          so Pandas treats it as missing too, instead of a valid score of -1',
+      'import pandas as pd',
+      'import numpy as np',
+      '',
+      'df = pd.DataFrame({',
+      '    "Name":  ["Alice","Bob","Charlie","David"],',
+      '    "Marks": [85, -1, np.nan, 92]',
+      '})',
+      '',
+      '# treat the placeholder -1 as missing too, then fill both kinds at once',
       'df["Marks"] = df["Marks"].replace(-1, np.nan)',
-      "# Step 2 (inner call runs FIRST): np.nanmean(df[\"Marks\"]) computes the average while",
-      "#          IGNORING every NaN -> only 85 and 92 remain -> (85+92)/2 = 88.5",
-      "# Step 2 (outer call runs SECOND): fillna(88.5) replaces every NaN with that 88.5 average",
       'df["Marks"] = df["Marks"].fillna(np.nanmean(df["Marks"]))',
-      "# Step 3: print the fully-cleaned Marks column",
       'print(df["Marks"])'
     ],
-    out: { 8: ["Alice     85.000000","Bob       88.500000","Charlie   88.500000","David     92.000000"] },
-    why: "np.nan gives every 'missing' sentinel (both blanks and a fake -1) one common shape, and np.nanmean() safely averages around them. Note the nested call: np.nanmean(df[\"Marks\"]) must fully finish computing 88.5 BEFORE fillna() can use it."
+    out: { 10: ["0    85.0","1    88.5","2    88.5","3    92.0","Name: Marks, dtype: float64"] },
+    why: "np.nan gives every 'missing' sentinel (both blanks and a fake -1) one common shape, and np.nanmean() safely averages around them."
   }
 ],
 
@@ -2330,67 +2612,103 @@ const PROGRAMS = {
   {
     title: "Program 1 — Dropping all incomplete rows",
     usecase: "🧹 Quick, strict cleanup before analysis",
-    input: { fname: "df (6-row sample)", headers: ["Name","Marks","City"], rows: [["Alice","85","Surat"],["Bob","NaN","Mumbai"],["Charlie","78","NaN"],["David","90","Delhi"],["Eva","65","Pune"],["Frank","NaN","NaN"]] },
+    input: { fname: "df", headers: ["Name","Marks","City"], rows: [["Alice","85","Surat"],["Bob","NaN","Mumbai"],["Charlie","78","NaN"],["David","90","Delhi"],["Emma","NaN","Pune"]] },
     code: [
-      "# dropna() with no arguments = axis=0 (rows) by default:",
-      "# ANY row containing even ONE missing value anywhere gets removed",
-      "df_clean = df.dropna()",
-      "print(df_clean.shape)"
+      'import pandas as pd',
+      'import numpy as np',
+      '',
+      'df = pd.DataFrame({',
+      '    "Name":  ["Alice","Bob","Charlie","David","Emma"],',
+      '    "Marks": [85, np.nan, 78, 90, np.nan],',
+      '    "City":  ["Surat","Mumbai", np.nan, "Delhi","Pune"]',
+      '})',
+      '',
+      'df_clean = df.dropna()',
+      'print(df_clean.shape)'
     ],
-    out: { 3: ["(3, 3)"] },
-    why: "Bob (missing Marks), Charlie (missing City) and Frank (missing both) are dropped, leaving Alice, David and Eva — 3 clean rows out of the original 6, so shape is (3, 3)."
+    out: { 10: ["(2, 3)"] },
+    why: "Any row with even one missing value is removed — Bob, Charlie and Emma all go, leaving only Alice and David."
   },
   {
     title: "Program 2 — Dropping based on one column only",
     usecase: "🎯 Only Marks really matters for this report",
-    input: { fname: "df (same 6-row sample as Program 1)", headers: ["Name","Marks","City"], rows: [["Alice","85","Surat"],["Bob","NaN","Mumbai"],["Charlie","78","NaN"],["David","90","Delhi"],["Eva","65","Pune"],["Frank","NaN","NaN"]] },
+    input: { fname: "df", headers: ["Name","Marks","City"], rows: [["Alice","85","Surat"],["Bob","NaN","Mumbai"],["Charlie","78","NaN"],["David","90","Delhi"],["Emma","NaN","Pune"]] },
     code: [
-      '# subset=["Marks"] tells dropna() to ONLY check the Marks column for gaps',
-      '# (unlike Program 1, a gap in Name or City is now IGNORED and does not cause a drop)',
+      'import pandas as pd',
+      'import numpy as np',
+      '',
+      'df = pd.DataFrame({',
+      '    "Name":  ["Alice","Bob","Charlie","David","Emma"],',
+      '    "Marks": [85, np.nan, 78, 90, np.nan],',
+      '    "City":  ["Surat","Mumbai", np.nan, "Delhi","Pune"]',
+      '})',
+      '',
       'df_clean2 = df.dropna(subset=["Marks"])',
-      "print(df_clean2.shape)"
+      'print(df_clean2.shape)'
     ],
-    out: { 3: ["(4, 3)"] },
-    why: "Only Bob and Frank are missing Marks, so only those 2 rows are dropped. Charlie's missing City is ignored this time — leaving 4 rows (Alice, Charlie, David, Eva) instead of the stricter 3 from Program 1."
+    out: { 10: ["(3, 3)"] },
+    why: "Only rows missing \"Marks\" specifically get dropped — Charlie's missing City is ignored, so fewer rows are lost."
   },
   {
     title: "Program 3 — Dropping incomplete columns",
     usecase: "🗑️ Removing columns too broken to trust",
-    input: { fname: "df (4-row sample)", headers: ["Name","Marks","City","Branch"], rows: [["Alice","85","Surat","IT"],["Bob","NaN","Mumbai","CE"],["Charlie","78","NaN","IT"],["David","90","Delhi","ME"]] },
+    input: { fname: "df", headers: ["Name","Marks","City","Branch"], rows: [["Alice","85","Surat","IT"],["Bob","NaN","Mumbai","CE"],["Charlie","78","NaN","ME"],["David","90","Delhi","IT"]] },
     code: [
-      '# axis=1 tells dropna() to check COLUMNS instead of rows',
-      '# (axis=0, the default, checks rows — see Program 1)',
-      '# any COLUMN containing even ONE missing value anywhere gets removed entirely',
-      "df_clean3 = df.dropna(axis=1)",
-      "print(df_clean3.columns.tolist())"
+      'import pandas as pd',
+      'import numpy as np',
+      '',
+      'df = pd.DataFrame({',
+      '    "Name":   ["Alice","Bob","Charlie","David"],',
+      '    "Marks":  [85, np.nan, 78, 90],',
+      '    "City":   ["Surat","Mumbai", np.nan, "Delhi"],',
+      '    "Branch": ["IT","CE","ME","IT"]',
+      '})',
+      '',
+      'df_clean3 = df.dropna(axis=1)',
+      'print(df_clean3.columns.tolist())'
     ],
-    out: { 4: ["['Name', 'Branch']"] },
-    why: "Marks has a gap (Bob) and City has a gap (Charlie), so BOTH columns are dropped entirely — only Name and Branch, which are fully complete, survive."
+    out: { 11: ["['Name', 'Branch']"] },
+    why: "axis=1 removes entire columns that contain even a single missing value — here Marks and City got wiped, only the always-complete columns remain."
   },
   {
     title: "Program 4 — Keeping rows with 'enough' answers",
     usecase: "📝 Survey: keep responses answering at least 3 of 4 questions",
-    input: { fname: "survey.csv", headers: ["Q1","Q2","Q3","Q4"], rows: [["Yes","No","Yes","Yes"],["Yes","No","Yes","NaN"],["Yes","NaN","NaN","No"],["NaN","NaN","NaN","NaN"]] },
+    input: { fname: "survey", headers: ["Q1","Q2","Q3","Q4"], rows: [["Yes","No","Yes","Yes"],["Yes","No","Yes","NaN"],["Yes","NaN","NaN","No"],["NaN","NaN","NaN","NaN"]] },
     code: [
-      '# thresh=3 (the library/parameter variable being highlighted here) means:',
-      '# "KEEP a row only if it has AT LEAST 3 non-missing (non-NaN) answers out of 4"',
-      '# Row 0: Yes,No,Yes,Yes  -> 4 answered -> 4 >= 3 -> KEPT',
-      '# Row 1: Yes,No,Yes,NaN  -> 3 answered -> 3 >= 3 -> KEPT',
-      '# Row 2: Yes,NaN,NaN,No  -> 2 answered -> 2 <  3 -> DROPPED',
-      '# Row 3: NaN,NaN,NaN,NaN -> 0 answered -> 0 <  3 -> DROPPED',
-      '# Result: 2 rows kept (Row 0 and Row 1), out of the original 4',
-      "cleaned = df.dropna(thresh=3)",
-      "print(cleaned.shape)"
+      'import pandas as pd',
+      'import numpy as np',
+      '',
+      'df = pd.DataFrame({',
+      '    "Q1": ["Yes","Yes","Yes", np.nan],',
+      '    "Q2": ["No","No", np.nan, np.nan],',
+      '    "Q3": ["Yes","Yes", np.nan, np.nan],',
+      '    "Q4": ["Yes", np.nan,"No", np.nan]',
+      '})',
+      '',
+      'cleaned = df.dropna(thresh=3)',
+      'print(cleaned.shape)'
     ],
-    out: { 8: ["(2, 4)"] },
-    why: "thresh=3 keeps a row only if it has at least 3 real answers — a fairer cutoff than demanding a perfectly complete response. Verified above row-by-row: only Row 0 (4 answers) and Row 1 (3 answers) clear the bar, so cleaned.shape correctly comes out to (2, 4) — 2 rows survive, all 4 original columns remain."
+    out: { 10: ["(2, 4)"] },
+    why: "thresh=3 keeps a row only if it has at least 3 real answers — a fairer cutoff than demanding a perfectly complete response."
   },
   {
     title: "Program 5 — Removing only fully-blank rows",
     usecase: "🕸️ Web scraping: clearing blank separator rows from a scraped table",
-    input: { fname: "scraped.csv", headers: ["Name","Price","Stock"], rows: [["Pen","20","50"],["NaN","NaN","NaN"],["Bag","NaN","12"]] },
-    code: [ 'df_clean = df.dropna(how="all")', "print(df_clean.shape)" ],
-    out: { 1: ["(2, 3)"] },
+    input: { fname: "scraped", headers: ["Name","Price","Stock"], rows: [["Pen","20","50"],["NaN","NaN","NaN"],["Bag","NaN","12"]] },
+    code: [
+      'import pandas as pd',
+      'import numpy as np',
+      '',
+      'df = pd.DataFrame({',
+      '    "Name":  ["Pen", np.nan, "Bag"],',
+      '    "Price": [20, np.nan, np.nan],',
+      '    "Stock": [50, np.nan, 12]',
+      '})',
+      '',
+      'df_clean = df.dropna(how="all")',
+      'print(df_clean.shape)'
+    ],
+    out: { 9: ["(2, 3)"] },
     why: 'how="all" only removes a row when EVERY column is empty — a partially filled row (like Bag) survives, unlike the default dropna().'
   }
 ],
@@ -2400,8 +2718,18 @@ const PROGRAMS = {
     title: "Program 1 — A single condition",
     usecase: "🎓 Teacher: shortlisting a topper list by hand-picking rule",
     input: { fname: "df", headers: ["Name","Marks"], rows: [["John","90"],["Alice","75"],["Bob","88"],["David","60"]] },
-    code: [ 'toppers = df[df["Marks"] > 85]', "print(toppers)" ],
-    out: { 1: ["only the rows","with Marks > 85"] },
+    code: [
+      'import pandas as pd',
+      '',
+      'df = pd.DataFrame({',
+      '    "Name":  ["John","Alice","Bob","David"],',
+      '    "Marks": [90, 75, 88, 60]',
+      '})',
+      '',
+      'toppers = df[df["Marks"] > 85]',
+      'print(toppers)'
+    ],
+    out: { 8: ["   Name  Marks","0  John     90","2   Bob     88"] },
     why: "A boolean condition inside df[...] filters rows — just like NumPy boolean masking, because that's exactly what it is under the hood."
   },
   {
@@ -2409,11 +2737,18 @@ const PROGRAMS = {
     usecase: "🏫 Branch topper list: IT students scoring above 80",
     input: { fname: "df", headers: ["Name","Marks","Branch"], rows: [["John","90","IT"],["Alice","75","CE"],["Bob","88","IT"],["David","60","IT"]] },
     code: [
-      'it_toppers = df[(df["Marks"]>80) &',
-      '                (df["Branch"]=="IT")]',
-      "print(it_toppers)"
+      'import pandas as pd',
+      '',
+      'df = pd.DataFrame({',
+      '    "Name":   ["John","Alice","Bob","David"],',
+      '    "Marks":  [90, 75, 88, 60],',
+      '    "Branch": ["IT","CE","IT","IT"]',
+      '})',
+      '',
+      'it_toppers = df[(df["Marks"]>80) & (df["Branch"]=="IT")]',
+      'print(it_toppers)'
     ],
-    out: { 2: ["rows matching","BOTH conditions"] },
+    out: { 9: ["   Name  Marks Branch","0  John     90     IT","2   Bob     88     IT"] },
     why: "The & operator combines two conditions — a row is kept only if both are True. Each condition MUST sit in its own ( )."
   },
   {
@@ -2421,28 +2756,53 @@ const PROGRAMS = {
     usecase: "📋 Registrar: shortlisting two specific branches at once",
     input: { fname: "df", headers: ["Name","Branch"], rows: [["Riya","IT"],["Aman","ME"],["Zoya","CE"],["John","IT"]] },
     code: [
-      '# isin(["IT","CE"]) checks each Branch value against the list',
-      '# keeps the row if Branch is EITHER "IT" OR "CE" (Aman\'s "ME" does not match, so he is dropped)',
+      'import pandas as pd',
+      '',
+      'df = pd.DataFrame({',
+      '    "Name":   ["Riya","Aman","Zoya","John"],',
+      '    "Branch": ["IT","ME","CE","IT"]',
+      '})',
+      '',
       'selected = df[df["Branch"].isin(["IT","CE"])]',
-      "print(selected)"
+      'print(selected.shape)'
     ],
-    out: { 3: ["   Name Branch","0  Riya     IT","2  Zoya     CE","3  John     IT"] },
-    why: "isin() keeps every row whose Branch is either \"IT\" or \"CE\" — replacing a long chain of OR conditions with one clean call. Riya, Zoya and John match; Aman (\"ME\") is filtered out."
+    out: { 8: ["(3, 2)"] },
+    why: "isin() keeps every row whose Branch is either \"IT\" or \"CE\" — replacing a long chain of OR conditions with one clean call."
   },
   {
     title: "Program 4 — Either/or with the | operator",
     usecase: "🏙️ Ops: students from Surat OR Delhi need a special travel form",
     input: { fname: "df", headers: ["Name","City"], rows: [["Alice","Surat"],["Bob","Mumbai"],["Charlie","Delhi"],["David","Pune"]] },
-    code: [ 'travel_list = df[(df["City"]=="Surat") |', '                  (df["City"]=="Delhi")]', "print(travel_list)" ],
-    out: { 2: ["rows where City is","Surat OR Delhi"] },
+    code: [
+      'import pandas as pd',
+      '',
+      'df = pd.DataFrame({',
+      '    "Name": ["Alice","Bob","Charlie","David"],',
+      '    "City": ["Surat","Mumbai","Delhi","Pune"]',
+      '})',
+      '',
+      'travel_list = df[(df["City"]=="Surat") | (df["City"]=="Delhi")]',
+      'print(travel_list)'
+    ],
+    out: { 8: ["      Name   City","0    Alice  Surat","2  Charlie  Delhi"] },
     why: "| means OR — a row is kept if EITHER condition is True, unlike & which needs both."
   },
   {
     title: "Program 5 — Excluding rows with ~ (NOT)",
     usecase: "🚫 HR: everyone except employees already marked 'Resigned'",
     input: { fname: "df", headers: ["Name","Status"], rows: [["Aman","Active"],["Riya","Resigned"],["John","Active"]] },
-    code: [ 'active_only = df[~(df["Status"]=="Resigned")]', "print(active_only)" ],
-    out: { 1: ["every row except","the Resigned ones"] },
+    code: [
+      'import pandas as pd',
+      '',
+      'df = pd.DataFrame({',
+      '    "Name":   ["Aman","Riya","John"],',
+      '    "Status": ["Active","Resigned","Active"]',
+      '})',
+      '',
+      'active_only = df[~(df["Status"]=="Resigned")]',
+      'print(active_only)'
+    ],
+    out: { 8: ["   Name  Status","0  Aman  Active","2  John  Active"] },
     why: "~ flips True/False — it's the easiest way to say 'give me everything that does NOT match' without rewriting the condition."
   },
   {
@@ -2450,12 +2810,20 @@ const PROGRAMS = {
     usecase: "📈 Analyst: flagging students scoring above the class mean",
     input: { fname: "df", headers: ["Name","Marks"], rows: [["Alice","85"],["Bob","60"],["Charlie","92"],["David","70"]] },
     code: [
-      "class_avg = np.mean(df[\"Marks\"])",
+      'import pandas as pd',
+      'import numpy as np',
+      '',
+      'df = pd.DataFrame({',
+      '    "Name":  ["Alice","Bob","Charlie","David"],',
+      '    "Marks": [85, 60, 92, 70]',
+      '})',
+      '',
+      'class_avg = np.mean(df["Marks"])',
       'above_avg = df[df["Marks"] > class_avg]',
-      "print(above_avg)"
+      'print(above_avg)'
     ],
-    out: { 2: ["Alice and Charlie —","the two above the mean"] },
-    why: "np.mean() computes the exact cutoff first, then the same boolean-filter pattern applies it — Pandas and NumPy working as one team."
+    out: { 10: ["      Name  Marks","0    Alice     85","2  Charlie     92"] },
+    why: "np.mean() computes the exact cutoff first (76.75), then the same boolean-filter pattern applies it — Pandas and NumPy working as one team."
   }
 ],
 
@@ -2464,8 +2832,17 @@ const PROGRAMS = {
     title: "Program 1 — Highest scorers first",
     usecase: "🏆 Declaring a merit list, highest score on top",
     input: { fname: "df", headers: ["Name","Marks"], rows: [["John","90"],["Alice","75"],["Bob","88"],["David","60"]] },
-    code: [ 'print(df.sort_values("Marks",', "            ascending=False).head(3))" ],
-    out: { 1: ["top 3 scorers"] },
+    code: [
+      'import pandas as pd',
+      '',
+      'df = pd.DataFrame({',
+      '    "Name":  ["John","Alice","Bob","David"],',
+      '    "Marks": [90, 75, 88, 60]',
+      '})',
+      '',
+      'print(df.sort_values("Marks", ascending=False).head(3))'
+    ],
+    out: { 7: ["    Name  Marks","0   John     90","2    Bob     88","1  Alice     75"] },
     why: "ascending=False gives highest-first ordering; the original DataFrame itself stays untouched."
   },
   {
@@ -2473,65 +2850,90 @@ const PROGRAMS = {
     usecase: "🗂️ Branch-wise leaderboard, ranked within each branch",
     input: { fname: "df", headers: ["Branch","Marks"], rows: [["IT","90"],["CE","75"],["IT","88"],["CE","95"]] },
     code: [
-      '# Step 1: sort_values() takes a LIST of columns -> ["Branch","Marks"]',
-      '#         Branch is the PRIMARY sort key; Marks only breaks ties WITHIN a branch',
-      '# Step 2: ascending=[True, False] applies one setting PER column, in the same order:',
-      '#         Branch -> True  (A to Z)      Marks -> False (high to low)',
-      '# Trace: rows sorted by Branch first (CE before IT alphabetically),',
-      '#        then by Marks descending inside each branch group:',
-      '#        CE group: 95 (row3) before 75 (row1)',
-      '#        IT group: 90 (row0) before 88 (row2)',
+      'import pandas as pd',
+      '',
+      'df = pd.DataFrame({',
+      '    "Branch": ["IT","CE","IT","CE"],',
+      '    "Marks":  [90, 75, 88, 95]',
+      '})',
+      '',
       'print(df.sort_values(["Branch","Marks"], ascending=[True, False]))'
     ],
-    out: { 8: ["  Branch  Marks","3     CE     95","1     CE     75","0     IT     90","2     IT     88"] },
-    why: "Sorting by two columns at once creates a nested, easy-to-read ranking — the second column (Marks) breaks ties in the first (Branch). Branch goes A→Z (CE before IT), and within each branch Marks goes high→low."
+    out: { 7: ["  Branch  Marks","3     CE     95","1     CE     75","0     IT     90","2     IT     88"] },
+    why: "Sorting by two columns at once creates a nested, easy-to-read ranking — the second column breaks ties in the first."
   },
   {
     title: "Program 3 — Restoring the original order",
     usecase: "↩️ Undo: getting back to row 0,1,2… after experimenting with sorts",
     input: { fname: "df (already sorted by Marks)", headers: ["Name","Marks"], rows: [["Zoya","95"],["John","90"],["Bob","88"]] },
-    code: [ "print(df.sort_index())" ],
-    out: { 0: ["rows returned to the","original 0, 1, 2 ... order"] },
+    code: [
+      'import pandas as pd',
+      '',
+      '# rows arrive already sorted by Marks, with the ORIGINAL index preserved',
+      'df = pd.DataFrame({',
+      '    "Name":  ["Zoya","John","Bob"],',
+      '    "Marks": [95, 90, 88]',
+      '}, index=[2, 0, 1])',
+      '',
+      'print(df.sort_index())'
+    ],
+    out: { 8: ["   Name  Marks","0  John     90","1   Bob     88","2  Zoya     95"] },
     why: "sort_index() undoes a sort by restoring rows to their original row order — the safety net of sorting."
   },
   {
     title: "Program 4 — Sorting by a computed column",
     usecase: "📐 Ranking students by Percentage, not raw Marks",
     input: { fname: "df", headers: ["Name","Marks","Percentage"], rows: [["Alice","425","85.0"],["Bob","310","62.0"],["Charlie","470","94.0"]] },
-    code: [ 'df["Percentage"] = (df["Marks"]/500)*100', 'print(df.sort_values("Percentage", ascending=False))' ],
-    out: { 1: ["Charlie, Alice, Bob —","by Percentage descending"] },
+    code: [
+      'import pandas as pd',
+      '',
+      'df = pd.DataFrame({',
+      '    "Name":  ["Alice","Bob","Charlie"],',
+      '    "Marks": [425, 310, 470]',
+      '})',
+      '',
+      'df["Percentage"] = (df["Marks"]/500)*100',
+      'print(df.sort_values("Percentage", ascending=False))'
+    ],
+    out: { 7: ["      Name  Marks  Percentage","2  Charlie    470        94.0","0    Alice    425        85.0","1      Bob    310        62.0"] },
     why: "You can sort by ANY column, including one you just calculated a line earlier — sort_values doesn't care where the column came from."
   },
   {
     title: "Program 5 — Quick top-N with nlargest()",
     usecase: "⚡ Instantly grabbing just the top 3 without a full sort + head()",
-    input: { fname: "df (6-row sample)", headers: ["Name","Marks"], rows: [["Alice","85"],["Bob","92"],["Charlie","78"],["David","95"],["Eva","88"],["Frank","60"]] },
+    input: { fname: "df", headers: ["Name","Marks"], rows: [["John","90"],["Alice","75"],["Bob","88"],["David","60"],["Zoya","95"]] },
     code: [
-      '# nlargest(3, "Marks") is a shortcut for sort_values("Marks", ascending=False).head(3)',
-      '# it directly returns the 3 rows with the highest Marks, already sorted highest-first',
+      'import pandas as pd',
+      '',
+      'df = pd.DataFrame({',
+      '    "Name":  ["John","Alice","Bob","David","Zoya"],',
+      '    "Marks": [90, 75, 88, 60, 95]',
+      '})',
+      '',
       'print(df.nlargest(3, "Marks"))'
     ],
-    out: { 2: ["    Name  Marks","3  David     95","1    Bob     92","4    Eva     88"] },
-    why: "nlargest(n, col) is a faster, one-line shortcut for sort_values(...).head(n) — same result, less typing, less memory churn on huge tables. Out of the 6 students, David (95), Bob (92) and Eva (88) are the top 3."
+    out: { 7: ["   Name  Marks","4  Zoya     95","0  John     90","2   Bob     88"] },
+    why: "nlargest(n, col) is a faster, one-line shortcut for sort_values(...).head(n) — same result, less typing, less memory churn on huge tables."
   },
   {
     title: "Program 6 — Sorting by closeness to the class average",
     usecase: "🎯 Finding the students whose marks sit closest to the mean",
     input: { fname: "df", headers: ["Name","Marks"], rows: [["Alice","85"],["Bob","60"],["Charlie","81"],["David","70"]] },
     code: [
-      '# Step 1: np.mean() runs FIRST and computes the class average',
-      '# avg = (85 + 60 + 81 + 70) / 4 = 296 / 4 = 74.0',
+      'import pandas as pd',
+      'import numpy as np',
+      '',
+      'df = pd.DataFrame({',
+      '    "Name":  ["Alice","Bob","Charlie","David"],',
+      '    "Marks": [85, 60, 81, 70]',
+      '})',
+      '',
       'avg = np.mean(df["Marks"])',
-      '# Step 2a (innermost): df["Marks"] - avg -> how far each mark is from 74',
-      '#          Alice: 85-74=11 | Bob: 60-74=-14 | Charlie: 81-74=7 | David: 70-74=-4',
-      '# Step 2b (outer call): np.abs() strips the minus sign, so distance is always positive',
-      '#          Alice: 11 | Bob: 14 | Charlie: 7 | David: 4',
       'df["diff_from_avg"] = np.abs(df["Marks"] - avg)',
-      '# Step 3: sort ascending (smallest first) by diff_from_avg -> closest to the mean appears first',
       'print(df.sort_values("diff_from_avg"))'
     ],
-    out: { 9: ["      Name  Marks  diff_from_avg","3    David     70               4","2  Charlie     81               7","0    Alice     85              11","1      Bob     60              14"] },
-    why: "np.abs() strips the +/- sign so a student 5 marks above and 5 marks below the average rank equally close — pure NumPy math feeding a Pandas sort. David (70) sits closest to the 74.0 average, Bob (60) sits furthest."
+    out: { 9: ["      Name  Marks  diff_from_avg","3    David     70            4.0","2  Charlie     81            7.0","0    Alice     85           11.0","1      Bob     60           14.0"] },
+    why: "np.abs() strips the +/- sign so a student 5 marks above and 5 marks below the average rank equally close — pure NumPy math feeding a Pandas sort."
   }
 ],
 
@@ -2541,11 +2943,14 @@ const PROGRAMS = {
     usecase: "🅰️ Report cards: deriving a letter grade from a number",
     input: { fname: "df", headers: ["Marks"], rows: [["88"],["72"],["95"]] },
     code: [
-      'df["Grade"] = df["Marks"].apply(',
-      '        lambda m: "A" if m>=80 else "B")',
-      'print(df[["Marks","Grade"]].head())'
+      'import pandas as pd',
+      '',
+      'df = pd.DataFrame({"Marks": [88, 72, 95]})',
+      '',
+      'df["Grade"] = df["Marks"].apply(lambda m: "A" if m>=80 else "B")',
+      'print(df[["Marks","Grade"]])'
     ],
-    out: { 2: ["a new Grade column","added to the table"] },
+    out: { 5: ["   Marks Grade","0     88     A","1     72     B","2     95     A"] },
     why: "apply() with a lambda derives a brand-new column from an existing one, one value at a time."
   },
   {
@@ -2553,11 +2958,15 @@ const PROGRAMS = {
     usecase: "🏷️ Turning short branch codes into readable category names",
     input: { fname: "df", headers: ["Branch"], rows: [["IT"],["CE"],["IT"]] },
     code: [
+      'import pandas as pd',
+      '',
+      'df = pd.DataFrame({"Branch": ["IT","CE","IT"]})',
+      '',
       'status = {"IT":"Tech", "CE":"Core"}',
       'df["Category"] = df["Branch"].map(status)',
-      'print(df["Category"].head())'
+      'print(df)'
     ],
-    out: { 2: ["branch codes replaced by","full category names"] },
+    out: { 6: ["  Branch Category","0     IT     Tech","1     CE     Core","2     IT     Tech"] },
     why: "map() looks up each value in a dictionary — ideal for renaming categories in one clean line."
   },
   {
@@ -2565,27 +2974,48 @@ const PROGRAMS = {
     usecase: "➕ Payroll: adding a bonus on top of base marks/salary",
     input: { fname: "df", headers: ["Marks","Bonus"], rows: [["85","5"],["70","10"],["92","0"]] },
     code: [
-      'df["Total"] = df.apply(',
-      '    lambda row: row["Marks"]+row["Bonus"], axis=1)',
-      'print(df[["Marks","Bonus","Total"]].head())'
+      'import pandas as pd',
+      '',
+      'df = pd.DataFrame({"Marks": [85, 70, 92], "Bonus": [5, 10, 0]})',
+      '',
+      'df["Total"] = df.apply(lambda row: row["Marks"]+row["Bonus"], axis=1)',
+      'print(df)'
     ],
-    out: { 2: ["Total = Marks + Bonus","for every single row"] },
+    out: { 5: ["   Marks  Bonus  Total","0     85      5     90","1     70     10     80","2     92      0     92"] },
     why: "axis=1 runs the function across each row instead of down each column — the row itself is handed to the lambda."
   },
   {
-    title: "Program 4 — Cleaning every cell at once with applymap()",
+    title: "Program 4 — Cleaning every cell at once with map()",
     usecase: "🧽 Rounding every numeric mark in the whole table to 1 decimal",
     input: { fname: "df", headers: ["Test1","Test2"], rows: [["85.666","78.111"],["90.333","88.888"]] },
-    code: [ "numeric_cols = df.select_dtypes(include='number')", 'df[numeric_cols.columns] = numeric_cols.applymap(lambda x: round(x,1))', "print(df)" ],
-    out: { 2: ["every numeric cell","rounded to 1 decimal"] },
-    why: "applymap() (DataFrame-wide) is apply()'s big sibling — it touches EVERY cell, not just one column or one row."
+    code: [
+      'import pandas as pd',
+      '',
+      'df = pd.DataFrame({"Test1": [85.666, 90.333], "Test2": [78.111, 88.888]})',
+      '',
+      '# DataFrame.map() applies a function to every single cell',
+      '# (older Pandas called this applymap() -- still works, but map() is current)',
+      'numeric_cols = df.select_dtypes(include="number")',
+      'df[numeric_cols.columns] = numeric_cols.map(lambda x: round(x, 1))',
+      'print(df)'
+    ],
+    out: { 8: ["   Test1  Test2","0   85.7   78.1","1   90.3   88.9"] },
+    why: "map() (DataFrame-wide) is apply()'s big sibling — it touches EVERY cell, not just one column or one row."
   },
   {
     title: "Program 5 — Feeding a NumPy function straight into apply()",
     usecase: "📐 Data science prep: log-scaling a skewed Revenue column",
     input: { fname: "df", headers: ["Revenue"], rows: [["1000"],["50000"],["2500"]] },
-    code: [ 'df["Log_Revenue"] = df["Revenue"].apply(np.log10)', "print(df)" ],
-    out: { 1: ["Revenue compressed onto","a much smaller log scale"] },
+    code: [
+      'import pandas as pd',
+      'import numpy as np',
+      '',
+      'df = pd.DataFrame({"Revenue": [1000, 50000, 2500]})',
+      '',
+      'df["Log_Revenue"] = df["Revenue"].apply(np.log10)',
+      'print(df)'
+    ],
+    out: { 6: ["   Revenue  Log_Revenue","0     1000      3.00000","1    50000      4.69897","2     2500      3.39794"] },
     why: "apply() accepts ANY function — including NumPy's own, like np.log10 — not just custom lambdas."
   },
   {
@@ -2593,15 +3023,20 @@ const PROGRAMS = {
     usecase: "🎯 A full A/B/C/F grading scale, not just a single cutoff",
     input: { fname: "df", headers: ["Marks"], rows: [["92"],["65"],["45"],["30"]] },
     code: [
+      'import pandas as pd',
+      '',
+      'df = pd.DataFrame({"Marks": [92, 65, 45, 30]})',
+      '',
       'def grade(m):',
-      '    if m>=80: return "A"',
-      '    elif m>=60: return "B"',
-      '    elif m>=40: return "C"',
+      '    if m >= 80: return "A"',
+      '    elif m >= 60: return "B"',
+      '    elif m >= 40: return "C"',
       '    return "F"',
+      '',
       'df["Grade"] = df["Marks"].apply(grade)',
-      "print(df)"
+      'print(df)'
     ],
-    out: { 6: ["A, B, C, F —","every mark correctly graded"] },
+    out: { 10: ["   Marks Grade","0     92     A","1     65     B","2     45     C","3     30     F"] },
     why: "apply() isn't limited to one-line lambdas — a full named function with multiple branches works exactly the same way."
   }
 ],
@@ -2611,48 +3046,103 @@ const PROGRAMS = {
     title: "Program 1 — Dropping a column",
     usecase: "🧹 Removing an unused 'Remarks' column before analysis",
     input: { fname: "df", headers: ["Name","Marks","Remarks"], rows: [["Riya","88","-"],["Aman","72","late submission"]] },
-    code: [ 'df2 = df.drop("Remarks", axis=1)', "print(df2.columns.tolist())" ],
-    out: { 1: ["column list, without","'Remarks' present"] },
+    code: [
+      'import pandas as pd',
+      '',
+      'df = pd.DataFrame({',
+      '    "Name":    ["Riya","Aman"],',
+      '    "Marks":   [88, 72],',
+      '    "Remarks": ["-","late submission"]',
+      '})',
+      '',
+      'df2 = df.drop("Remarks", axis=1)',
+      'print(df2.columns.tolist())'
+    ],
+    out: { 9: ["['Name', 'Marks']"] },
     why: "drop(axis=1) removes an entire column, referenced simply by name — the original df is untouched unless you reassign it."
   },
   {
     title: "Program 2 — Renaming a column",
     usecase: "✏️ Standardising a messy header name",
     input: { fname: "df", headers: ["Stu_Name","Marks"], rows: [["Riya","88"],["Aman","72"]] },
-    code: [ 'df2 = df.rename(columns={"Stu_Name":"Name"})', "print(df2.columns.tolist())" ],
-    out: { 1: ["'Stu_Name' now","appears as 'Name'"] },
+    code: [
+      'import pandas as pd',
+      '',
+      'df = pd.DataFrame({"Stu_Name": ["Riya","Aman"], "Marks": [88, 72]})',
+      '',
+      'df2 = df.rename(columns={"Stu_Name":"Name"})',
+      'print(df2.columns.tolist())'
+    ],
+    out: { 5: ["['Name', 'Marks']"] },
     why: "rename() relabels a column without touching any of its data values underneath."
   },
   {
     title: "Program 3 — Creating a computed column",
     usecase: "📊 Turning raw Marks into a Percentage out of 500",
     input: { fname: "df", headers: ["Name","Marks"], rows: [["Riya","440"],["Aman","375"]] },
-    code: [ 'df["Percentage"] = (df["Marks"]/500)*100', 'print(df[["Marks","Percentage"]].head())' ],
-    out: { 1: ["a new Percentage","column, calculated"] },
+    code: [
+      'import pandas as pd',
+      '',
+      'df = pd.DataFrame({"Name": ["Riya","Aman"], "Marks": [440, 375]})',
+      '',
+      'df["Percentage"] = (df["Marks"]/500)*100',
+      'print(df[["Marks","Percentage"]])'
+    ],
+    out: { 5: ["   Marks  Percentage","0    440        88.0","1    375        75.0"] },
     why: "A new column can be built directly from a formula applied to existing ones — no loop required."
   },
   {
     title: "Program 4 — Reordering columns",
     usecase: "📑 Putting the important columns first for a cleaner report",
     input: { fname: "df", headers: ["Marks","City","Name","Branch"], rows: [["88","Surat","Riya","IT"]] },
-    code: [ 'df = df[["Name","Branch","Marks","City"]]', "print(df.columns.tolist())" ],
-    out: { 1: ["['Name', 'Branch',","'Marks', 'City']"] },
+    code: [
+      'import pandas as pd',
+      '',
+      'df = pd.DataFrame({',
+      '    "Marks":  [88],',
+      '    "City":   ["Surat"],',
+      '    "Name":   ["Riya"],',
+      '    "Branch": ["IT"]',
+      '})',
+      '',
+      'df = df[["Name","Branch","Marks","City"]]',
+      'print(df.columns.tolist())'
+    ],
+    out: { 9: ["['Name', 'Branch', 'Marks', 'City']"] },
     why: "Passing a list of column names inside df[[...]] both selects AND reorders — the DataFrame comes back in exactly that order."
   },
   {
     title: "Program 5 — Renaming every column at once",
     usecase: "🔤 Normalising messy 'Stu Name', 'MARKS' headers to lowercase_snake_case",
     input: { fname: "df", headers: ["Stu Name","MARKS","City "], rows: [["Riya","88","Surat"]] },
-    code: [ "df.columns = df.columns.str.strip().str.lower().str.replace(' ','_')", "print(df.columns.tolist())" ],
-    out: { 1: ["['stu_name', 'marks', 'city']"] },
+    code: [
+      'import pandas as pd',
+      '',
+      'df = pd.DataFrame({"Stu Name": ["Riya"], "MARKS": [88], "City ": ["Surat"]})',
+      '',
+      'df.columns = df.columns.str.strip().str.lower().str.replace(" ", "_")',
+      'print(df.columns.tolist())'
+    ],
+    out: { 5: ["['stu_name', 'marks', 'city']"] },
     why: "Assigning straight to df.columns renames all of them together — chained .str methods clean spacing and casing in one pass."
   },
   {
     title: "Program 6 — Conditional column with np.where()",
     usecase: "✅ Adding a Pass/Fail column in a single vectorised line",
     input: { fname: "df", headers: ["Name","Marks"], rows: [["Alice","85"],["Bob","32"],["Charlie","55"]] },
-    code: [ 'df["Result"] = np.where(df["Marks"]>=40, "Pass", "Fail")', "print(df)" ],
-    out: { 1: ["Pass, Fail, Pass —","one column, zero loops"] },
+    code: [
+      'import pandas as pd',
+      'import numpy as np',
+      '',
+      'df = pd.DataFrame({',
+      '    "Name":  ["Alice","Bob","Charlie"],',
+      '    "Marks": [85, 32, 55]',
+      '})',
+      '',
+      'df["Result"] = np.where(df["Marks"]>=40, "Pass", "Fail")',
+      'print(df)'
+    ],
+    out: { 9: ["      Name  Marks Result","0    Alice     85   Pass","1      Bob     32   Fail","2  Charlie     55   Pass"] },
     why: "np.where(condition, if_true, if_false) is the fast, vectorised cousin of apply() with an if/else lambda — same result, quicker on big data."
   }
 ],
@@ -2662,48 +3152,87 @@ const PROGRAMS = {
     title: "Program 1 — Listing distinct categories",
     usecase: "🏫 'How many different branches even exist in this file?'",
     input: { fname: "df", headers: ["Branch"], rows: [["IT"],["CE"],["IT"],["ME"],["CE"]] },
-    code: [ 'print(df["Branch"].unique())' ],
-    out: { 0: ["array(['IT', 'CE', 'ME'], dtype=object)"] },
+    code: [
+      'import pandas as pd',
+      '',
+      'df = pd.DataFrame({"Branch": ["IT","CE","IT","ME","CE"]})',
+      'print(df["Branch"].unique())'
+    ],
+    out: { 3: ["['IT' 'CE' 'ME']"] },
     why: "unique() lists every distinct category exactly once, in the order it first appears."
   },
   {
     title: "Program 2 — Counting distinct categories",
     usecase: "🔢 A single number for 'how many branches do we offer'",
     input: { fname: "df", headers: ["Branch"], rows: [["IT"],["CE"],["IT"],["ME"]] },
-    code: [ 'print(df["Branch"].nunique())' ],
-    out: { 0: ["3"] },
+    code: [
+      'import pandas as pd',
+      '',
+      'df = pd.DataFrame({"Branch": ["IT","CE","IT","ME"]})',
+      'print(df["Branch"].nunique())'
+    ],
+    out: { 3: ["3"] },
     why: "nunique() simply counts how many distinct categories exist — no need to count the unique() array by hand."
   },
   {
     title: "Program 3 — Frequency of each category",
     usecase: "📊 'How many students belong to each branch?'",
     input: { fname: "df", headers: ["Branch"], rows: [["IT"],["CE"],["IT"],["ME"],["IT"]] },
-    code: [ 'print(df["Branch"].value_counts())' ],
-    out: { 0: ["IT    20","CE    18","ME    12"] },
+    code: [
+      'import pandas as pd',
+      '',
+      'df = pd.DataFrame({"Branch": ["IT","CE","IT","ME","IT"]})',
+      'print(df["Branch"].value_counts())'
+    ],
+    out: { 3: ["Branch","IT    3","CE    1","ME    1","Name: count, dtype: int64"] },
     why: "value_counts() shows how many students belong to each branch, most common first — an instant leaderboard."
   },
   {
     title: "Program 4 — Frequencies as percentages",
     usecase: "📈 A report that speaks in %, not raw headcounts",
-    input: { fname: "df (50 rows)", headers: ["Branch"], rows: [["…"]] },
-    code: [ 'print(df["Branch"].value_counts(normalize=True).round(2))' ],
-    out: { 0: ["IT    0.40","CE    0.36","ME    0.24"] },
+    input: { fname: "df (50 rows)", headers: ["Branch"], rows: [["IT × 20"],["CE × 18"],["ME × 12"]] },
+    code: [
+      'import pandas as pd',
+      '',
+      'df = pd.DataFrame({',
+      '    "Branch": ["IT"]*20 + ["CE"]*18 + ["ME"]*12',
+      '})',
+      'print(df["Branch"].value_counts(normalize=True).round(2))'
+    ],
+    out: { 5: ["Branch","IT    0.40","CE    0.36","ME    0.24","Name: proportion, dtype: float64"] },
     why: "normalize=True turns raw counts straight into proportions (0–1) — multiply by 100 for a ready-to-present percentage."
   },
   {
     title: "Program 5 — nunique() across every column at once",
     usecase: "🕵️ Quick diversity check on a brand-new dataset",
     input: { fname: "df", headers: ["Name","Branch","City"], rows: [["Riya","IT","Surat"],["Aman","CE","Delhi"],["Zoya","IT","Surat"]] },
-    code: [ "print(df.nunique())" ],
-    out: { 0: ["Name      3","Branch    2","City      2","dtype: int64"] },
+    code: [
+      'import pandas as pd',
+      '',
+      'df = pd.DataFrame({',
+      '    "Name":   ["Riya","Aman","Zoya"],',
+      '    "Branch": ["IT","CE","IT"],',
+      '    "City":   ["Surat","Delhi","Surat"]',
+      '})',
+      'print(df.nunique())'
+    ],
+    out: { 7: ["Name      3","Branch    2","City      2","dtype: int64"] },
     why: "Calling nunique() on the whole DataFrame (not just one column) instantly flags which columns are near-constant vs. highly varied."
   },
   {
     title: "Program 6 — Sorted distinct values with NumPy",
     usecase: "🔤 Presenting branch names alphabetically, not by first appearance",
     input: { fname: "df", headers: ["Branch"], rows: [["ME"],["IT"],["CE"],["IT"]] },
-    code: [ 'sorted_branches = np.sort(df["Branch"].unique())', "print(sorted_branches)" ],
-    out: { 1: ["['CE' 'IT' 'ME']"] },
+    code: [
+      'import pandas as pd',
+      'import numpy as np',
+      '',
+      'df = pd.DataFrame({"Branch": ["ME","IT","CE","IT"]})',
+      '',
+      'sorted_branches = np.sort(df["Branch"].unique())',
+      'print(sorted_branches)'
+    ],
+    out: { 5: ["['CE' 'IT' 'ME']"] },
     why: "unique() keeps first-seen order; wrapping it in np.sort() gives a clean, alphabetised array for a tidier report."
   }
 ],
@@ -2713,40 +3242,88 @@ const PROGRAMS = {
     title: "Program 1 — Counting duplicate rows",
     usecase: "🔁 'Did someone accidentally submit the same form twice?'",
     input: { fname: "df", headers: ["RollNo","Name"], rows: [["1","Aman"],["2","Riya"],["1","Aman"],["3","John"]] },
-    code: [ "print(df.duplicated().sum())" ],
-    out: { 0: ["4"] },
+    code: [
+      'import pandas as pd',
+      '',
+      'df = pd.DataFrame({',
+      '    "RollNo": [1, 2, 1, 3],',
+      '    "Name":   ["Aman","Riya","Aman","John"]',
+      '})',
+      'print(df.duplicated().sum())'
+    ],
+    out: { 6: ["1"] },
     why: "Counts exactly how many rows are exact repeats of an earlier row — a quick red flag before cleaning."
   },
   {
     title: "Program 2 — Removing duplicate rows",
     usecase: "🧼 Cleaning a registration list before generating ID cards",
-    input: { fname: "df (50 rows)", headers: ["RollNo","Name"], rows: [["…","…"]] },
-    code: [ "df_unique = df.drop_duplicates()", "print(df_unique.shape)" ],
-    out: { 1: ["(46, 4)"] },
-    why: "Removes duplicate rows entirely, keeping only the first occurrence of each — the row count naturally shrinks."
+    input: { fname: "df", headers: ["RollNo","Name"], rows: [["1","Aman"],["2","Riya"],["3","John"],["1","Aman"],["4","Zoya"],["2","Riya"]] },
+    code: [
+      'import pandas as pd',
+      '',
+      'df = pd.DataFrame({',
+      '    "RollNo": [1, 2, 3, 1, 4, 2],',
+      '    "Name":   ["Aman","Riya","John","Aman","Zoya","Riya"]',
+      '})',
+      '',
+      'df_unique = df.drop_duplicates()',
+      'print(df_unique.shape)'
+    ],
+    out: { 8: ["(4, 2)"] },
+    why: "Removes duplicate rows entirely, keeping only the first occurrence of each — 2 repeats vanish, 4 unique rows remain."
   },
   {
     title: "Program 3 — Duplicates based on one column",
     usecase: "🎓 Treating two rows as 'the same student' by RollNo alone",
     input: { fname: "df", headers: ["RollNo","Name","City"], rows: [["1","Aman","Surat"],["1","A. Kumar","Surat"],["2","Riya","Delhi"]] },
-    code: [ 'df_unique2 = df.drop_duplicates(', '                    subset=["RollNo"])', "print(df_unique2.shape)" ],
-    out: { 2: ["(48, 4)"] },
-    why: 'subset=["RollNo"] treats rows as duplicates only when RollNo matches — even if other columns like Name differ slightly.'
+    code: [
+      'import pandas as pd',
+      '',
+      'df = pd.DataFrame({',
+      '    "RollNo": [1, 1, 2],',
+      '    "Name":   ["Aman","A. Kumar","Riya"],',
+      '    "City":   ["Surat","Surat","Delhi"]',
+      '})',
+      '',
+      'df_unique2 = df.drop_duplicates(subset=["RollNo"])',
+      'print(df_unique2.shape)'
+    ],
+    out: { 8: ["(2, 3)"] },
+    why: 'subset=["RollNo"] treats rows as duplicates only when RollNo matches — even though Name differs slightly, the second row is dropped.'
   },
   {
     title: "Program 4 — Seeing EVERY copy, not just the repeats",
     usecase: "🔍 Investigating a duplicate before deciding which copy to trust",
     input: { fname: "df", headers: ["RollNo","Name"], rows: [["1","Aman"],["2","Riya"],["1","Aman K."],["3","John"]] },
-    code: [ 'print(df[df.duplicated(subset=["RollNo"], keep=False)])' ],
-    out: { 0: ["BOTH rows with","RollNo 1 — not just the 2nd"] },
+    code: [
+      'import pandas as pd',
+      '',
+      'df = pd.DataFrame({',
+      '    "RollNo": [1, 2, 1, 3],',
+      '    "Name":   ["Aman","Riya","Aman K.","John"]',
+      '})',
+      '',
+      'print(df[df.duplicated(subset=["RollNo"], keep=False)])'
+    ],
+    out: { 7: ["   RollNo     Name","0       1     Aman","2       1  Aman K."] },
     why: "keep=False marks every copy of a duplicate as True (not just the extra ones) — essential when you need to inspect all versions before deciding."
   },
   {
     title: "Program 5 — Keeping the LAST entry instead of the first",
     usecase: "🕐 A student resubmitted a form — the newest version should win",
     input: { fname: "df (submission order)", headers: ["RollNo","Marks"], rows: [["1","70"],["2","85"],["1","78"]] },
-    code: [ 'latest = df.drop_duplicates(subset=["RollNo"], keep="last")', "print(latest)" ],
-    out: { 1: ["RollNo 1 → keeps","the SECOND (78), not 70"] },
+    code: [
+      'import pandas as pd',
+      '',
+      'df = pd.DataFrame({',
+      '    "RollNo": [1, 2, 1],',
+      '    "Marks":  [70, 85, 78]',
+      '})',
+      '',
+      'latest = df.drop_duplicates(subset=["RollNo"], keep="last")',
+      'print(latest)'
+    ],
+    out: { 8: ["   RollNo  Marks","1       2     85","2       1     78"] },
     why: "keep='last' flips the default — handy whenever the most recent record, not the first one, is the one you actually trust."
   },
   {
@@ -2754,11 +3331,16 @@ const PROGRAMS = {
     usecase: "🧮 Producing a short list of only the problem RollNos for HR to review",
     input: { fname: "df", headers: ["RollNo"], rows: [["1"],["2"],["1"],["3"],["2"]] },
     code: [
+      'import pandas as pd',
+      'import numpy as np',
+      '',
+      'df = pd.DataFrame({"RollNo": [1, 2, 1, 3, 2]})',
+      '',
       'vals, counts = np.unique(df["RollNo"], return_counts=True)',
-      "dupe_rolls = vals[counts > 1]",
-      "print(dupe_rolls)"
+      'dupe_rolls = vals[counts > 1]',
+      'print(dupe_rolls)'
     ],
-    out: { 2: ["[1 2]"] },
+    out: { 6: ["[1 2]"] },
     why: "np.unique(..., return_counts=True) hands back both the distinct values AND how many times each appeared — filtering counts>1 isolates just the offenders."
   }
 ],
@@ -2767,41 +3349,81 @@ const PROGRAMS = {
   {
     title: "Program 1 — Stacking two months together",
     usecase: "📅 Merging January and February attendance into one table",
-    input: { fname: "jan_df + feb_df", headers: ["Month","Rows"], rows: [["Jan","50"],["Feb","50"]] },
-    code: [ "all_months = pd.concat([jan_df, feb_df])", "print(all_months.shape)" ],
-    out: { 1: ["(100, 4)"] },
+    input: { fname: "jan_df + feb_df", headers: ["Table","Rows"], rows: [["jan_df","2"],["feb_df","2"]] },
+    code: [
+      'import pandas as pd',
+      '',
+      'jan_df = pd.DataFrame({"Name": ["Aman","Riya"], "Present": [20, 22]})',
+      'feb_df = pd.DataFrame({"Name": ["Aman","Riya"], "Present": [18, 25]})',
+      '',
+      'all_months = pd.concat([jan_df, feb_df], ignore_index=True)',
+      'print(all_months.shape)'
+    ],
+    out: { 6: ["(4, 2)"] },
     why: "concat() stacks two same-column DataFrames into one longer table — best for combining same-structure batches."
   },
   {
     title: "Program 2 — Joining on a shared key column",
     usecase: "🔗 Adding branch/city details onto a marks-only table",
-    input: { fname: "students.csv + marks.csv", headers: ["Table","Key"], rows: [["students","student_id"],["marks","student_id"]] },
-    code: [ 'merged = pd.merge(students, marks,', '                    on="student_id")', "print(merged.head())" ],
-    out: { 2: ["combined table,","matched by student_id"] },
+    input: { fname: "students + marks", headers: ["Table","Key"], rows: [["students","student_id"],["marks","student_id"]] },
+    code: [
+      'import pandas as pd',
+      '',
+      'students = pd.DataFrame({"student_id": [1,2,3], "Name": ["Aman","Riya","John"]})',
+      'marks    = pd.DataFrame({"student_id": [1,2,3], "Marks": [85, 90, 78]})',
+      '',
+      'merged = pd.merge(students, marks, on="student_id")',
+      'print(merged)'
+    ],
+    out: { 6: ["   student_id  Name  Marks","0           1  Aman     85","1           2  Riya     90","2           3  John     78"] },
     why: "on='student_id' tells Pandas exactly which column links the two tables — exactly like a SQL JOIN."
   },
   {
     title: "Program 3 — Joining by index",
     usecase: "🏙️ Attaching a city lookup table using a shared ID as the index",
     input: { fname: "students + city (by id)", headers: ["Table","Indexed by"], rows: [["students","id"],["city","id"]] },
-    code: [ 'combined = students.set_index("id")\\', '            .join(city.set_index("id"))', "print(combined.head())" ],
-    out: { 2: ["student rows now","include a city column"] },
+    code: [
+      'import pandas as pd',
+      '',
+      'students = pd.DataFrame({"id": [1,2,3], "Name": ["Aman","Riya","John"]})',
+      'city     = pd.DataFrame({"id": [1,2,3], "City": ["Surat","Delhi","Mumbai"]})',
+      '',
+      'combined = students.set_index("id").join(city.set_index("id"))',
+      'print(combined)'
+    ],
+    out: { 6: ["    Name    City","id              ","1   Aman   Surat","2   Riya   Delhi","3   John  Mumbai"] },
     why: "join() aligns two tables using their shared index instead of a named key column."
   },
   {
     title: "Program 4 — Keeping every row with a left join",
     usecase: "⚠️ Some students have no marks yet — don't lose them from the report",
-    input: { fname: "students (50) + marks (46)", headers: ["Table","Rows"], rows: [["students","50"],["marks","46"]] },
-    code: [ 'report = pd.merge(students, marks,', '            on="student_id", how="left")', "print(report.shape)" ],
-    out: { 2: ["(50, 6) — all 50","students kept, marks = NaN for 4"] },
-    why: "how='left' keeps every row from the left table even when there's no match on the right — missing marks become NaN instead of the whole student vanishing."
+    input: { fname: "students (4) + marks (3)", headers: ["Table","Rows"], rows: [["students","4"],["marks","3"]] },
+    code: [
+      'import pandas as pd',
+      '',
+      'students = pd.DataFrame({"student_id": [1,2,3,4], "Name": ["Aman","Riya","John","Zoya"]})',
+      'marks    = pd.DataFrame({"student_id": [1,2,3],   "Marks": [85, 90, 78]})',
+      '',
+      'report = pd.merge(students, marks, on="student_id", how="left")',
+      'print(report.shape)'
+    ],
+    out: { 6: ["(4, 3)"] },
+    why: "how='left' keeps every row from the left table even when there's no match on the right — Zoya's missing marks become NaN instead of Zoya vanishing."
   },
   {
     title: "Program 5 — Combining columns side-by-side with concat(axis=1)",
     usecase: "🧩 Two DataFrames that already share the same row order, glued sideways",
-    input: { fname: "marks_df + attendance_df (same order)", headers: ["Table","Cols"], rows: [["marks","Marks"],["attendance","Present_Days"]] },
-    code: [ "combined = pd.concat([marks_df, attendance_df], axis=1)", "print(combined.columns.tolist())" ],
-    out: { 1: ["['Marks', 'Present_Days']"] },
+    input: { fname: "marks_df + attendance_df (same order)", headers: ["Table","Cols"], rows: [["marks_df","Marks"],["attendance_df","Present_Days"]] },
+    code: [
+      'import pandas as pd',
+      '',
+      'marks_df      = pd.DataFrame({"Marks": [85, 90, 78]})',
+      'attendance_df = pd.DataFrame({"Present_Days": [20, 22, 19]})',
+      '',
+      'combined = pd.concat([marks_df, attendance_df], axis=1)',
+      'print(combined.columns.tolist())'
+    ],
+    out: { 5: ["['Marks', 'Present_Days']"] },
     why: "axis=1 stacks sideways instead of downward — useful only when both tables are already aligned row-for-row."
   },
   {
@@ -2809,11 +3431,15 @@ const PROGRAMS = {
     usecase: "🔍 Confirming exactly which rows matched, and which didn't",
     input: { fname: "students + marks", headers: ["_merge value","Meaning"], rows: [["both","matched in both tables"],["left_only","only in students"]] },
     code: [
-      'audit = pd.merge(students, marks, on="student_id",',
-      '                   how="left", indicator=True)',
+      'import pandas as pd',
+      '',
+      'students = pd.DataFrame({"student_id": [1,2,3,4], "Name": ["Aman","Riya","John","Zoya"]})',
+      'marks    = pd.DataFrame({"student_id": [1,2,3],   "Marks": [85, 90, 78]})',
+      '',
+      'audit = pd.merge(students, marks, on="student_id", how="left", indicator=True)',
       'print(audit["_merge"].value_counts())'
     ],
-    out: { 2: ["both         46","left_only     4","Name: _merge, dtype: int64"] },
+    out: { 6: ["_merge","both          3","left_only     1","right_only    0","Name: count, dtype: int64"] },
     why: "indicator=True adds a _merge column labelling every row 'both', 'left_only', or 'right_only' — the fastest way to audit a join before trusting it."
   }
 ],
@@ -2823,16 +3449,32 @@ const PROGRAMS = {
     title: "Program 1 — Average per group",
     usecase: "📊 'What's the average score, broken down by branch?'",
     input: { fname: "df", headers: ["Branch","Marks"], rows: [["IT","85"],["CE","78"],["IT","80"],["ME","74"]] },
-    code: [ 'print(df.groupby("Branch")["Marks"].mean())' ],
-    out: { 0: ["IT    82.4","CE    78.1","ME    74.6"] },
+    code: [
+      'import pandas as pd',
+      '',
+      'df = pd.DataFrame({',
+      '    "Branch": ["IT","CE","IT","ME"],',
+      '    "Marks":  [85, 78, 80, 74]',
+      '})',
+      'print(df.groupby("Branch")["Marks"].mean())'
+    ],
+    out: { 6: ["Branch","CE    78.0","IT    82.5","ME    74.0","Name: Marks, dtype: float64"] },
     why: "Average marks are calculated separately for every branch — one line replaces a manual filter + mean() per branch."
   },
   {
     title: "Program 2 — Multiple aggregations at once",
     usecase: "📐 Mean AND max marks per branch, side by side",
     input: { fname: "df", headers: ["Branch","Marks"], rows: [["IT","85"],["CE","78"],["IT","95"]] },
-    code: [ 'print(df.groupby("Branch").agg(', '            {"Marks": ["mean","max"]}))' ],
-    out: { 1: ["mean & max per branch,","side by side"] },
+    code: [
+      'import pandas as pd',
+      '',
+      'df = pd.DataFrame({',
+      '    "Branch": ["IT","CE","IT"],',
+      '    "Marks":  [85, 78, 95]',
+      '})',
+      'print(df.groupby("Branch").agg({"Marks": ["mean","max"]}))'
+    ],
+    out: { 6: ["       Marks    ","        mean max","Branch          ","CE      78.0  78","IT      90.0  95"] },
     why: "agg() runs several aggregate functions on a group in a single call, instead of one groupby() per statistic."
   },
   {
@@ -2840,36 +3482,71 @@ const PROGRAMS = {
     usecase: "🗂️ An Excel-style grid: average marks by Branch × Gender",
     input: { fname: "df", headers: ["Branch","Gender","Marks"], rows: [["IT","M","85"],["IT","F","90"],["CE","M","78"]] },
     code: [
-      'table = pd.pivot_table(df, values="Marks",',
-      '      index="Branch", columns="Gender",',
-      '      aggfunc="mean")',
-      "print(table)"
+      'import pandas as pd',
+      '',
+      'df = pd.DataFrame({',
+      '    "Branch": ["IT","IT","CE"],',
+      '    "Gender": ["M","F","M"],',
+      '    "Marks":  [85, 90, 78]',
+      '})',
+      '',
+      'table = pd.pivot_table(df, values="Marks", index="Branch",',
+      '                        columns="Gender", aggfunc="mean")',
+      'print(table)'
     ],
-    out: { 3: ["a grid of Branch x Gender","average marks"] },
+    out: { 9: ["Gender     F     M","Branch            ","CE       NaN  78.0","IT      90.0  85.0"] },
     why: "pivot_table() reshapes summarised data into a readable grid, just like an Excel pivot table."
   },
   {
     title: "Program 4 — Grouping by more than one column",
     usecase: "🏫 Average marks per Branch, further split by Gender",
     input: { fname: "df", headers: ["Branch","Gender","Marks"], rows: [["IT","M","85"],["IT","F","91"],["CE","M","78"]] },
-    code: [ 'print(df.groupby(["Branch","Gender"])["Marks"].mean())' ],
-    out: { 0: ["Branch Gender","IT     F         91.0","       M         85.0","CE     M         78.0"] },
+    code: [
+      'import pandas as pd',
+      '',
+      'df = pd.DataFrame({',
+      '    "Branch": ["IT","IT","CE"],',
+      '    "Gender": ["M","F","M"],',
+      '    "Marks":  [85, 91, 78]',
+      '})',
+      'print(df.groupby(["Branch","Gender"])["Marks"].mean())'
+    ],
+    out: { 6: ["Branch  Gender","CE      M         78.0","IT      F         91.0","        M         85.0","Name: Marks, dtype: float64"] },
     why: "Passing a LIST of columns to groupby() nests the grouping — every Branch is further broken down by Gender."
   },
   {
     title: "Program 5 — size() vs count(): a classic trap",
     usecase: "🪤 'How many students per branch?' — but Marks has some gaps",
     input: { fname: "df", headers: ["Branch","Marks"], rows: [["IT","85"],["IT","NaN"],["CE","78"]] },
-    code: [ 'print(df.groupby("Branch").size())', "print(df.groupby(\"Branch\")[\"Marks\"].count())" ],
-    out: { 0: ["IT    2","CE    1"], 1: ["IT    1","CE    1"] },
+    code: [
+      'import pandas as pd',
+      'import numpy as np',
+      '',
+      'df = pd.DataFrame({',
+      '    "Branch": ["IT","IT","CE"],',
+      '    "Marks":  [85, np.nan, 78]',
+      '})',
+      'print(df.groupby("Branch").size())',
+      'print(df.groupby("Branch")["Marks"].count())'
+    ],
+    out: { 7: ["Branch","CE    1","IT    2","dtype: int64"], 8: ["Branch","CE    1","IT    1","Name: Marks, dtype: int64"] },
     why: "size() counts ROWS per group no matter what (2 for IT); count() counts only NON-missing values in a chosen column (1 for IT, since one Marks was NaN) — easy to mix up, costly if you do."
   },
   {
     title: "Program 6 — Passing a NumPy function straight to agg()",
     usecase: "📏 Branch-wise median marks, calculated with NumPy's own function",
     input: { fname: "df", headers: ["Branch","Marks"], rows: [["IT","85"],["IT","60"],["CE","78"],["CE","92"]] },
-    code: [ 'print(df.groupby("Branch")["Marks"].agg(np.median))' ],
-    out: { 0: ["IT    72.5","CE    85.0"] },
+    code: [
+      'import pandas as pd',
+      'import numpy as np',
+      '',
+      'df = pd.DataFrame({',
+      '    "Branch": ["IT","IT","CE","CE"],',
+      '    "Marks":  [85, 60, 78, 92]',
+      '})',
+      'print(df.groupby("Branch")["Marks"].agg(np.median))'
+    ],
+    out: { 6: ["Branch","CE    85.0","IT    72.5","Name: Marks, dtype: float64"] },
     why: "agg() isn't limited to string names like 'mean' — it happily accepts an actual NumPy function object like np.median."
   }
 ]
@@ -2882,7 +3559,7 @@ function hlLine(line){
   const enc = (i)=> (i+10).toString(36); // letters only (a,b,c...) so the digit-highlighter below can never touch a placeholder
   s = s.replace(/(#[^\n]*)/, (m)=>{ tokens.push('<span class="cm">'+m+'</span>'); return '\u0000'+enc(tokens.length-1)+'\u0000'; });
   s = s.replace(/("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')/g, (m)=>{ tokens.push('<span class="str">'+m+'</span>'); return '\u0000'+enc(tokens.length-1)+'\u0000'; });
-  s = s.replace(/\b(import|as|from|print|True|False|None|if|else|elif|for|in|def|return|with|lambda)\b/g, '<span class="kw">$1</span>');
+  s = s.replace(/\b(import|as|from|print|True|False|None|if|else|elif|for|in|def|return|with|lambda|open)\b/g, '<span class="kw">$1</span>');
   s = s.replace(/\b([a-zA-Z_][a-zA-Z0-9_]*)(?=\()/g, '<span class="fn">$1</span>');
   s = s.replace(/\b(\d+\.?\d*)\b/g, '<span class="num">$1</span>');
   s = s.replace(/\u0000([a-z]+)\u0000/g, (_, code)=> tokens[parseInt(code,36)-10]);
@@ -2903,7 +3580,7 @@ function renderRunner(program, topicId, idx){
   const dots = program.code.map(()=>`<span class="d"></span>`).join('');
   const inputBlock = program.input ? `
     <div class="flow-block flow-input">
-      <div class="flow-label">📄 Input Data <span class="fname">${program.input.fname||''}</span></div>
+      <div class="flow-label">📄 Sample Data <span class="fname">${program.input.fname||''}</span></div>
       <div class="excel-wrap" style="margin:0; box-shadow:none; border-radius:0;">${excelTableHTML(program.input)}</div>
     </div>` : '';
 
@@ -2922,7 +3599,7 @@ function renderRunner(program, topicId, idx){
     <div class="runner-flow">
       ${inputBlock}
       <div class="flow-block flow-code">
-        <div class="flow-label">💻 Code</div>
+        <div class="flow-label">💻 Complete, runnable code</div>
         <div class="runner-code-body">${codeLines}</div>
       </div>
       <div class="flow-block flow-output">
@@ -3001,41 +3678,43 @@ document.querySelectorAll('.runner').forEach(runnerEl=>{
   }, { threshold: 0.4 });
   runObs.observe(runnerEl);
 });
+
+// progress bar
+const bar = document.getElementById('progressBar');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+  bar.style.width = scrolled + '%';
+
+  const toTop = document.getElementById('toTop');
+  if(h.scrollTop > 500){ toTop.classList.add('show'); } else { toTop.classList.remove('show'); }
+});
+
+document.getElementById('toTop').addEventListener('click', () => {
+  window.scrollTo({top:0, behavior:'smooth'});
+});
+
+// scroll reveal
+const revealEls = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if(entry.isIntersecting){
+      entry.target.classList.add('in');
+      io.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+revealEls.forEach(el => io.observe(el));
+
+// floating leaves drift randomization
+document.querySelectorAll('.leaf').forEach((leaf, i) => {
+  leaf.style.animationDuration = (7 + i*1.3) + 's';
+});
+
 </script>
 
-<script>
-  // progress bar
-  const bar = document.getElementById('progressBar');
-  window.addEventListener('scroll', () => {
-    const h = document.documentElement;
-    const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
-    bar.style.width = scrolled + '%';
-
-    const toTop = document.getElementById('toTop');
-    if(h.scrollTop > 500){ toTop.classList.add('show'); } else { toTop.classList.remove('show'); }
-  });
-
-  document.getElementById('toTop').addEventListener('click', () => {
-    window.scrollTo({top:0, behavior:'smooth'});
-  });
-
-  // scroll reveal
-  const revealEls = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if(entry.isIntersecting){
-        entry.target.classList.add('in');
-        io.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
-  revealEls.forEach(el => io.observe(el));
-
-  // floating leaves drift randomization
-  document.querySelectorAll('.leaf').forEach((leaf, i) => {
-    leaf.style.animationDuration = (7 + i*1.3) + 's';
-  });
-</script>
+</body>
+</html>
 
 </body>
 </html>
