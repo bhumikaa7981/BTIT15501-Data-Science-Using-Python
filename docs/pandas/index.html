@@ -477,14 +477,14 @@
   <div class="nav-inner">
     <div class="brand"><span class="panda">🐼</span> Mastering Pandas</div>
     <nav class="links">
-      <a href="#story">The Case</a>
-      <a href="#foundations">Foundations</a>
-      <a href="#io">Data In/Out</a>
-      <a href="#cleaning">Select & Clean</a>
-      <a href="#transform">Transform</a>
-      <a href="#combine">Combine & Summarize</a>
-      <a href="#realworld">Real-World</a>
-      <a href="#cheatsheet">Cheat Sheet</a>
+      <a href="#story" data-jump="story">The Case</a>
+      <a href="#foundations" data-jump="foundations">Foundations</a>
+      <a href="#io" data-jump="io">Data In/Out</a>
+      <a href="#cleaning" data-jump="cleaning">Select & Clean</a>
+      <a href="#transform" data-jump="transform">Transform</a>
+      <a href="#combine" data-jump="combine">Combine & Summarize</a>
+      <a href="#realworld" data-jump="realworld">Real-World</a>
+      <a href="#cheatsheet" data-jump="cheatsheet">Cheat Sheet</a>
     </nav>
   </div>
 </header>
@@ -3677,6 +3677,24 @@ document.querySelectorAll('.runner').forEach(runnerEl=>{
     });
   }, { threshold: 0.4 });
   runObs.observe(runnerEl);
+});
+
+// nav links: scroll manually instead of relying on native #hash jump.
+// (Some artifact-preview iframes intercept/rewrite the URL hash for their
+// own routing before the browser gets to perform the native anchor jump,
+// which can make href="#id" silently land in the wrong place or not move
+// at all. Handling the click ourselves sidesteps that entirely.)
+document.querySelectorAll('nav.links a[data-jump]').forEach(link=>{
+  link.addEventListener('click', (e)=>{
+    e.preventDefault();
+    const targetId = link.getAttribute('data-jump');
+    const target = document.getElementById(targetId);
+    if(!target) return;
+    const navHeight = document.querySelector('header.nav').offsetHeight || 60;
+    const top = target.getBoundingClientRect().top + window.pageYOffset - navHeight - 18;
+    window.scrollTo({ top, behavior: 'smooth' });
+    if(history.replaceState){ history.replaceState(null, '', '#'+targetId); }
+  });
 });
 
 // progress bar
