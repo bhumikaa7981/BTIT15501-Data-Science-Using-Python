@@ -163,7 +163,7 @@
   .problem-card:hover{transform:translateY(-6px); box-shadow:var(--shadow);}
   .problem-card .q{font-weight:700; font-size:15px; margin-bottom:8px;}
   .problem-card code{
-    display:inline-block; background:var(--ink); color:#a6f5d0; font-family:var(--mono); font-size:13px;
+    display:inline-block; background:var(--ink); color:#047857; font-family:var(--mono); font-size:13px;
     padding:4px 10px; border-radius:8px; margin-bottom:10px;
   }
   .problem-card .trouble{
@@ -232,15 +232,15 @@
   .panel p{color:var(--ink-soft); font-size:15.5px;}
 
   .syntax-block{
-    background:var(--ink); border-radius:18px; padding:22px 26px; margin-bottom:34px;
+    background:#eef0fb; border:1px solid #d7dcf5; border-radius:18px; padding:22px 26px; margin-bottom:34px;
     box-shadow:var(--shadow); position:relative;
   }
-  .syntax-block .tag{color:#8fe3c0; font-weight:700; font-size:12.5px; letter-spacing:1.5px; margin-bottom:12px; text-transform:uppercase;}
-  .syntax-block pre{color:#eafff5; font-family:var(--mono); font-size:14.5px; white-space:pre-wrap; line-height:1.7;}
-  .syntax-block pre .kw{color:#ffd479;}
-  .syntax-block pre .fn{color:#7fd9ff;}
-  .syntax-block pre .str{color:#a6f5d0;}
-  .syntax-block pre .cm{color:#8a93a6;}
+  .syntax-block .tag{color:#5b3fa8; font-weight:700; font-size:12.5px; letter-spacing:1.5px; margin-bottom:12px; text-transform:uppercase;}
+  .syntax-block pre{color:#20242a; font-family:var(--mono); font-size:14.5px; white-space:pre-wrap; line-height:1.7;}
+  .syntax-block pre .kw{color:#a15c00;}
+  .syntax-block pre .fn{color:#1d4ed8;}
+  .syntax-block pre .str{color:#047857;}
+  .syntax-block pre .cm{color:#5b6472;}
 
   /* ---------- program cards ---------- */
   .program{
@@ -255,19 +255,19 @@
   }
   .program-head h4{font-size:16.5px;}
   .program-head .pill{
-    font-family:var(--mono); font-size:12px; font-weight:600; background:var(--ink); color:#a6f5d0;
+    font-family:var(--mono); font-size:12px; font-weight:600; background:var(--ink); color:#047857;
     padding:4px 12px; border-radius:100px;
   }
   .program-body{display:grid; grid-template-columns:1.1fr .9fr; gap:0;}
   @media(max-width:780px){.program-body{grid-template-columns:1fr;}}
-  .code-side{background:#1b1e24; padding:22px 24px; position:relative;}
+  .code-side{background:#eef0fb; padding:22px 24px; position:relative;}
   .code-side .dots{display:flex; gap:6px; margin-bottom:14px;}
   .code-side .dots span{width:10px; height:10px; border-radius:50%; display:inline-block;}
   .code-side .dots span:nth-child(1){background:#ff5f56;}
   .code-side .dots span:nth-child(2){background:#ffbd2e;}
   .code-side .dots span:nth-child(3){background:#27c93f;}
-  .code-side pre{font-family:var(--mono); font-size:13.8px; color:#eafff5; white-space:pre-wrap; line-height:1.75;}
-  .code-side pre .kw{color:#ffd479;} .code-side pre .fn{color:#7fd9ff;} .code-side pre .str{color:#a6f5d0;} .code-side pre .cm{color:#7a8494;} .code-side pre .num{color:#ffb3e6;}
+  .code-side pre{font-family:var(--mono); font-size:13.8px; color:#20242a; white-space:pre-wrap; line-height:1.75;}
+  .code-side pre .kw{color:#a15c00;} .code-side pre .fn{color:#1d4ed8;} .code-side pre .str{color:#047857;} .code-side pre .cm{color:#5b6472;} .code-side pre .num{color:#be185d;}
   .output-side{padding:22px 24px; background:var(--bamboo-pale); display:flex; flex-direction:column;}
   .output-side .lbl{font-weight:700; font-size:12px; letter-spacing:1.5px; text-transform:uppercase; color:var(--bamboo-dark); margin-bottom:12px; display:flex; align-items:center; gap:6px;}
   .output-side pre{font-family:var(--mono); font-size:13.6px; color:var(--ink); white-space:pre-wrap; line-height:1.7;}
@@ -329,7 +329,7 @@
   }
   .cheat-card:hover{transform:translateY(-5px) scale(1.02); box-shadow:var(--shadow); border-color:var(--bamboo-light);}
   .cheat-card .t{font-weight:700; font-size:14.5px; margin-bottom:8px; display:flex; gap:8px; align-items:center;}
-  .cheat-card code{font-family:var(--mono); background:var(--ink); color:#a6f5d0; padding:6px 10px; border-radius:8px; font-size:12.8px; display:inline-block;}
+  .cheat-card code{font-family:var(--mono); background:var(--ink); color:#047857; padding:6px 10px; border-radius:8px; font-size:12.8px; display:inline-block;}
 
   /* ---------- footer ---------- */
   footer{
@@ -350,9 +350,13 @@
   #toTop.show{opacity:1; pointer-events:auto;}
   #toTop:hover{transform:translateY(-4px);}
 
-  ::-webkit-scrollbar{width:10px;}
-  ::-webkit-scrollbar-track{background:var(--bg);}
-  ::-webkit-scrollbar-thumb{background:var(--bamboo-light); border-radius:10px;}
+  html{scrollbar-width:auto; scrollbar-color:var(--bamboo) #e3e9e6;}
+  ::-webkit-scrollbar{width:16px;}
+  ::-webkit-scrollbar-track{background:#e3e9e6;}
+  ::-webkit-scrollbar-thumb{
+    background:var(--bamboo); border-radius:10px; border:3px solid #e3e9e6;
+  }
+  ::-webkit-scrollbar-thumb:hover{background:var(--bamboo-dark);}
 
   @media(max-width:640px){
     nav.links{display:none;}
@@ -391,22 +395,22 @@
     display:flex; align-items:center; gap:7px;
   }
   .flow-input .flow-label{background:#eef7f2; color:var(--bamboo-dark);}
-  .flow-code .flow-label{background:#1b1e24; color:#8fe3c0;}
+  .flow-code .flow-label{background:#dfe3f9; color:#5b3fa8;}
   .flow-output .flow-label{background:var(--bamboo-pale); color:var(--bamboo-dark);}
 
   .flow-input .fname{margin-left:auto; font-family:var(--mono); font-size:11px; font-weight:600; color:var(--ink-soft); background:#fff; padding:2px 10px; border-radius:100px;}
 
-  .runner-code-body{background:#1b1e24; padding:16px 0;}
+  .runner-code-body{background:#eef0fb; padding:16px 0;}
   .cline{
-    display:flex; gap:14px; padding:5px 22px; font-family:var(--mono); font-size:13.6px; color:#dfe6e2;
+    display:flex; gap:14px; padding:5px 22px; font-family:var(--mono); font-size:13.6px; color:#20242a;
     border-left:3px solid transparent; transition:background .3s ease, border-color .3s ease; white-space:pre-wrap; line-height:1.7;
   }
-  .cline .ln{color:#565f6e; width:18px; flex-shrink:0; text-align:right; user-select:none;}
+  .cline .ln{color:#8087a0; width:18px; flex-shrink:0; text-align:right; user-select:none;}
   .cline .txt{flex:1;}
-  .cline.active{background:rgba(31,157,109,.22); border-left-color:var(--sun);}
-  .cline.active .ln{color:var(--sun);}
+  .cline.active{background:#d9def7; border-left-color:#5b3fa8;}
+  .cline.active .ln{color:#5b3fa8; font-weight:700;}
   .cline.done{opacity:.72;}
-  .cline .kw{color:#ffd479;} .cline .fn{color:#7fd9ff;} .cline .str{color:#a6f5d0;} .cline .cm{color:#7a8494;} .cline .num{color:#ffb3e6;}
+  .cline .kw{color:#a15c00;} .cline .fn{color:#1d4ed8;} .cline .str{color:#047857;} .cline .cm{color:#5b6472;} .cline .num{color:#be185d;}
 
   .runner-output-body{background:var(--bamboo-pale); padding:14px 20px; min-height:52px; display:flex; flex-direction:column; gap:4px;}
   .runner-output-body .placeholder{color:#8fa89b; font-size:13px; font-style:italic;}
@@ -428,12 +432,12 @@
 
   /* ---------- setup / imports banner ---------- */
   .setup-banner{
-    max-width:980px; margin:0 auto 34px; background:#1b1e24; border-radius:18px; padding:20px 26px;
+    max-width:980px; margin:0 auto 34px; background:#eef0fb; border-radius:18px; padding:20px 26px;
     box-shadow:var(--shadow); display:flex; align-items:center; gap:20px; flex-wrap:wrap;
   }
-  .setup-banner pre{font-family:var(--mono); color:#eafff5; font-size:14.5px; line-height:1.7;}
-  .setup-banner pre .kw{color:#ffd479;} .setup-banner pre .fn{color:#7fd9ff;}
-  .setup-banner .note{color:#a6f5d0; font-size:12.5px; font-weight:600; max-width:320px;}
+  .setup-banner pre{font-family:var(--mono); color:#20242a; font-size:14.5px; line-height:1.7;}
+  .setup-banner pre .kw{color:#a15c00;} .setup-banner pre .fn{color:#1d4ed8;}
+  .setup-banner .note{color:#047857; font-size:12.5px; font-weight:600; max-width:320px;}
 
   /* ---------- real-world pipeline card ---------- */
   .pipeline{
@@ -457,9 +461,9 @@
     background:var(--bamboo); color:#fff; font-family:var(--display); font-weight:700; font-size:12.5px;
     display:flex; align-items:center; justify-content:center;
   }
-  .pipeline-code{background:#1b1e24; border-radius:16px; padding:22px 24px; margin-bottom:20px;}
-  .pipeline-code pre{font-family:var(--mono); color:#eafff5; font-size:13.8px; white-space:pre-wrap; line-height:1.75;}
-  .pipeline-code pre .kw{color:#ffd479;} .pipeline-code pre .fn{color:#7fd9ff;} .pipeline-code pre .str{color:#a6f5d0;} .pipeline-code pre .cm{color:#7a8494;} .pipeline-code pre .num{color:#ffb3e6;}
+  .pipeline-code{background:#eef0fb; border-radius:16px; padding:22px 24px; margin-bottom:20px;}
+  .pipeline-code pre{font-family:var(--mono); color:#20242a; font-size:13.8px; white-space:pre-wrap; line-height:1.75;}
+  .pipeline-code pre .kw{color:#a15c00;} .pipeline-code pre .fn{color:#1d4ed8;} .pipeline-code pre .str{color:#047857;} .pipeline-code pre .cm{color:#5b6472;} .pipeline-code pre .num{color:#be185d;}
   .pipeline-output{background:var(--bamboo-pale); border-radius:16px; padding:20px 24px; margin-bottom:20px;}
   .pipeline-output .lbl{font-weight:700; font-size:12px; letter-spacing:1.5px; text-transform:uppercase; color:var(--bamboo-dark); margin-bottom:10px;}
   .pipeline-output pre{font-family:var(--mono); color:var(--ink); font-size:13.4px; white-space:pre-wrap; line-height:1.7;}
@@ -480,9 +484,9 @@
       <a href="#story" data-jump="story">The Case</a>
       <a href="#foundations" data-jump="foundations">Foundations</a>
       <a href="#io" data-jump="io">Data In/Out</a>
-      <a href="#cleaning" data-jump="cleaning">Select & Clean</a>
+      <a href="#cleaning" data-jump="cleaning">Select &amp; Clean</a>
       <a href="#transform" data-jump="transform">Transform</a>
-      <a href="#combine" data-jump="combine">Combine & Summarize</a>
+      <a href="#combine" data-jump="combine">Combine &amp; Summarize</a>
       <a href="#realworld" data-jump="realworld">Real-World</a>
       <a href="#cheatsheet" data-jump="cheatsheet">Cheat Sheet</a>
     </nav>
@@ -515,7 +519,7 @@
       <pre><span class="kw">import</span> pandas <span class="kw">as</span> pd
 <span class="kw">import</span> numpy <span class="kw">as</span> np</pre>
     </div>
-    <div class="note">🧪 Every program on this page is now fully self-contained and runnable on its own — each one builds its own sample data with <code style="background:rgba(255,255,255,.08); padding:2px 6px; border-radius:6px;">pd.DataFrame(...)</code>, so you can copy just one code block into a fresh <code style="background:rgba(255,255,255,.08); padding:2px 6px; border-radius:6px;">.py</code> file or notebook and it will run immediately — no external CSV/Excel file required. <code style="background:rgba(255,255,255,.08); padding:2px 6px; border-radius:6px;">numpy</code> shows up the moment a program needs <code style="background:rgba(255,255,255,.08); padding:2px 6px; border-radius:6px;">np.nan</code>, numeric arrays, or any math Pandas itself borrows from it.</div>
+    <div class="note">🧪 Every program on this page is now fully self-contained and runnable on its own — each one builds its own sample data with <code style="background:rgba(91,63,168,.12); color:#5b3fa8; padding:2px 6px; border-radius:6px;">pd.DataFrame(...)</code>, so you can copy just one code block into a fresh <code style="background:rgba(91,63,168,.12); color:#5b3fa8; padding:2px 6px; border-radius:6px;">.py</code> file or notebook and it will run immediately — no external CSV/Excel file required. <code style="background:rgba(91,63,168,.12); color:#5b3fa8; padding:2px 6px; border-radius:6px;">numpy</code> shows up the moment a program needs <code style="background:rgba(91,63,168,.12); color:#5b3fa8; padding:2px 6px; border-radius:6px;">np.nan</code>, numeric arrays, or any math Pandas itself borrows from it.</div>
   </div>
 </div>
 
@@ -3634,7 +3638,6 @@ function playRunner(container, program){
     }
     lines[i].classList.add('active');
     if(dots[i]) dots[i].classList.add('on');
-    try{ lines[i].scrollIntoView({block:'nearest', behavior:'smooth'}); }catch(e){}
     const outs = program.out && program.out[i];
     if(outs){
       if(placeholder) placeholder.style.display = 'none';
@@ -3684,14 +3687,32 @@ document.querySelectorAll('.runner').forEach(runnerEl=>{
 // own routing before the browser gets to perform the native anchor jump,
 // which can make href="#id" silently land in the wrong place or not move
 // at all. Handling the click ourselves sidesteps that entirely.)
+//
+// We compute position via offsetTop (layout-based) rather than
+// getBoundingClientRect() (paint-based), because sections not yet
+// scrolled into view still carry the reveal-on-scroll CSS transform
+// (translateY(36px)) — that transform shifts the *painted* position
+// without moving the element in the layout, which previously made
+// getBoundingClientRect()-based jumps land tens of pixels off target.
+function getLayoutTop(el){
+  let top = 0;
+  while(el){
+    top += el.offsetTop || 0;
+    el = el.offsetParent;
+  }
+  return top;
+}
 document.querySelectorAll('nav.links a[data-jump]').forEach(link=>{
   link.addEventListener('click', (e)=>{
     e.preventDefault();
     const targetId = link.getAttribute('data-jump');
     const target = document.getElementById(targetId);
     if(!target) return;
+    // reveal immediately so nothing shifts position mid-scroll
+    target.classList.add('in');
+    target.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el=> el.classList.add('in'));
     const navHeight = document.querySelector('header.nav').offsetHeight || 60;
-    const top = target.getBoundingClientRect().top + window.pageYOffset - navHeight - 18;
+    const top = getLayoutTop(target) - navHeight - 18;
     window.scrollTo({ top, behavior: 'smooth' });
     if(history.replaceState){ history.replaceState(null, '', '#'+targetId); }
   });
@@ -3730,9 +3751,6 @@ document.querySelectorAll('.leaf').forEach((leaf, i) => {
 });
 
 </script>
-
-</body>
-</html>
 
 </body>
 </html>
