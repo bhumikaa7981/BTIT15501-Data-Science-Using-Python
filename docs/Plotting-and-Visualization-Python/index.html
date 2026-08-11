@@ -1,1 +1,1580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plotting & Visualization · Unit 3 · BTIT15501</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --butter:#FFF3D6;
+    --blush:#FFDCE6;
+    --lavender:#E7DEFF;
+    --mint:#D6F5E3;
+    --peach:#FFE1C7;
+    --sky:#D9EFFF;
+    --ink:#4B3F52;
+    --ink-soft:#7A6D85;
+    --coral:#FF8FA0;
+    --coral-deep:#F26D82;
+    --teal:#49B9AE;
+    --teal-deep:#2E9A90;
+    --purple:#9C8CE0;
+    --yellow:#FFC85C;
+    --card-bg:#FFFDF8;
+    --shadow: 0 10px 30px rgba(120, 90, 130, 0.14);
+    --shadow-sm: 0 4px 14px rgba(120,90,130,.12);
+    --radius: 26px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;height:100%;}
+  body{
+    font-family:'Nunito', sans-serif;
+    color:var(--ink);
+    background:
+      radial-gradient(circle at 10% 15%, var(--sky) 0%, transparent 45%),
+      radial-gradient(circle at 90% 10%, var(--blush) 0%, transparent 40%),
+      radial-gradient(circle at 50% 90%, var(--mint) 0%, transparent 45%),
+      linear-gradient(180deg, #FFFBF3, #FFF7EE);
+    overflow:hidden;
+  }
+  h1,h2,h3,.display{font-family:'Baloo 2', sans-serif;}
+  code, pre, .mono{font-family:'Space Mono', monospace;}
+
+  /* ---------- top bar ---------- */
+  .topbar{
+    position:fixed; top:0; left:0; right:0; z-index:50;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 26px;
+    background:rgba(255,251,243,0.86);
+    backdrop-filter:blur(8px);
+    border-bottom:2px solid rgba(75,63,82,0.06);
+  }
+  .brand{display:flex; align-items:center; gap:10px;}
+  .brand .logo{
+    width:38px;height:38px;border-radius:50%;
+    background:conic-gradient(from 180deg, var(--coral), var(--yellow), var(--teal), var(--purple), var(--coral));
+    display:flex;align-items:center;justify-content:center;
+    font-weight:800; color:#fff; font-size:14px; box-shadow:var(--shadow-sm);
+  }
+  .brand .title{font-weight:700; font-size:1.02rem; line-height:1.1;}
+  .brand .sub{font-size:.72rem; color:var(--ink-soft); font-weight:600;}
+  .prof-link{
+    text-decoration:none; font-weight:700; font-size:.85rem; color:var(--ink);
+    background:linear-gradient(120deg, var(--yellow), var(--peach));
+    padding:9px 16px; border-radius:999px; box-shadow:var(--shadow-sm);
+    display:flex; align-items:center; gap:6px; white-space:nowrap;
+    transition:transform .2s ease;
+  }
+  .prof-link:hover{transform:translateY(-2px) scale(1.03);}
+
+  .progress-track{
+    position:fixed; top:64px; left:0; right:0; height:5px; z-index:49;
+    background:rgba(75,63,82,0.07);
+  }
+  .progress-fill{
+    height:100%; width:0%;
+    background:linear-gradient(90deg, var(--coral), var(--yellow), var(--teal), var(--purple));
+    transition:width .35s ease;
+  }
+
+  /* ---------- scroller ---------- */
+  .scroller{
+    height:100vh; width:100vw;
+    display:flex; flex-wrap:nowrap;
+    overflow-x:auto; overflow-y:hidden;
+    scroll-snap-type:x mandatory;
+    scroll-behavior:smooth;
+    padding-top:69px;
+  }
+  .scroller::-webkit-scrollbar{display:none;}
+  .chapter{
+    min-width:100vw; width:100vw; height:calc(100vh - 69px);
+    scroll-snap-align:start; flex-shrink:0;
+    overflow-y:auto;
+    padding:34px 8vw 90px 8vw;
+  }
+  .chapter::-webkit-scrollbar{width:8px;}
+  .chapter::-webkit-scrollbar-thumb{background:rgba(75,63,82,.15); border-radius:8px;}
+
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-weight:800; letter-spacing:.14em; font-size:.72rem;
+    text-transform:uppercase; color:var(--coral-deep);
+    background:rgba(255,143,160,.12); padding:6px 14px; border-radius:999px;
+    margin-bottom:14px;
+  }
+  .chapter h2{font-size:2.5rem; margin:0 0 6px 0; font-weight:800; line-height:1.08;}
+  .chapter .lede{font-size:1.12rem; color:var(--ink-soft); max-width:780px; margin:0 0 30px 0; font-weight:600;}
+
+  /* ---------- cards / grid ---------- */
+  .grid{display:grid; gap:22px;}
+  .grid-2{grid-template-columns:1fr 1fr;}
+  .grid-3{grid-template-columns:repeat(3,1fr);}
+  @media(max-width:980px){.grid-2,.grid-3{grid-template-columns:1fr;}}
+
+  .card{
+    background:var(--card-bg); border-radius:var(--radius);
+    box-shadow:var(--shadow); padding:24px 26px; position:relative;
+    border:2px solid rgba(75,63,82,0.05);
+  }
+  .card.tinted-butter{background:linear-gradient(160deg, var(--butter), #fffdf7);}
+  .card.tinted-mint{background:linear-gradient(160deg, var(--mint), #fbfff9);}
+  .card.tinted-blush{background:linear-gradient(160deg, var(--blush), #fffafb);}
+  .card.tinted-lav{background:linear-gradient(160deg, var(--lavender), #fbfaff);}
+  .card.tinted-sky{background:linear-gradient(160deg, var(--sky), #f9fdff);}
+  .card.tinted-peach{background:linear-gradient(160deg, var(--peach), #fffbf6);}
+
+  .badge{
+    display:inline-block; font-size:.68rem; font-weight:800; letter-spacing:.05em;
+    padding:4px 11px; border-radius:999px; margin-bottom:10px; color:#fff;
+  }
+  .badge.coral{background:var(--coral-deep);}
+  .badge.teal{background:var(--teal-deep);}
+  .badge.purple{background:var(--purple);}
+  .badge.yellow{background:#D89A22;}
+
+  /* ---------- program block ---------- */
+  .program{
+    background:var(--card-bg); border-radius:var(--radius); box-shadow:var(--shadow);
+    padding:26px; margin-bottom:26px; border:2px solid rgba(75,63,82,.05);
+  }
+  .program-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; flex-wrap:wrap; gap:10px;}
+  .program-head h4{margin:0; font-size:1.22rem; font-weight:800;}
+  .program-num{
+    width:34px;height:34px;border-radius:12px; flex-shrink:0;
+    display:flex;align-items:center;justify-content:center; font-weight:800; color:#fff;
+    background:linear-gradient(135deg, var(--coral), var(--purple)); font-size:.95rem;
+  }
+  .program-title-wrap{display:flex; align-items:center; gap:12px;}
+  .steps-toggle{
+    font-size:.78rem; font-weight:800; color:var(--teal-deep); background:rgba(73,185,174,.13);
+    border:none; padding:7px 14px; border-radius:999px; cursor:pointer;
+  }
+  .prog-body{display:grid; grid-template-columns:1.15fr .85fr; gap:20px;}
+  @media(max-width:980px){.prog-body{grid-template-columns:1fr;}}
+
+  .code-box{
+    background:#2E2740; border-radius:18px; padding:18px 20px; overflow-x:auto;
+    box-shadow:inset 0 0 0 2px rgba(255,255,255,.03);
+  }
+  .code-box pre{margin:0; color:#F4EEFF; font-size:.86rem; line-height:1.65; white-space:pre;}
+  .code-box .cmt{color:#B7A9E0;}
+  .code-box .str{color:#FFD98E;}
+  .code-box .kw{color:#88E0D0;}
+
+  .output-col{display:flex; flex-direction:column; gap:12px;}
+  .chart-box{
+    background:#fff; border-radius:16px; padding:12px; box-shadow:var(--shadow-sm);
+    display:flex; align-items:center; justify-content:center; min-height:170px;
+  }
+  .chart-box svg{width:100%; height:auto; max-height:190px;}
+  .console-box{
+    background:#1F2A24; border-radius:14px; padding:12px 16px; font-size:.78rem;
+    color:#B9F6D6; font-family:'Space Mono', monospace; line-height:1.6;
+  }
+  .console-box .pfx{color:#6FE0AE; font-weight:700;}
+
+  .steps-list{margin-top:16px; padding:14px 18px; border-radius:14px; background:rgba(255,200,92,.14); display:none;}
+  .steps-list.open{display:block;}
+  .steps-list ol{margin:0; padding-left:18px;}
+  .steps-list li{margin-bottom:7px; font-weight:600; font-size:.93rem;}
+
+  .genz{
+    margin-top:14px; padding:14px 18px; border-radius:14px;
+    background:linear-gradient(120deg, rgba(156,140,224,.15), rgba(255,143,160,.13));
+    font-weight:700; font-size:.92rem; display:flex; gap:10px; align-items:flex-start;
+  }
+  .genz .tag{
+    flex-shrink:0; font-size:.65rem; font-weight:800; letter-spacing:.05em; color:#fff;
+    background:var(--purple); padding:4px 9px; border-radius:8px; margin-top:2px;
+  }
+  .genz .genz-body{flex:1; min-width:0;}
+  .genz .genz-body ul{margin:8px 0 0 18px; padding:0;}
+  .genz .genz-body li{margin-bottom:5px; font-weight:600;}
+  .genz .genz-body li:last-child{margin-bottom:0;}
+
+  /* ---------- nav dots ---------- */
+  .dotnav{
+    position:fixed; bottom:18px; left:50%; transform:translateX(-50%); z-index:50;
+    display:flex; gap:9px; background:rgba(255,251,243,0.9); backdrop-filter:blur(6px);
+    padding:10px 16px; border-radius:999px; box-shadow:var(--shadow);
+    max-width:92vw; overflow-x:auto;
+  }
+  .dot{
+    width:11px; height:11px; border-radius:50%; background:rgba(75,63,82,.18);
+    cursor:pointer; border:none; flex-shrink:0; transition:all .25s ease;
+  }
+  .dot.active{
+    width:28px; border-radius:8px;
+    background:linear-gradient(90deg, var(--coral), var(--purple));
+  }
+
+  .arrownav{
+    position:fixed; top:50%; transform:translateY(-50%); z-index:50;
+    width:46px; height:46px; border-radius:50%; border:none; cursor:pointer;
+    background:rgba(255,255,255,.85); box-shadow:var(--shadow); font-size:1.3rem;
+    color:var(--ink); display:flex; align-items:center; justify-content:center;
+  }
+  .arrownav:hover{background:#fff;}
+  #prevBtn{left:16px;}
+  #nextBtn{right:16px;}
+  @media(max-width:700px){.arrownav{display:none;}}
+
+  /* ---------- cover ---------- */
+  .cover{
+    display:flex; flex-direction:column; justify-content:center; align-items:flex-start;
+    height:100%; max-width:900px;
+  }
+  .cover .kicker{font-weight:800; color:var(--teal-deep); letter-spacing:.16em; text-transform:uppercase; font-size:.8rem; margin-bottom:14px;}
+  .cover h1{font-size:3.6rem; line-height:1.03; margin:0 0 16px 0; font-weight:800;
+    background:linear-gradient(100deg, var(--coral-deep), var(--purple) 60%, var(--teal-deep));
+    -webkit-background-clip:text; background-clip:text; color:transparent;}
+  @media(max-width:700px){.cover h1{font-size:2.3rem;}}
+  .cover p.tagline{font-size:1.2rem; font-weight:700; color:var(--ink-soft); max-width:640px;}
+  .pillrow{display:flex; flex-wrap:wrap; gap:10px; margin-top:22px;}
+  .pill{background:#fff; padding:8px 16px; border-radius:999px; font-weight:700; font-size:.85rem; box-shadow:var(--shadow-sm);}
+  .startbtn{
+    margin-top:34px; align-self:flex-start; border:none; cursor:pointer;
+    padding:16px 30px; border-radius:999px; font-size:1.05rem; font-weight:800; color:#fff;
+    background:linear-gradient(120deg, var(--coral-deep), var(--purple));
+    box-shadow:0 12px 26px rgba(242,109,130,.35);
+    display:flex; align-items:center; gap:10px; transition:transform .2s ease;
+  }
+  .startbtn:hover{transform:translateY(-3px);}
+  .subject-panel{
+    margin-top:28px; background:#fff; border-radius:20px; padding:18px 22px;
+    box-shadow:var(--shadow-sm); font-size:.86rem; color:var(--ink-soft); font-weight:700;
+    display:grid; grid-template-columns:repeat(2,auto); gap:6px 40px;
+  }
+  .subject-panel b{color:var(--ink); font-weight:800;}
+
+  /* ---------- roadmap ---------- */
+  .road{display:flex; flex-direction:column; gap:14px; max-width:820px;}
+  .road-item{
+    display:flex; gap:18px; align-items:center; background:#fff; border-radius:18px;
+    padding:16px 20px; box-shadow:var(--shadow-sm); cursor:pointer; transition:transform .2s ease;
+  }
+  .road-item:hover{transform:translateX(6px);}
+  .road-num{
+    font-family:'Baloo 2'; font-weight:800; font-size:1.5rem; color:#fff; width:46px; height:46px;
+    border-radius:14px; display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .road-txt b{display:block; font-size:1.02rem;}
+  .road-txt span{font-size:.86rem; color:var(--ink-soft); font-weight:600;}
+
+  .recap-box{
+    background:linear-gradient(120deg, var(--mint), var(--sky));
+    border-radius:22px; padding:22px 26px; box-shadow:var(--shadow); margin-top:10px;
+  }
+  .recap-box h4{margin:0 0 10px 0; font-size:1.05rem;}
+  .recap-box ul{margin:0; padding-left:20px;}
+  .recap-box li{font-weight:700; margin-bottom:8px;}
+
+  .cheat-table{width:100%; border-collapse:separate; border-spacing:0 10px;}
+  .cheat-table td{background:#fff; padding:14px 18px; font-weight:700; box-shadow:var(--shadow-sm);}
+  .cheat-table tr td:first-child{border-radius:14px 0 0 14px;}
+  .cheat-table tr td:last-child{border-radius:0 14px 14px 0; font-weight:600; color:var(--ink-soft);}
+
+  .mistake-card{display:flex; gap:14px; align-items:flex-start;}
+  .mistake-emoji{font-size:1.6rem;}
+
+  ::selection{background:var(--coral); color:#fff;}
+  a{color:var(--teal-deep);}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <div class="logo">📊</div>
+    <div>
+      <div class="title">Plotting &amp; Visualization</div>
+      <div class="sub">Unit 3 · Data Science using Python · BTIT15501</div>
+    </div>
+  </div>
+  <a class="prof-link" href="https://bhumikaa7981.github.io/meet-bhumika/" target="_blank" rel="noopener">👩‍🏫 Meet Prof. Bhumika</a>
+</div>
+<div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+
+<button class="arrownav" id="prevBtn">‹</button>
+<button class="arrownav" id="nextBtn">›</button>
+
+<div class="scroller" id="scroller">
+
+  <!-- CHAPTER 0 : COVER -->
+  <section class="chapter" id="ch0">
+    <div class="cover">
+      <div class="kicker">Sarvajanik University · SCET, Surat</div>
+      <h1>Turn rows of numbers<br>into stories anyone<br>can read at a glance.</h1>
+      <p class="tagline">A swipe-through guide to Matplotlib &amp; pandas plotting — figures, styling, annotations, and the pandas fast lane — built for humans who'd rather see the pattern than scroll a spreadsheet.</p>
+      <div class="pillrow">
+        <div class="pill">📈 Matplotlib Foundations</div>
+        <div class="pill">🎨 Colors · Markers · Styles</div>
+        <div class="pill">🏷️ Ticks · Labels · Legends</div>
+        <div class="pill">💾 Save &amp; Configure</div>
+        <div class="pill">🐼 pandas.plot()</div>
+      </div>
+      <button class="startbtn" onclick="goTo(1)">Start Scrolling <span>→</span></button>
+      <div class="subject-panel">
+        <div><b>Subject:</b> Data Science using Python</div>
+        <div><b>Code:</b> BTIT15501</div>
+        <div><b>Year / Sem:</b> B.Tech III · Semester V</div>
+        <div><b>Course type:</b> Open Elective</div>
+        <div><b>Taught by:</b> Prof. Bhumika Desai Shah</div>
+        <div><b>Prerequisite:</b> Programming for Problem Solving</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHAPTER 1 : WHY BOTHER -->
+  <section class="chapter" id="ch1">
+    <div class="eyebrow">🎬 Getting Started</div>
+    <h2>Why bother visualizing data at all?</h2>
+    <p class="lede">A table of 10,000 rows tells a computer everything — and a human almost nothing. Your brain spots patterns, outliers and trends in <b>shapes and colors</b> way faster than in digits. That's the whole job of this unit.</p>
+
+    <div class="card tinted-lav" style="max-width:760px; margin-bottom:26px;">
+      <div class="badge purple">THE ANALOGY</div>
+      <p style="font-size:1.05rem; font-weight:700; margin:0;">A data table is a phone book. A chart is a photo of the crowd — one glance and you already know who's tall, who's missing, and who stands out. 📸</p>
+    </div>
+
+    <div class="grid grid-3">
+      <div class="card tinted-blush">
+        <div class="badge coral">01</div>
+        <h3 style="margin:0 0 8px 0; font-size:1.05rem;">Spotting a stock crash</h3>
+        <p style="font-size:.9rem; color:var(--ink-soft); font-weight:600;">365 daily prices scanned by eye = minutes. Drawn as a line = the crash is an instant, unmistakable cliff.</p>
+      </div>
+      <div class="card tinted-mint">
+        <div class="badge teal">02</div>
+        <h3 style="margin:0 0 8px 0; font-size:1.05rem;">Flattening the curve</h3>
+        <p style="font-size:.9rem; color:var(--ink-soft); font-weight:600;">2020's daily case counts were just long columns — until one line chart taught the whole planet epidemiology in a glance.</p>
+      </div>
+      <div class="card tinted-peach">
+        <div class="badge yellow">03</div>
+        <h3 style="margin:0 0 8px 0; font-size:1.05rem;">One histogram, whole class understood</h3>
+        <p style="font-size:.9rem; color:var(--ink-soft); font-weight:600;">60 exam scores compressed into ONE shape shows if the class did well, or if there's a long tail of low scorers.</p>
+      </div>
+    </div>
+
+    <div class="genz" style="max-width:760px; margin-top:24px;">
+      <span class="tag">VIBE CHECK</span>
+        <div class="genz-body"><p style="margin:0;">It's the same reason your Spotify Wrapped hits different as a colorful chart instead of a CSV of every song you streamed. The <i>numbers</i> were always there — the <i>picture</i> is what made you screenshot it.</p><ul><li>Spotify Wrapped turns a whole year of streams into one shareable graphic — nobody's posting the CSV.</li><li>BeReal's memory grid is scroll-friendly because it's a wall of pictures, not a log file.</li><li>Instagram's "Best Nine" collage turns nine numbers (likes) into nine tiles you'd actually screenshot.</li><li>Strava turns raw GPS coordinates into a colorful route map — way more postable than a table of lat/longs.</li></ul></div>
+    </div>
+  </section>
+
+  <!-- CHAPTER 2: ROADMAP -->
+  <section class="chapter" id="ch2">
+    <div class="eyebrow">🗺️ Roadmap</div>
+    <h2>What we're covering, in order</h2>
+    <p class="lede">Tap any stop to jump straight there. Six parts, twenty complete programs, zero boring spreadsheets.</p>
+    <div class="road">
+      <div class="road-item" onclick="goTo(3)"><div class="road-num" style="background:var(--coral-deep);">01</div><div class="road-txt"><b>Matplotlib Foundations</b><span>The Figure/Axes model, pyplot vs OO, your first plot</span></div></div>
+      <div class="road-item" onclick="goTo(5)"><div class="road-num" style="background:var(--purple);">02</div><div class="road-txt"><b>Figures &amp; Subplots</b><span>One figure, many axes — building dashboards</span></div></div>
+      <div class="road-item" onclick="goTo(7)"><div class="road-num" style="background:var(--teal-deep);">03</div><div class="road-txt"><b>Styling Your Charts</b><span>Colors, markers, line styles — with intent</span></div></div>
+      <div class="road-item" onclick="goTo(10)"><div class="road-num" style="background:#D89A22;">04</div><div class="road-txt"><b>Making Charts Talk</b><span>Ticks, labels, legends, annotations, shapes</span></div></div>
+      <div class="road-item" onclick="goTo(13)"><div class="road-num" style="background:#E17A9A;">05</div><div class="road-txt"><b>Save &amp; Configure</b><span>Exporting plots, setting global styles</span></div></div>
+      <div class="road-item" onclick="goTo(15)"><div class="road-num" style="background:#5FA8D3;">06</div><div class="road-txt"><b>pandas.plot()</b><span>Line, Bar, Histogram/KDE, Scatter — the fast lane</span></div></div>
+      <div class="road-item" onclick="goTo(19)"><div class="road-num" style="background:#7BC47F;">07</div><div class="road-txt"><b>Wrap-up</b><span>Cheat sheet, common mistakes, recap</span></div></div>
+    </div>
+  </section>
+
+  <!-- CHAPTER 3: MEET MATPLOTLIB -->
+  <section class="chapter" id="ch3">
+    <div class="eyebrow">📚 Part 1 · Matplotlib Foundations</div>
+    <h2>Meet Matplotlib</h2>
+    <p class="lede">Python's original, most powerful 2D plotting library — built in 2003. pandas, seaborn, and half the dashboards you've ever seen quietly call it behind the scenes.</p>
+
+    <div class="grid grid-2" style="max-width:900px; margin-bottom:10px;">
+      <div class="card tinted-sky">
+        <div class="badge teal">PYPLOT STYLE</div>
+        <h3 style="margin:.2rem 0;">The disposable camera 📷</h3>
+        <p style="font-weight:600; color:var(--ink-soft);">Point, click, done. <code>plt.plot()</code> quietly remembers "whatever figure is active right now." Great for a fast look at your data.</p>
+      </div>
+      <div class="card tinted-blush">
+        <div class="badge coral">OBJECT-ORIENTED STYLE</div>
+        <h3 style="margin:.2rem 0;">The DSLR camera 🎥</h3>
+        <p style="font-weight:600; color:var(--ink-soft);">More to type — <code>fig, ax = plt.subplots()</code> — but full manual control. Ideal once you have multiple charts to juggle.</p>
+      </div>
+    </div>
+
+    <div class="genz" style="max-width:900px;">
+      <span class="tag">VIBE CHECK</span>
+        <div class="genz-body"><p style="margin:0;">pyplot is "post it to your story real quick" energy. The Object-Oriented API is "edit it in Lightroom before it goes on the grid" energy. Same photo, different amount of control.</p><ul><li><b>pyplot</b> is firing off a Snap with the default filter — gone in seconds.</li><li><b>OO API</b> is opening the shot in Lightroom and adjusting every layer before it hits the grid.</li><li>pyplot is the "chef's choice" at a restaurant; OO is building your own bowl, ingredient by ingredient.</li><li>pyplot is one quick take; OO is the multi-cut edited version you actually post.</li></ul></div>
+    </div>
+
+    <!-- PROGRAM 1 -->
+    <div class="program">
+      <div class="program-head">
+        <div class="program-title-wrap"><div class="program-num">1</div><h4>Quick Sketch — the pyplot way</h4></div>
+        <button class="steps-toggle" onclick="toggleSteps(this)">Show steps ▾</button>
+      </div>
+      <div class="prog-body">
+        <div class="code-box"><pre><span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+
+weeks = [1, 2, 3, 4]
+sales = [120, 135, 150, 170]
+
+plt.plot(weeks, sales)
+plt.title(<span class="str">"Weekly Sales - pyplot style"</span>)
+plt.xlabel(<span class="str">"Week"</span>)
+plt.ylabel(<span class="str">"Units Sold"</span>)
+plt.show()
+
+<span class="kw">print</span>(<span class="str">"Chart created using pyplot's quick-sketch style!"</span>)</pre></div>
+        <div class="output-col">
+          <div class="chart-box">
+            <svg viewBox="0 0 240 150"><polyline points="20,120 80,95 140,72 200,30" fill="none" stroke="#49B9AE" stroke-width="4" stroke-linecap="round"/>
+            <circle cx="20" cy="120" r="4.5" fill="#2E9A90"/><circle cx="80" cy="95" r="4.5" fill="#2E9A90"/><circle cx="140" cy="72" r="4.5" fill="#2E9A90"/><circle cx="200" cy="30" r="4.5" fill="#2E9A90"/>
+            <text x="120" y="14" text-anchor="middle" font-size="11" fill="#4B3F52" font-family="Nunito" font-weight="700">Weekly Sales - pyplot style</text></svg>
+          </div>
+          <div class="console-box"><span class="pfx">&gt;&gt;&gt;</span> Chart created using pyplot's quick-sketch style!</div>
+        </div>
+      </div>
+      <div class="steps-list">
+        <ol>
+          <li>Import matplotlib's pyplot module and nickname it <code>plt</code>.</li>
+          <li>Store the X values (weeks) and Y values (sales) as two lists.</li>
+          <li><code>plt.plot()</code> queues up a line joining those points on the "currently active" figure.</li>
+          <li><code>title / xlabel / ylabel</code> add context to that same active figure.</li>
+          <li><code>plt.show()</code> finally renders everything that was queued.</li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- PROGRAM 2 -->
+    <div class="program">
+      <div class="program-head">
+        <div class="program-title-wrap"><div class="program-num">2</div><h4>Precise Blueprint — the Object-Oriented way</h4></div>
+        <button class="steps-toggle" onclick="toggleSteps(this)">Show steps ▾</button>
+      </div>
+      <div class="prog-body">
+        <div class="code-box"><pre><span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+
+weeks = [1, 2, 3, 4]
+sales = [120, 135, 150, 170]
+
+fig, ax = plt.subplots()
+ax.plot(weeks, sales)
+ax.set_title(<span class="str">"Weekly Sales - OO style"</span>)
+ax.set_xlabel(<span class="str">"Week"</span>)
+ax.set_ylabel(<span class="str">"Units Sold"</span>)
+
+fig.savefig(<span class="str">"sales.png"</span>)
+<span class="kw">print</span>(<span class="str">"Figure object:"</span>, fig)
+<span class="kw">print</span>(<span class="str">"Axes object:"</span>, ax)</pre></div>
+        <div class="output-col">
+          <div class="chart-box">
+            <svg viewBox="0 0 240 150"><rect x="8" y="8" width="224" height="134" rx="10" fill="#FFF3D6"/><polyline points="30,115 90,90 150,68 210,28" fill="none" stroke="#F26D82" stroke-width="4" stroke-linecap="round"/>
+            <text x="120" y="20" text-anchor="middle" font-size="10" fill="#4B3F52" font-family="Nunito" font-weight="700">Weekly Sales - OO style</text></svg>
+          </div>
+          <div class="console-box"><span class="pfx">&gt;&gt;&gt;</span> Figure object: &lt;Figure size 640x480&gt;<br><span class="pfx">&gt;&gt;&gt;</span> Axes object: &lt;Axes: title={'Weekly Sales - OO style'}&gt;</div>
+        </div>
+      </div>
+      <div class="steps-list">
+        <ol>
+          <li><code>plt.subplots()</code> explicitly builds <b>both</b> a Figure and an Axes object — no hidden "current" state.</li>
+          <li>Every command runs directly on <code>ax</code>, never on some invisible active figure.</li>
+          <li>OO methods are prefixed with <code>set_</code> — <code>set_title</code>, <code>set_xlabel</code>, etc.</li>
+          <li><code>fig.savefig()</code> writes the exact figure to disk — no ambiguity about which one.</li>
+          <li>Industry codebases almost always use this style once more than one chart is involved.</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHAPTER 4: ANATOMY + FIRST PLOT -->
+  <section class="chapter" id="ch4">
+    <div class="eyebrow">📚 Part 1 · Matplotlib Foundations</div>
+    <h2>Anatomy of a Figure</h2>
+    <p class="lede">Before drawing anything else, learn the names of the parts — you'll use these words in every single chart from here on.</p>
+
+    <div class="grid grid-2" style="margin-bottom:20px;">
+      <div class="card tinted-mint">
+        <svg viewBox="0 0 320 200" width="100%">
+          <rect x="4" y="4" width="312" height="192" rx="16" fill="#fff" stroke="#D6F5E3" stroke-width="6"/>
+          <rect x="55" y="24" width="230" height="140" fill="#FBFFFC" stroke="#7A6D85" stroke-width="1.5"/>
+          <line x1="55" y1="24" x2="55" y2="164" stroke="#2E9A90" stroke-width="3"/>
+          <line x1="55" y1="164" x2="285" y2="164" stroke="#2E9A90" stroke-width="3"/>
+          <polyline points="65,140 110,100 160,120 210,60 275,40" fill="none" stroke="#F26D82" stroke-width="3"/>
+          <text x="170" y="16" text-anchor="middle" font-size="11" font-weight="800" fill="#4B3F52">FIGURE — the whole canvas</text>
+          <text x="170" y="180" text-anchor="middle" font-size="9" fill="#7A6D85">Axis label (X)</text>
+          <text x="20" y="96" text-anchor="middle" font-size="9" fill="#7A6D85" transform="rotate(-90 20 96)">Axis label (Y)</text>
+        </svg>
+      </div>
+      <div class="card tinted-butter">
+        <table style="width:100%; border-collapse:collapse; font-weight:600; font-size:.92rem;">
+          <tr><td style="padding:8px 0; width:110px;"><b>Figure</b></td><td>The entire canvas / frame that holds everything you draw.</td></tr>
+          <tr><td style="padding:8px 0;"><b>Axes</b></td><td>One individual plot area — a figure can hold many Axes.</td></tr>
+          <tr><td style="padding:8px 0;"><b>Title &amp; Labels</b></td><td>Tell the reader what they're looking at.</td></tr>
+          <tr><td style="padding:8px 0;"><b>Ticks</b></td><td>The ruler marks along each axis.</td></tr>
+          <tr><td style="padding:8px 0;"><b>Spine</b></td><td>The border lines of the Axes box.</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- PROGRAM 3 -->
+    <div class="program">
+      <div class="program-head">
+        <div class="program-title-wrap"><div class="program-num">3</div><h4>Your first real plot — 24-hour temperature log</h4></div>
+        <button class="steps-toggle" onclick="toggleSteps(this)">Show steps ▾</button>
+      </div>
+      <div class="prog-body">
+        <div class="code-box"><pre><span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+
+hours = <span class="kw">list</span>(<span class="kw">range</span>(24))
+temp = [22,21,20,19,19,20,22,25,28,30,32,33,
+        34,34,33,31,29,27,25,24,23,22,22,21]
+
+plt.plot(hours, temp, color=<span class="str">"tomato"</span>, marker=<span class="str">"o"</span>)
+plt.xlabel(<span class="str">"Hour of Day"</span>)
+plt.ylabel(<span class="str">"Temperature (°C)"</span>)
+plt.title(<span class="str">"24-Hour Temperature Log"</span>)
+plt.show()
+
+peak_hour = temp.index(<span class="kw">max</span>(temp))
+<span class="kw">print</span>(<span class="kw">f</span><span class="str">"Hottest hour: {peak_hour}:00, Temp: {max(temp)}°C"</span>)</pre></div>
+        <div class="output-col">
+          <div class="chart-box">
+            <svg viewBox="0 0 240 150"><polyline points="10,110 30,116 50,120 70,120 90,116 110,110 130,90 150,68 170,50 190,42 210,44" fill="none" stroke="#FF6F5B" stroke-width="3.4" stroke-linecap="round"/>
+            <circle cx="190" cy="42" r="5" fill="#F26D82"/>
+            <text x="190" y="30" text-anchor="middle" font-size="9" fill="#4B3F52" font-weight="800">peak</text></svg>
+          </div>
+          <div class="console-box"><span class="pfx">&gt;&gt;&gt;</span> Hottest hour: 13:00, Temp: 34°C</div>
+        </div>
+      </div>
+      <div class="steps-list">
+        <ol>
+          <li>Build 24 hour labels with <code>range(24)</code>, and a matching list of 24 temperature readings.</li>
+          <li><code>plt.plot(hours, temp, ...)</code> draws the line and drops a circular marker on every real reading.</li>
+          <li>Axis labels state the units — °C matters, "just numbers" doesn't.</li>
+          <li><code>temp.index(max(temp))</code> finds the position of the hottest reading in plain Python — no chart-reading required.</li>
+        </ol>
+      </div>
+      <div class="genz">
+        <span class="tag">VIBE CHECK</span>
+        <div class="genz-body"><p style="margin:0;">This is basically your phone's weather app graph — that little curve that tells you exactly when it'll be too hot to walk to class, without you reading 24 separate numbers.</p><ul><li>Your phone's hourly weather graph — one glance tells you when to grab a jacket.</li><li>Google Maps' traffic curve for your commute — the squiggle that says "leave now."</li><li>A smartwatch heart-rate graph after a workout — nobody's reading the raw BPM log.</li><li>Netflix's "time watched this week" bar — same idea, way less flex-worthy.</li></ul></div>
+      </div>
+    </div>
+
+    <div class="card tinted-lav" style="max-width:760px;">
+      <div class="badge purple">QUICK RECAP</div>
+      <p style="font-weight:700; margin:6px 0 0 0;">plt.plot() draws. plt.show() reveals. pyplot = quick sketch, Object-Oriented = precise blueprint. Every Figure can hold one or more Axes.</p>
+    </div>
+  </section>
+
+  <!-- CHAPTER 5: FIGURES & SUBPLOTS -->
+  <section class="chapter" id="ch5">
+    <div class="eyebrow">📚 Part 2 · Figures &amp; Subplots</div>
+    <h2>One Figure, many Axes</h2>
+    <p class="lede"><code>plt.subplots(rows, cols)</code> instantly builds a whole grid of empty Axes — address each one like a cell in a spreadsheet.</p>
+
+    <div class="genz" style="max-width:820px;">
+      <span class="tag">VIBE CHECK</span>
+        <div class="genz-body"><p style="margin:0;">One Figure = one TV. Each Axes = one channel on a split screen. Or honestly — it's just your group chat's four-way FaceTime grid, but for data.</p><ul><li>A group FaceTime grid — four faces, one screen, zero tab-switching.</li><li>Instagram Stories' multi-photo layout stitching several moments into one post.</li><li>A stream's "just chatting + gameplay" split-screen layout.</li><li>A live-match app showing score, stats and lineup together in one dashboard.</li></ul></div>
+    </div>
+
+    <!-- PROGRAM 4 -->
+    <div class="program" style="margin-top:20px;">
+      <div class="program-head">
+        <div class="program-title-wrap"><div class="program-num">4</div><h4>A 1×2 split screen — temperature &amp; humidity</h4></div>
+        <button class="steps-toggle" onclick="toggleSteps(this)">Show steps ▾</button>
+      </div>
+      <div class="prog-body">
+        <div class="code-box"><pre><span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+
+temp_data = [22,24,27,30,32,31,28,25]
+humidity_data = [80,75,65,55,45,50,60,70]
+
+fig, axes = plt.subplots(1, 2, figsize=(10, 4))
+
+axes[0].plot(temp_data, color=<span class="str">"coral"</span>)
+axes[0].set_title(<span class="str">"Temperature"</span>)
+
+axes[1].plot(humidity_data, color=<span class="str">"mediumseagreen"</span>)
+axes[1].set_title(<span class="str">"Humidity"</span>)
+
+plt.tight_layout()
+plt.show()
+
+<span class="kw">print</span>(<span class="str">"Number of axes created:"</span>, <span class="kw">len</span>(axes))</pre></div>
+        <div class="output-col">
+          <div class="chart-box">
+            <svg viewBox="0 0 240 140">
+              <rect x="6" y="6" width="108" height="120" rx="8" fill="#fff" stroke="#FFDCC2" stroke-width="4"/>
+              <polyline points="16,110 40,90 64,70 88,60 108,55" fill="none" stroke="#FF8FA0" stroke-width="3"/>
+              <rect x="126" y="6" width="108" height="120" rx="8" fill="#fff" stroke="#D6F5E3" stroke-width="4"/>
+              <polyline points="136,20 160,45 184,70 208,90 228,100" fill="none" stroke="#2E9A90" stroke-width="3"/>
+            </svg>
+          </div>
+          <div class="console-box"><span class="pfx">&gt;&gt;&gt;</span> Number of axes created: 2</div>
+        </div>
+      </div>
+      <div class="steps-list">
+        <ol>
+          <li><code>plt.subplots(1, 2)</code> makes ONE figure containing TWO Axes, arranged in a single row.</li>
+          <li><code>axes</code> comes back as a list — <code>axes[0]</code> is the left plot, <code>axes[1]</code> is the right.</li>
+          <li>Each Axes gets its own <code>.plot()</code> and <code>.set_title()</code> — fully independent of the other.</li>
+          <li><code>plt.tight_layout()</code> auto-adjusts spacing so titles/labels never overlap.</li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- PROGRAM 5 -->
+    <div class="program">
+      <div class="program-head">
+        <div class="program-title-wrap"><div class="program-num">5</div><h4>A 2×2 grid — comparing 4 tech stocks</h4></div>
+        <button class="steps-toggle" onclick="toggleSteps(this)">Show steps ▾</button>
+      </div>
+      <div class="prog-body">
+        <div class="code-box"><pre><span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+
+stocks = [<span class="str">"AAPL"</span>, <span class="str">"MSFT"</span>, <span class="str">"GOOG"</span>, <span class="str">"AMZN"</span>]
+aapl = [180,182,178,190,195,200,198]
+msft = [310,315,320,318,325,330,328]
+goog = [125,128,130,127,132,135,138]
+amzn = [140,142,145,143,148,150,152]
+data = [aapl, msft, goog, amzn]
+
+fig, axes = plt.subplots(2, 2, figsize=(10, 7))
+
+<span class="kw">for</span> ax, name, d <span class="kw">in</span> <span class="kw">zip</span>(axes.flat, stocks, data):
+    ax.plot(d, marker=<span class="str">"o"</span>)
+    ax.set_title(name)
+
+plt.tight_layout()
+plt.show()
+
+<span class="kw">print</span>(<span class="str">"Grid shape:"</span>, axes.shape)</pre></div>
+        <div class="output-col">
+          <div class="chart-box">
+            <svg viewBox="0 0 240 150">
+              <rect x="6" y="4" width="112" height="68" rx="6" fill="#fff" stroke="#FFDCE6" stroke-width="3"/>
+              <polyline points="14,55 40,50 66,58 92,40 110,30" fill="none" stroke="#F26D82" stroke-width="2.4"/>
+              <rect x="122" y="4" width="112" height="68" rx="6" fill="#fff" stroke="#E7DEFF" stroke-width="3"/>
+              <polyline points="130,45 156,40 182,32 208,35 226,28" fill="none" stroke="#9C8CE0" stroke-width="2.4"/>
+              <rect x="6" y="78" width="112" height="68" rx="6" fill="#fff" stroke="#D6F5E3" stroke-width="3"/>
+              <polyline points="14,130 40,120 66,124 92,110 110,100" fill="none" stroke="#2E9A90" stroke-width="2.4"/>
+              <rect x="122" y="78" width="112" height="68" rx="6" fill="#fff" stroke="#D9EFFF" stroke-width="3"/>
+              <polyline points="130,128 156,122 182,116 208,112 226,104" fill="none" stroke="#5FA8D3" stroke-width="2.4"/>
+            </svg>
+          </div>
+          <div class="console-box"><span class="pfx">&gt;&gt;&gt;</span> Grid shape: (2, 2)</div>
+        </div>
+      </div>
+      <div class="steps-list">
+        <ol>
+          <li><code>plt.subplots(2, 2)</code> returns a 2×2 array of Axes objects — four empty plot slots at once.</li>
+          <li><code>axes.flat</code> flattens that 2D grid into a simple list, so a normal <code>for</code> loop can walk through it.</li>
+          <li><code>zip(axes.flat, stocks, data)</code> pairs each Axes slot with a stock name and its price list — one line fills the whole dashboard.</li>
+          <li>A quarterly review deck showing all 4 quarters (or here, 4 stocks) in one 2×2 image is a genuinely common real-world layout.</li>
+        </ol>
+      </div>
+      <div class="genz">
+        <span class="tag">VIBE CHECK</span>
+        <div class="genz-body"><p style="margin:0;">Think of it as your Notes app "Compare" screenshot grid before buying a phone — four things, one glance, zero tab-switching.</p><ul><li>Comparing four phone camera samples side-by-side before you buy.</li><li>A "which shade matches me" swatch grid on a beauty app.</li><li>Comparing four Airbnb listings' photos in one tab instead of four browser tabs.</li><li>The classic "expectation vs reality" 2×2 meme format — same layout, different subject.</li></ul></div>
+      </div>
+    </div>
+
+    <div class="card tinted-mint" style="max-width:760px;">
+      <div class="badge teal">QUICK RECAP</div>
+      <p style="font-weight:700; margin:6px 0 0 0;">subplots(rows, cols) builds a whole grid in one line. Index it like a spreadsheet: axes[row, col]. One dashboard image beats four separate charts.</p>
+    </div>
+  </section>
+
+  <!-- CHAPTER 6: COLORS -->
+  <section class="chapter" id="ch6">
+    <div class="eyebrow">📚 Part 3 · Colors, Markers &amp; Line Styles</div>
+    <h2>Color is a visual language</h2>
+    <p class="lede">Four ways to say the exact same color — pick whichever fits the moment: <b>named</b> ('red'), <b>short code</b> ('r'), <b>hex</b> ('#4F9A94'), or an <b>RGB tuple</b> (0.2, 0.6, 0.5).</p>
+
+    <!-- PROGRAM 6 -->
+    <div class="program">
+      <div class="program-head">
+        <div class="program-title-wrap"><div class="program-num">6</div><h4>Three ways to specify the same-ish color</h4></div>
+        <button class="steps-toggle" onclick="toggleSteps(this)">Show steps ▾</button>
+      </div>
+      <div class="prog-body">
+        <div class="code-box"><pre><span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+
+x = [1,2,3,4,5]
+y = [3,7,4,9,6]
+
+plt.plot(x, y, color=<span class="str">"green"</span>, label=<span class="str">"named color"</span>)
+plt.plot(x, [v-1 <span class="kw">for</span> v <span class="kw">in</span> y], color=<span class="str">"#4F9A94"</span>, label=<span class="str">"hex code"</span>)
+plt.plot(x, [v-2 <span class="kw">for</span> v <span class="kw">in</span> y], color=(0.9,0.4,0.6), label=<span class="str">"RGB tuple"</span>)
+plt.legend()
+plt.title(<span class="str">"Three Ways to Set a Color"</span>)
+plt.show()
+
+<span class="kw">print</span>(<span class="str">"All three lines drawn with different color formats!"</span>)</pre></div>
+        <div class="output-col">
+          <div class="chart-box">
+            <svg viewBox="0 0 240 140"><polyline points="15,60 70,20 125,50 180,10 235,35" fill="none" stroke="#2E9A90" stroke-width="3"/>
+            <polyline points="15,80 70,40 125,70 180,30 235,55" fill="none" stroke="#4F9A94" stroke-width="3"/>
+            <polyline points="15,100 70,60 125,90 180,50 235,75" fill="none" stroke="#E56699" stroke-width="3"/></svg>
+          </div>
+          <div class="console-box"><span class="pfx">&gt;&gt;&gt;</span> All three lines drawn with different color formats!</div>
+        </div>
+      </div>
+      <div class="steps-list">
+        <ol>
+          <li>Same x/y shape, offset slightly downward each time so all three lines are visible.</li>
+          <li>Line 1 uses a plain English name — fastest to type, ~140 names available.</li>
+          <li>Line 2 uses a hex code — pixel-perfect, the same format used in CSS/design tools.</li>
+          <li>Line 3 uses an RGB tuple with values between 0 and 1 — useful when colors come from code, not memory.</li>
+        </ol>
+      </div>
+      <div class="genz">
+        <span class="tag">VIBE CHECK</span>
+        <div class="genz-body"><p style="margin:0;">Exactly like picking a hex code for your Notion page or Canva design — "sage green" vs #87A96B vs the RGB slider are three doors to the same room.</p><ul><li>Picking a hex code for your Linktree or Notion page background.</li><li>Matching a phone case color code from an online swatch picker.</li><li>Canva's color tool: name, hex, or RGB slider — three doors, same shade.</li><li>Choosing your Discord role color by pasting a hex from a palette site.</li></ul></div>
+      </div>
+    </div>
+
+    <!-- PROGRAM 7 -->
+    <div class="program">
+      <div class="program-head">
+        <div class="program-title-wrap"><div class="program-num">7</div><h4>Markers — pinning the exact data point</h4></div>
+        <button class="steps-toggle" onclick="toggleSteps(this)">Show steps ▾</button>
+      </div>
+      <div class="prog-body">
+        <div class="code-box"><pre><span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+
+asia_pop, asia_temp = [30,45,60], [28,27,26]
+europe_pop, europe_temp = [15,20,18], [12,14,13]
+africa_pop, africa_temp = [25,35,40], [30,29,31]
+
+plt.scatter(asia_pop, asia_temp, marker=<span class="str">"o"</span>, label=<span class="str">"Asia"</span>)
+plt.scatter(europe_pop, europe_temp, marker=<span class="str">"^"</span>, label=<span class="str">"Europe"</span>)
+plt.scatter(africa_pop, africa_temp, marker=<span class="str">"s"</span>, label=<span class="str">"Africa"</span>)
+
+plt.xlabel(<span class="str">"Population (millions)"</span>)
+plt.ylabel(<span class="str">"Avg Temperature (°C)"</span>)
+plt.legend()
+plt.title(<span class="str">"Cities by Continent"</span>)
+plt.show()
+
+<span class="kw">print</span>(<span class="str">"3 continents plotted with 3 different markers"</span>)</pre></div>
+        <div class="output-col">
+          <div class="chart-box">
+            <svg viewBox="0 0 240 140">
+              <circle cx="40" cy="60" r="6" fill="#FF8FA0"/><circle cx="90" cy="55" r="6" fill="#FF8FA0"/><circle cx="140" cy="50" r="6" fill="#FF8FA0"/>
+              <polygon points="40,100 46,112 34,112" fill="#9C8CE0"/><polygon points="70,95 76,107 64,107" fill="#9C8CE0"/><polygon points="60,98 66,110 54,110" fill="#9C8CE0"/>
+              <rect x="150" y="90" width="11" height="11" fill="#49B9AE"/><rect x="185" y="80" width="11" height="11" fill="#49B9AE"/><rect x="205" y="95" width="11" height="11" fill="#49B9AE"/>
+            </svg>
+          </div>
+          <div class="console-box"><span class="pfx">&gt;&gt;&gt;</span> 3 continents plotted with 3 different markers</div>
+        </div>
+      </div>
+      <div class="steps-list">
+        <ol>
+          <li>Three groups of (population, temperature) points, one per continent.</li>
+          <li><code>marker="o"/"^"/"s"</code> gives each group a distinct shape — circle, triangle, square.</li>
+          <li>Even printed in black-and-white, the shapes stay distinguishable — color alone wouldn't survive a grayscale printer.</li>
+          <li>Markers add a <b>third dimension of meaning</b> (category) on top of the X/Y position.</li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- PROGRAM 8 -->
+    <div class="program">
+      <div class="program-head">
+        <div class="program-title-wrap"><div class="program-num">8</div><h4>Line styles &amp; the shorthand combo trick</h4></div>
+        <button class="steps-toggle" onclick="toggleSteps(this)">Show steps ▾</button>
+      </div>
+      <div class="prog-body">
+        <div class="code-box"><pre><span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+
+months = [1,2,3,4,5,6]
+actual = [100,110,105,120,130,128]
+forecast_months = [6,7,8,9]
+forecast = [128,135,140,150]
+
+<span class="cmt"># shorthand: color + linestyle + marker in ONE string</span>
+plt.plot(months, actual, <span class="str">"bo-"</span>, label=<span class="str">"Actual"</span>)
+plt.plot(forecast_months, forecast, <span class="str">"^--"</span>, color=<span class="str">"orange"</span>, label=<span class="str">"Forecast"</span>)
+
+plt.legend()
+plt.title(<span class="str">"Actual vs Forecast Sales"</span>)
+plt.show()
+
+<span class="kw">print</span>(<span class="str">"Solid blue = confirmed data, dashed orange = prediction"</span>)</pre></div>
+        <div class="output-col">
+          <div class="chart-box">
+            <svg viewBox="0 0 240 140">
+              <polyline points="15,110 55,95 95,100 135,70 175,40 215,45" fill="none" stroke="#2A6FB0" stroke-width="3"/>
+              <circle cx="15" cy="110" r="4" fill="#2A6FB0"/><circle cx="55" cy="95" r="4" fill="#2A6FB0"/><circle cx="95" cy="100" r="4" fill="#2A6FB0"/><circle cx="135" cy="70" r="4" fill="#2A6FB0"/><circle cx="175" cy="40" r="4" fill="#2A6FB0"/><circle cx="215" cy="45" r="4" fill="#2A6FB0"/>
+              <polyline points="215,45 250,20" fill="none" stroke="#FFA042" stroke-width="3" stroke-dasharray="6,5"/>
+            </svg>
+          </div>
+          <div class="console-box"><span class="pfx">&gt;&gt;&gt;</span> Solid blue = confirmed data, dashed orange = prediction</div>
+        </div>
+      </div>
+      <div class="steps-list">
+        <ol>
+          <li><code>"bo-"</code> packs three things into four characters: <b>b</b>lue color, <b>o</b> circle marker, <b>-</b> solid line.</li>
+          <li><code>"^--"</code> means triangle markers on a dashed line — the near-universal symbol for "not confirmed yet."</li>
+          <li>Both series share one chart and one legend, so the eye can compare "what happened" vs "what we predict."</li>
+        </ol>
+      </div>
+      <div class="genz">
+        <span class="tag">VIBE CHECK</span>
+        <div class="genz-body"><p style="margin:0;">Solid line = your actual streak count. Dashed line = the "on track for a 30-day streak" projection Duolingo shows you. Same chart logic, way more guilt-tripping.</p><ul><li>Duolingo's streak flame (solid, confirmed) vs. the "keep it up" projection (dashed, not real yet).</li><li>A weather app's actual-temp line vs. its 10-day dashed forecast line.</li><li>Your banking app's "spent so far" line vs. the dotted "projected month-end spend."</li><li>A fitness app's real pace line vs. the dashed goal-pace line on the same graph.</li></ul></div>
+      </div>
+    </div>
+
+    <div class="card tinted-blush" style="max-width:760px;">
+      <div class="badge coral">REAL WORLD</div>
+      <p style="font-weight:700; margin:6px 0 0 0;">A mechanical engineer's stress-strain curve colors the "safe" elastic region green and the "danger" region beyond yield strength red — color here isn't decoration, it's a safety signal.</p>
+    </div>
+  </section>
+
+  <!-- CHAPTER 7: TICKS & LABELS -->
+  <section class="chapter" id="ch7">
+    <div class="eyebrow">📚 Part 4 · Making Charts Talk</div>
+    <h2>Ticks — renaming the ruler</h2>
+    <p class="lede">By default matplotlib numbers your axis 0, 1, 2, 3... <code>plt.xticks()</code> swaps those numbers for real-world labels like "Jan, Feb, Mar."</p>
+
+    <!-- PROGRAM 9 -->
+    <div class="program">
+      <div class="program-head">
+        <div class="program-title-wrap"><div class="program-num">9</div><h4>Turning index numbers into month names</h4></div>
+        <button class="steps-toggle" onclick="toggleSteps(this)">Show steps ▾</button>
+      </div>
+      <div class="prog-body">
+        <div class="code-box"><pre><span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+
+months = [0, 1, 2, 3]
+sales = [120, 135, 150, 170]
+
+plt.plot(months, sales, marker=<span class="str">"o"</span>)
+plt.xticks(months, [<span class="str">"Jan"</span>,<span class="str">"Feb"</span>,<span class="str">"Mar"</span>,<span class="str">"Apr"</span>])
+plt.title(<span class="str">"Monthly Sales"</span>)
+plt.show()
+
+<span class="kw">print</span>(<span class="str">"X-axis now reads month names instead of 0,1,2,3"</span>)</pre></div>
+        <div class="output-col">
+          <div class="chart-box">
+            <svg viewBox="0 0 240 140"><polyline points="20,110 90,90 160,65 230,25" fill="none" stroke="#9C8CE0" stroke-width="3"/>
+            <circle cx="20" cy="110" r="5" fill="#7A63C9"/><circle cx="90" cy="90" r="5" fill="#7A63C9"/><circle cx="160" cy="65" r="5" fill="#7A63C9"/><circle cx="230" cy="25" r="5" fill="#7A63C9"/>
+            <text x="20" y="128" text-anchor="middle" font-size="10" fill="#4B3F52">Jan</text><text x="90" y="128" text-anchor="middle" font-size="10" fill="#4B3F52">Feb</text><text x="160" y="128" text-anchor="middle" font-size="10" fill="#4B3F52">Mar</text><text x="230" y="128" text-anchor="middle" font-size="10" fill="#4B3F52">Apr</text></svg>
+          </div>
+          <div class="console-box"><span class="pfx">&gt;&gt;&gt;</span> X-axis now reads month names instead of 0,1,2,3</div>
+        </div>
+      </div>
+      <div class="steps-list">
+        <ol>
+          <li>Data is stored as plain index numbers 0–3 — computers love these.</li>
+          <li><code>plt.xticks(positions, labels)</code> keeps the same positions but swaps the printed text.</li>
+          <li>Without this step, a reader sees "2" on the axis and has to guess it means March.</li>
+          <li>Same trick works vertically with <code>plt.yticks()</code>.</li>
+        </ol>
+      </div>
+    </div>
+
+    <h2 style="margin-top:34px;">Labels, titles &amp; legends — the exit signs</h2>
+    <p class="lede">An unlabeled chart is technically correct and practically useless — a room with no exit sign. The data's in there, nobody can find their way out.</p>
+
+    <!-- PROGRAM 10 -->
+    <div class="program">
+      <div class="program-head">
+        <div class="program-title-wrap"><div class="program-num">10</div><h4>Loop + label= — the standard pattern for many series</h4></div>
+        <button class="steps-toggle" onclick="toggleSteps(this)">Show steps ▾</button>
+      </div>
+      <div class="prog-body">
+        <div class="code-box"><pre><span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+
+months = [<span class="str">"Jan"</span>,<span class="str">"Feb"</span>,<span class="str">"Mar"</span>,<span class="str">"Apr"</span>]
+regions = {
+    <span class="str">"North"</span>: [100,120,115,130],
+    <span class="str">"South"</span>: [90,95,105,110],
+    <span class="str">"East"</span>:  [80,85,88,95],
+}
+
+<span class="kw">for</span> region, sales <span class="kw">in</span> regions.items():
+    plt.plot(months, sales, marker=<span class="str">"o"</span>, label=region)
+
+plt.xlabel(<span class="str">"Month"</span>, fontsize=12)
+plt.ylabel(<span class="str">"Sales (units)"</span>, fontsize=12)
+plt.title(<span class="str">"Regional Sales Comparison"</span>, fontsize=16)
+plt.legend(title=<span class="str">"Region"</span>, loc=<span class="str">"upper left"</span>)
+plt.show()
+
+<span class="kw">print</span>(<span class="str">"Plotted"</span>, <span class="kw">len</span>(regions), <span class="str">"regions with automatic legend"</span>)</pre></div>
+        <div class="output-col">
+          <div class="chart-box">
+            <svg viewBox="0 0 240 140">
+              <polyline points="15,90 75,65 135,72 195,40" fill="none" stroke="#F26D82" stroke-width="3"/>
+              <polyline points="15,100 75,95 135,80 195,72" fill="none" stroke="#49B9AE" stroke-width="3"/>
+              <polyline points="15,110 75,105 135,100 195,88" fill="none" stroke="#FFC85C" stroke-width="3"/>
+              <rect x="14" y="8" width="70" height="42" rx="6" fill="#fff" stroke="#eee"/>
+              <text x="20" y="20" font-size="8" fill="#F26D82" font-weight="800">— North</text>
+              <text x="20" y="32" font-size="8" fill="#49B9AE" font-weight="800">— South</text>
+              <text x="20" y="44" font-size="8" fill="#D89A22" font-weight="800">— East</text>
+            </svg>
+          </div>
+          <div class="console-box"><span class="pfx">&gt;&gt;&gt;</span> Plotted 3 regions with automatic legend</div>
+        </div>
+      </div>
+      <div class="steps-list">
+        <ol>
+          <li>Store multiple series in a dictionary — key is the region name, value is its sales list.</li>
+          <li>Loop over <code>regions.items()</code>, plotting one line per region and giving each a <code>label=</code>.</li>
+          <li><code>plt.legend()</code> auto-collects every labeled line into one key box — no manual list needed.</li>
+          <li><code>fontsize</code> bumps text up so it's readable "from the back row" of a presentation.</li>
+        </ol>
+      </div>
+      <div class="genz">
+        <span class="tag">VIBE CHECK</span>
+        <div class="genz-body"><p style="margin:0;">A legend is just the caption under a group photo telling you who's who — except matplotlib writes the caption for you, automatically, every single time.</p><ul><li>The caption under a group photo tagging who's who.</li><li>A collaborative playlist cover with a small legend of contributing friends.</li><li>A broadcast graphic explaining what each jersey-number color means.</li><li>The little key on a campus map telling you which colored dot is the canteen.</li></ul></div>
+      </div>
+    </div>
+
+    <!-- PROGRAM 11 -->
+    <div class="program">
+      <div class="program-head">
+        <div class="program-title-wrap"><div class="program-num">11</div><h4>Pushing a crowded legend outside the plot</h4></div>
+        <button class="steps-toggle" onclick="toggleSteps(this)">Show steps ▾</button>
+      </div>
+      <div class="prog-body">
+        <div class="code-box"><pre><span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+
+x = [1,2,3,4,5]
+series = {<span class="kw">f</span><span class="str">"Product {i}"</span>: [v*i <span class="kw">for</span> v <span class="kw">in</span> x] <span class="kw">for</span> i <span class="kw">in</span> <span class="kw">range</span>(1,6)}
+
+<span class="kw">for</span> name, y <span class="kw">in</span> series.items():
+    plt.plot(x, y, label=name)
+
+plt.legend(bbox_to_anchor=(1.05,1), loc=<span class="str">"upper left"</span>, ncol=1)
+plt.title(<span class="str">"Five Products, Legend Pushed Outside"</span>)
+plt.tight_layout()
+plt.show()
+
+<span class="kw">print</span>(<span class="str">"Legend moved outside the plot so it doesn't cover any lines"</span>)</pre></div>
+        <div class="output-col">
+          <div class="chart-box">
+            <svg viewBox="0 0 240 140">
+              <polyline points="10,120 60,110 110,95 160,70 210,30" fill="none" stroke="#FF8FA0" stroke-width="2"/>
+              <polyline points="10,120 60,100 110,72 160,35 210,-5" fill="none" stroke="#9C8CE0" stroke-width="2"/>
+              <rect x="215" y="10" width="20" height="120" fill="#fff" stroke="#eee"/>
+              <text x="238" y="20" font-size="7" fill="#4B3F52">legend →</text>
+            </svg>
+          </div>
+          <div class="console-box"><span class="pfx">&gt;&gt;&gt;</span> Legend moved outside the plot so it doesn't cover any lines</div>
+        </div>
+      </div>
+      <div class="steps-list">
+        <ol>
+          <li>A dictionary comprehension builds 5 product series in one line — <code>y = x scaled by i</code>.</li>
+          <li><code>loc='best'</code> would normally auto-place the legend — great until you have too many series and it starts covering data.</li>
+          <li><code>bbox_to_anchor=(1.05, 1)</code> anchors the legend just outside the top-right corner of the Axes.</li>
+          <li><code>ncol=</code> can also arrange entries into multiple columns to save vertical space.</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHAPTER 8: ANNOTATIONS -->
+  <section class="chapter" id="ch8">
+    <div class="eyebrow">📚 Part 4 · Making Charts Talk</div>
+    <h2>Annotations — pointing at the story</h2>
+    <p class="lede"><code>plt.annotate()</code> writes text AND draws an arrow to a specific point. It turns a plain chart into a chart that explains itself.</p>
+
+    <!-- PROGRAM 12 -->
+    <div class="program">
+      <div class="program-head">
+        <div class="program-title-wrap"><div class="program-num">12</div><h4>Flagging the exact day of a market crash</h4></div>
+        <button class="steps-toggle" onclick="toggleSteps(this)">Show steps ▾</button>
+      </div>
+      <div class="prog-body">
+        <div class="code-box"><pre><span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+
+days = <span class="kw">list</span>(<span class="kw">range</span>(60))
+price = [200 + i <span class="kw">for</span> i <span class="kw">in</span> <span class="kw">range</span>(45)] + \
+        [210 - (i*3) <span class="kw">for</span> i <span class="kw">in</span> <span class="kw">range</span>(15)]
+
+plt.plot(days, price)
+plt.annotate(<span class="str">"Market Crash"</span>,
+    xy=(45, price[45]), xytext=(30, 280),
+    arrowprops=<span class="kw">dict</span>(facecolor=<span class="str">"red"</span>, shrink=0.05))
+plt.title(<span class="str">"Stock Price Over Time"</span>)
+plt.show()
+
+<span class="kw">print</span>(<span class="str">"Crash flagged at day 45, price:"</span>, price[45])</pre></div>
+        <div class="output-col">
+          <div class="chart-box">
+            <svg viewBox="0 0 240 140">
+              <polyline points="10,120 100,50 130,55 160,90 200,120" fill="none" stroke="#5FA8D3" stroke-width="3"/>
+              <circle cx="130" cy="55" r="5" fill="#E14B4B"/>
+              <line x1="130" y1="55" x2="150" y2="25" stroke="#E14B4B" stroke-width="2"/>
+              <text x="150" y="18" font-size="9" fill="#E14B4B" font-weight="800">Market Crash</text>
+            </svg>
+          </div>
+          <div class="console-box"><span class="pfx">&gt;&gt;&gt;</span> Crash flagged at day 45, price: 210</div>
+        </div>
+      </div>
+      <div class="steps-list">
+        <ol>
+          <li>Prices rise steadily for 45 days, then drop sharply for 15 — a simple crash shape.</li>
+          <li><code>xy=</code> is the exact point being pointed at; <code>xytext=</code> is where the label text actually sits.</li>
+          <li><code>arrowprops</code> controls the arrow's color, width and shape.</li>
+          <li>News sites do exactly this to mark the day a stock crashed or a company IPO'd.</li>
+        </ol>
+      </div>
+      <div class="genz">
+        <span class="tag">VIBE CHECK</span>
+        <div class="genz-body"><p style="margin:0;">It's the little "this you?" arrow pointing at a screenshot — except pointing at the exact moment the market went sideways instead of an old tweet.</p><ul><li>The "this you?" screenshot callout format, minus the roast.</li><li>A caption arrow pointing at the exact funny frame in a clip.</li><li>A news app circling the exact candlestick where a stock tanked.</li><li>A friend circling the one typo in your essay screenshot before sending it back.</li></ul></div>
+      </div>
+    </div>
+
+    <!-- PROGRAM 13 -->
+    <div class="program">
+      <div class="program-head">
+        <div class="program-title-wrap"><div class="program-num">13</div><h4>Shading an "outlier zone" with a patch</h4></div>
+        <button class="steps-toggle" onclick="toggleSteps(this)">Show steps ▾</button>
+      </div>
+      <div class="prog-body">
+        <div class="code-box"><pre><span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+<span class="kw">import</span> matplotlib.patches <span class="kw">as</span> pt
+
+x = [1,2,3,4,5,6,7]
+y = [5,22,14,32,19,8,27]
+
+fig, ax = plt.subplots()
+ax.scatter(x, y, color=<span class="str">"mediumpurple"</span>)
+
+box = pt.Rectangle((2, 20), 3, 15,
+        edgecolor=<span class="str">"red"</span>, facecolor=<span class="str">"red"</span>, alpha=0.2)
+ax.add_patch(box)
+
+ax.set_title(<span class="str">"Highlighting the Outlier Zone"</span>)
+plt.show()
+
+<span class="kw">print</span>(<span class="str">"Red zone highlights scores between x=2-5, y=20-35"</span>)</pre></div>
+        <div class="output-col">
+          <div class="chart-box">
+            <svg viewBox="0 0 240 140">
+              <rect x="60" y="20" width="90" height="60" fill="#E14B4B" opacity=".18"/>
+              <circle cx="30" cy="110" r="5" fill="#9C8CE0"/><circle cx="60" cy="30" r="5" fill="#9C8CE0"/>
+              <circle cx="90" cy="80" r="5" fill="#9C8CE0"/><circle cx="120" cy="20" r="5" fill="#9C8CE0"/>
+              <circle cx="150" cy="60" r="5" fill="#9C8CE0"/><circle cx="180" cy="100" r="5" fill="#9C8CE0"/>
+              <circle cx="210" cy="40" r="5" fill="#9C8CE0"/>
+            </svg>
+          </div>
+          <div class="console-box"><span class="pfx">&gt;&gt;&gt;</span> Red zone highlights scores between x=2-5, y=20-35</div>
+        </div>
+      </div>
+      <div class="steps-list">
+        <ol>
+          <li><code>matplotlib.patches</code> ships ready-made shapes: Circle, Rectangle, Polygon.</li>
+          <li>Build the shape with its position and size, then attach it with <code>ax.add_patch()</code>.</li>
+          <li><code>alpha=0.2</code> keeps it translucent so the real data points stay visible underneath.</li>
+          <li>A quality-control engineer uses this exact trick to flag a "high defect" region on a scatter plot without deleting any data.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="card tinted-peach" style="max-width:760px;">
+      <div class="badge yellow">QUICK RECAP</div>
+      <p style="font-weight:700; margin:6px 0 0 0;">Ticks rename the ruler. Labels name the axes. Legends tell lines apart. Annotations point at the story. Patches let you highlight zones directly on the data.</p>
+    </div>
+  </section>
+
+  <!-- CHAPTER 9: SAVE & CONFIGURE -->
+  <section class="chapter" id="ch9">
+    <div class="eyebrow">📚 Part 5 · Save &amp; Configure</div>
+    <h2>Saving plots &amp; setting global style</h2>
+    <p class="lede"><code>plt.savefig()</code> exports the current figure as an image or document. <code>rcParams</code> sets defaults once so you never repeat styling code again.</p>
+
+    <!-- PROGRAM 14 -->
+    <div class="program">
+      <div class="program-head">
+        <div class="program-title-wrap"><div class="program-num">14</div><h4>Exporting a print-ready 300 DPI chart</h4></div>
+        <button class="steps-toggle" onclick="toggleSteps(this)">Show steps ▾</button>
+      </div>
+      <div class="prog-body">
+        <div class="code-box"><pre><span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+
+x = [1,2,3,4]
+y = [10,25,18,30]
+
+plt.plot(x, y)
+plt.title(<span class="str">"Final Report Chart"</span>)
+plt.savefig(<span class="str">"chart.png"</span>, dpi=300, bbox_inches=<span class="str">"tight"</span>)
+
+<span class="kw">print</span>(<span class="str">"Saved chart.png at 300 DPI - ready for printing!"</span>)</pre></div>
+        <div class="output-col">
+          <div class="chart-box">
+            <svg viewBox="0 0 240 140"><polyline points="20,100 90,40 160,70 220,10" fill="none" stroke="#49B9AE" stroke-width="3"/></svg>
+          </div>
+          <div class="console-box"><span class="pfx">&gt;&gt;&gt;</span> Saved chart.png at 300 DPI - ready for printing!<br><span class="pfx">$</span> ls<br>chart.png</div>
+        </div>
+      </div>
+      <div class="steps-list">
+        <ol>
+          <li>Supported export formats: .png, .jpg, .pdf, .svg — pick whatever your report needs.</li>
+          <li><code>dpi</code> (dots per inch) controls sharpness — use 300 for anything getting printed.</li>
+          <li><code>bbox_inches="tight"</code> trims empty white space hugging the chart.</li>
+          <li>A research paper or project report always needs a crisp, high-resolution export — not a blurry screenshot.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="grid grid-2" style="margin-bottom:24px;">
+      <div class="card tinted-sky">
+        <div class="badge teal">dpi = 72</div>
+        <p style="font-weight:700;">Screen-only. Blurry, pixelated edges the moment it's printed or zoomed in.</p>
+      </div>
+      <div class="card tinted-mint">
+        <div class="badge teal">dpi = 300</div>
+        <p style="font-weight:700;">Print-ready. Crisp, sharp edges — safe for reports and posters.</p>
+      </div>
+    </div>
+
+    <!-- PROGRAM 15 -->
+    <div class="program">
+      <div class="program-head">
+        <div class="program-title-wrap"><div class="program-num">15</div><h4>Setting a company-wide chart style with rcParams</h4></div>
+        <button class="steps-toggle" onclick="toggleSteps(this)">Show steps ▾</button>
+      </div>
+      <div class="prog-body">
+        <div class="code-box"><pre><span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+
+plt.rcParams.update({
+    <span class="str">"figure.figsize"</span>: (10, 6),
+    <span class="str">"font.size"</span>: 12,
+    <span class="str">"axes.facecolor"</span>: <span class="str">"#F6F5FB"</span>,
+    <span class="str">"axes.grid"</span>: <span class="kw">True</span>,
+    <span class="str">"grid.alpha"</span>: 0.3
+})
+
+<span class="cmt"># every chart from here uses these defaults automatically</span>
+x = [1,2,3,4,5]
+y = [2,4,6,8,10]
+plt.plot(x, y)
+plt.title(<span class="str">"Every Chart Now Looks 'On-Brand'"</span>)
+plt.show()
+
+<span class="kw">print</span>(<span class="str">"Global style set once - applies to every plot after this"</span>)</pre></div>
+        <div class="output-col">
+          <div class="chart-box">
+            <svg viewBox="0 0 240 140"><rect x="6" y="6" width="228" height="128" fill="#F6F5FB"/>
+            <line x1="6" y1="30" x2="234" y2="30" stroke="#ddd" stroke-width="1"/><line x1="6" y1="60" x2="234" y2="60" stroke="#ddd" stroke-width="1"/><line x1="6" y1="90" x2="234" y2="90" stroke="#ddd" stroke-width="1"/><line x1="6" y1="120" x2="234" y2="120" stroke="#ddd" stroke-width="1"/>
+            <polyline points="15,120 70,95 125,70 180,45 225,15" fill="none" stroke="#9C8CE0" stroke-width="3.5"/></svg>
+          </div>
+          <div class="console-box"><span class="pfx">&gt;&gt;&gt;</span> Global style set once - applies to every plot after this</div>
+        </div>
+      </div>
+      <div class="steps-list">
+        <ol>
+          <li><code>rcParams</code> stores matplotlib's global default settings — figure size, font size, grid visibility and more.</li>
+          <li><code>.update({...})</code> changes several settings at once with a plain dictionary.</li>
+          <li>Every chart drawn <b>after</b> this point automatically picks up these defaults — no repeated styling code per cell.</li>
+        </ol>
+      </div>
+      <div class="genz">
+        <span class="tag">VIBE CHECK</span>
+        <div class="genz-body"><p style="margin:0;">Same energy as setting your phone's system-wide dark mode once, instead of manually theming every single app.</p><ul><li>Setting your phone's system-wide dark mode once instead of toggling every app.</li><li>Setting a server-wide theme in Discord so every channel matches.</li><li>Applying one preset to your whole feed instead of editing each photo separately.</li><li>A college brand guideline PDF — one font-and-color rule, used on every poster.</li></ul></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHAPTER 10: PANDAS INTRO + LINE + BAR -->
+  <section class="chapter" id="ch10">
+    <div class="eyebrow">📚 Part 6 · pandas.plot() — The Fast Lane</div>
+    <h2>Why df.plot()?</h2>
+    <p class="lede">pandas is built directly on top of matplotlib. Every DataFrame and Series carries a built-in <code>.plot()</code> method — no manually unpacking x and y.</p>
+
+    <div class="genz" style="max-width:820px;">
+      <span class="tag">VIBE CHECK</span>
+        <div class="genz-body"><p style="margin:0;">matplotlib is a manual-transmission car — full control, more pedals. pandas.plot() is the automatic version of the <i>same engine</i> — way less clutch work for a quick drive.</p><ul><li>Editing a reel by hand in CapCut vs. hitting "auto-edit" for a quick version.</li><li>Manual pour-over coffee vs. an automatic machine — same beans, way less effort.</li><li>Typing a full search query vs. letting autocomplete finish your thought.</li><li>A manual gearbox vs. automatic — identical engine, very different amount of clutch work.</li></ul></div>
+    </div>
+
+    <!-- PROGRAM 16 -->
+    <div class="program" style="margin-top:20px;">
+      <div class="program-head">
+        <div class="program-title-wrap"><div class="program-num">16</div><h4>Line plot — watching monthly revenue unfold</h4></div>
+        <button class="steps-toggle" onclick="toggleSteps(this)">Show steps ▾</button>
+      </div>
+      <div class="prog-body">
+        <div class="code-box"><pre><span class="kw">import</span> pandas <span class="kw">as</span> pd
+
+df = pd.DataFrame({
+    <span class="str">"Month"</span>: [<span class="str">"Jan"</span>,<span class="str">"Feb"</span>,<span class="str">"Mar"</span>,<span class="str">"Apr"</span>,<span class="str">"May"</span>],
+    <span class="str">"Revenue"</span>: [45000, 52000, 48000, 61000, 58000]
+})
+
+df.plot(x=<span class="str">"Month"</span>, y=<span class="str">"Revenue"</span>, kind=<span class="str">"line"</span>,
+        title=<span class="str">"Monthly Revenue"</span>, marker=<span class="str">"o"</span>)
+
+<span class="kw">print</span>(df)</pre></div>
+        <div class="output-col">
+          <div class="chart-box">
+            <svg viewBox="0 0 240 140"><polyline points="20,90 70,55 120,72 170,15 220,35" fill="none" stroke="#F26D82" stroke-width="3"/>
+            <circle cx="20" cy="90" r="4" fill="#F26D82"/><circle cx="70" cy="55" r="4" fill="#F26D82"/><circle cx="120" cy="72" r="4" fill="#F26D82"/><circle cx="170" cy="15" r="4" fill="#F26D82"/><circle cx="220" cy="35" r="4" fill="#F26D82"/></svg>
+          </div>
+          <div class="console-box"><span class="pfx">&gt;&gt;&gt;</span> print(df)<br>&nbsp;&nbsp;Month&nbsp;&nbsp;Revenue<br>0&nbsp;&nbsp;Jan&nbsp;&nbsp;&nbsp;&nbsp;45000<br>1&nbsp;&nbsp;Feb&nbsp;&nbsp;&nbsp;&nbsp;52000<br>2&nbsp;&nbsp;Mar&nbsp;&nbsp;&nbsp;&nbsp;48000<br>3&nbsp;&nbsp;Apr&nbsp;&nbsp;&nbsp;&nbsp;61000<br>4&nbsp;&nbsp;May&nbsp;&nbsp;&nbsp;&nbsp;58000</div>
+        </div>
+      </div>
+      <div class="steps-list">
+        <ol>
+          <li>A DataFrame is built directly from a Python dictionary — one column per key.</li>
+          <li><code>kind="line"</code> is actually the default when you call <code>.plot()</code> on numeric columns.</li>
+          <li>pandas reads the DataFrame's index (or the given <code>x=</code> column) automatically as the X-axis.</li>
+          <li>Best suited for time-ordered data — days, months, years — where trend matters.</li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- PROGRAM 17 -->
+    <div class="program">
+      <div class="program-head">
+        <div class="program-title-wrap"><div class="program-num">17</div><h4>Bar plot — comparing branch-wise average marks</h4></div>
+        <button class="steps-toggle" onclick="toggleSteps(this)">Show steps ▾</button>
+      </div>
+      <div class="prog-body">
+        <div class="code-box"><pre><span class="kw">import</span> pandas <span class="kw">as</span> pd
+
+avg_marks = {
+    <span class="str">"Chemical"</span>: 68, <span class="str">"Mechanical"</span>: 72, <span class="str">"EC"</span>: 75,
+    <span class="str">"Electrical"</span>: 70, <span class="str">"Civil"</span>: 66
+}
+
+s = pd.Series(avg_marks)
+s.plot(kind=<span class="str">"bar"</span>, title=<span class="str">"Avg Marks by Branch"</span>, color=<span class="str">"mediumpurple"</span>)
+
+<span class="kw">print</span>(<span class="str">"Top branch:"</span>, s.idxmax(), <span class="str">"with"</span>, s.max(), <span class="str">"marks"</span>)</pre></div>
+        <div class="output-col">
+          <div class="chart-box">
+            <svg viewBox="0 0 240 140">
+              <rect x="15" y="70" width="30" height="60" fill="#9C8CE0"/>
+              <rect x="60" y="50" width="30" height="80" fill="#9C8CE0"/>
+              <rect x="105" y="35" width="30" height="95" fill="#7A63C9"/>
+              <rect x="150" y="58" width="30" height="72" fill="#9C8CE0"/>
+              <rect x="195" y="76" width="30" height="54" fill="#9C8CE0"/>
+            </svg>
+          </div>
+          <div class="console-box"><span class="pfx">&gt;&gt;&gt;</span> Top branch: EC with 75 marks</div>
+        </div>
+      </div>
+      <div class="steps-list">
+        <ol>
+          <li>A plain Python dictionary becomes a pandas <code>Series</code> — keys become the index, values become the data.</li>
+          <li><code>kind="bar"</code> draws vertical bars; the X-axis is categorical (branch names), not continuous.</li>
+          <li>Bar height instantly ranks the categories — no reading of numbers required.</li>
+          <li><code>idxmax()</code> returns the label of the largest value; <code>max()</code> returns the value itself.</li>
+        </ol>
+      </div>
+      <div class="genz">
+        <span class="tag">VIBE CHECK</span>
+        <div class="genz-body"><p style="margin:0;">It's the "which friend group has the highest average CGPA" bar chart you'd absolutely make for the group chat, minus the drama.</p><ul><li>Comparing average screen time across your friend group in one chart.</li><li>A bar chart settling who spent the most on the group trip.</li><li>Ranking your own top artists by minutes streamed this month.</li><li>Comparing section-wise exam scores before the class group-chat debate starts.</li></ul></div>
+      </div>
+    </div>
+
+    <div class="card tinted-lav" style="max-width:760px;">
+      <div class="badge purple">GROUPED &amp; HORIZONTAL BARS</div>
+      <p style="font-weight:700; margin:6px 0 0 0;">Pass a DataFrame with multiple columns and pandas auto-groups the bars side by side. <code>kind="barh"</code> flips them horizontal (great for long labels), and <code>stacked=True</code> piles sub-categories into one total bar.</p>
+    </div>
+  </section>
+
+  <!-- CHAPTER 11: HIST + KDE -->
+  <section class="chapter" id="ch11">
+    <div class="eyebrow">📚 Part 6 · pandas.plot() — The Fast Lane</div>
+    <h2>Histograms &amp; density plots</h2>
+    <p class="lede">Both describe the <b>shape</b> of one numeric column — is it low, high, or bunched in the middle?</p>
+
+    <!-- PROGRAM 18 -->
+    <div class="program">
+      <div class="program-head">
+        <div class="program-title-wrap"><div class="program-num">18</div><h4>Histogram — sanity-checking an exam's marks</h4></div>
+        <button class="steps-toggle" onclick="toggleSteps(this)">Show steps ▾</button>
+      </div>
+      <div class="prog-body">
+        <div class="code-box"><pre><span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+np.random.seed(1)
+marks = pd.Series(np.random.normal(65, 12, 60).clip(0,100).round())
+
+marks.plot(kind=<span class="str">"hist"</span>, bins=10,
+           title=<span class="str">"Marks Distribution"</span>, color=<span class="str">"lightseagreen"</span>)
+
+<span class="kw">print</span>(<span class="str">"Class average:"</span>, <span class="kw">round</span>(marks.mean(),1))
+<span class="kw">print</span>(<span class="str">"Std deviation:"</span>, <span class="kw">round</span>(marks.std(),1))</pre></div>
+        <div class="output-col">
+          <div class="chart-box">
+            <svg viewBox="0 0 240 140">
+              <rect x="20" y="120" width="18" height="10" fill="#49B9AE"/>
+              <rect x="42" y="105" width="18" height="25" fill="#49B9AE"/>
+              <rect x="64" y="80" width="18" height="50" fill="#49B9AE"/>
+              <rect x="86" y="45" width="18" height="85" fill="#2E9A90"/>
+              <rect x="108" y="30" width="18" height="100" fill="#2E9A90"/>
+              <rect x="130" y="50" width="18" height="80" fill="#49B9AE"/>
+              <rect x="152" y="80" width="18" height="50" fill="#49B9AE"/>
+              <rect x="174" y="105" width="18" height="25" fill="#49B9AE"/>
+              <rect x="196" y="118" width="18" height="12" fill="#49B9AE"/>
+            </svg>
+          </div>
+          <div class="console-box"><span class="pfx">&gt;&gt;&gt;</span> Class average: 65.3<br><span class="pfx">&gt;&gt;&gt;</span> Std deviation: 11.8</div>
+        </div>
+      </div>
+      <div class="steps-list">
+        <ol>
+          <li><code>np.random.normal(65, 12, 60)</code> simulates 60 exam marks centered around 65 with some spread.</li>
+          <li><code>.clip(0,100)</code> keeps marks inside a realistic 0–100 range; <code>.round()</code> makes them whole numbers.</li>
+          <li><code>kind="hist"</code> splits the marks into <code>bins</code> (buckets) and counts how many fall in each.</li>
+          <li>A tall bar in the middle with thin tails = a fair exam; a lopsided shape hints the paper was too easy or too hard.</li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- PROGRAM 19 -->
+    <div class="program">
+      <div class="program-head">
+        <div class="program-title-wrap"><div class="program-num">19</div><h4>KDE — comparing two companies' salary curves</h4></div>
+        <button class="steps-toggle" onclick="toggleSteps(this)">Show steps ▾</button>
+      </div>
+      <div class="prog-body">
+        <div class="code-box"><pre><span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+
+np.random.seed(2)
+companyA = pd.Series(np.random.normal(45000, 8000, 200))
+companyB = pd.Series(np.random.normal(52000, 6000, 200))
+
+companyA.plot(kind=<span class="str">"kde"</span>, label=<span class="str">"Company A"</span>)
+companyB.plot(kind=<span class="str">"kde"</span>, label=<span class="str">"Company B"</span>)
+plt.legend()
+plt.title(<span class="str">"Salary Density Comparison"</span>)
+plt.show()
+
+<span class="kw">print</span>(<span class="str">"Company A median:"</span>, <span class="kw">round</span>(companyA.median()))
+<span class="kw">print</span>(<span class="str">"Company B median:"</span>, <span class="kw">round</span>(companyB.median()))</pre></div>
+        <div class="output-col">
+          <div class="chart-box">
+            <svg viewBox="0 0 240 140">
+              <path d="M10,130 Q70,10 130,130" fill="none" stroke="#F26D82" stroke-width="3"/>
+              <path d="M60,130 Q130,30 200,130" fill="none" stroke="#49B9AE" stroke-width="3"/>
+            </svg>
+          </div>
+          <div class="console-box"><span class="pfx">&gt;&gt;&gt;</span> Company A median: 44930<br><span class="pfx">&gt;&gt;&gt;</span> Company B median: 51872</div>
+        </div>
+      </div>
+      <div class="steps-list">
+        <ol>
+          <li><code>kind="kde"</code> (Kernel Density Estimate) draws a smoothed curve version of a histogram — no choppy "staircase" look.</li>
+          <li>Plotting two Series on the same axes overlays their curves for a direct shape comparison.</li>
+          <li>The curve's peak shows where values are most concentrated — easier to read than two sets of overlapping bars.</li>
+        </ol>
+      </div>
+      <div class="genz">
+        <span class="tag">VIBE CHECK</span>
+        <div class="genz-body"><p style="margin:0;">It's basically two overlapping "vibe curves" — like comparing your sleep schedule vs your roommate's on one smooth graph instead of two jagged bar charts fighting for space.</p><ul><li>Comparing your sleep schedule vs. your roommate's on one smooth overlay.</li><li>Two friends' daily step-count curves overlapping on a fitness app.</li><li>Weekday vs. weekend screen-time density, overlaid on the same graph.</li><li>Two exam batches' score curves overlaid to argue which paper was "easier."</li></ul></div>
+      </div>
+    </div>
+
+    <div class="card tinted-mint" style="max-width:760px;">
+      <div class="badge teal">QUICK RECAP</div>
+      <p style="font-weight:700; margin:6px 0 0 0;">Line = trend. Bar = comparison. Histogram = distribution. KDE = smoothed distribution. Scatter = relationship. All five are one line away with df.plot(kind=...).</p>
+    </div>
+  </section>
+
+  <!-- CHAPTER 12: SCATTER -->
+  <section class="chapter" id="ch12">
+    <div class="eyebrow">📚 Part 6 · pandas.plot() — The Fast Lane</div>
+    <h2>Scatter plots — do two things move together?</h2>
+    <p class="lede">Each point is one row of your DataFrame — no connecting line. The go-to first check before ever building a regression model.</p>
+
+    <!-- PROGRAM 20 -->
+    <div class="program">
+      <div class="program-head">
+        <div class="program-title-wrap"><div class="program-num">20</div><h4>Study hours vs exam score — checking a hunch</h4></div>
+        <button class="steps-toggle" onclick="toggleSteps(this)">Show steps ▾</button>
+      </div>
+      <div class="prog-body">
+        <div class="code-box"><pre><span class="kw">import</span> pandas <span class="kw">as</span> pd
+
+df = pd.DataFrame({
+    <span class="str">"StudyHours"</span>: [1,2,3,4,5,6,7,8],
+    <span class="str">"ExamScore"</span>:  [40,45,55,60,68,75,82,90]
+})
+
+df.plot(kind=<span class="str">"scatter"</span>, x=<span class="str">"StudyHours"</span>, y=<span class="str">"ExamScore"</span>,
+        title=<span class="str">"Study Hours vs Exam Score"</span>, color=<span class="str">"crimson"</span>)
+
+correlation = df[<span class="str">"StudyHours"</span>].corr(df[<span class="str">"ExamScore"</span>])
+<span class="kw">print</span>(<span class="str">"Correlation coefficient:"</span>, <span class="kw">round</span>(correlation, 3))</pre></div>
+        <div class="output-col">
+          <div class="chart-box">
+            <svg viewBox="0 0 240 140">
+              <circle cx="20" cy="120" r="5" fill="#E14B4B"/><circle cx="45" cy="108" r="5" fill="#E14B4B"/>
+              <circle cx="70" cy="90" r="5" fill="#E14B4B"/><circle cx="95" cy="78" r="5" fill="#E14B4B"/>
+              <circle cx="120" cy="60" r="5" fill="#E14B4B"/><circle cx="145" cy="45" r="5" fill="#E14B4B"/>
+              <circle cx="170" cy="30" r="5" fill="#E14B4B"/><circle cx="195" cy="15" r="5" fill="#E14B4B"/>
+              <line x1="15" y1="128" x2="205" y2="10" stroke="#E14B4B" stroke-width="1" stroke-dasharray="3,3" opacity=".4"/>
+            </svg>
+          </div>
+          <div class="console-box"><span class="pfx">&gt;&gt;&gt;</span> Correlation coefficient: 0.997</div>
+        </div>
+      </div>
+      <div class="steps-list">
+        <ol>
+          <li><code>kind="scatter"</code> needs both an <code>x=</code> and a <code>y=</code> numeric column — every row becomes one dot.</li>
+          <li>An upward-drifting cloud of points visually confirms the relationship before writing a single formula.</li>
+          <li><code>.corr()</code> turns that visual hunch into one precise number between -1 and 1.</li>
+          <li>A tight diagonal cloud (like here) means strong correlation; a wide scattered cloud means weak or none.</li>
+        </ol>
+      </div>
+      <div class="genz">
+        <span class="tag">VIBE CHECK</span>
+        <div class="genz-body"><p style="margin:0;">It's the "hours of sleep vs how unhinged your 9am was" scatter plot everyone secretly knows would trend upward-left before ever running the numbers.</p><ul><li>Screen time vs. how many times you say "just five more minutes."</li><li>Coffee cups vs. lines of code written before a deadline.</li><li>Steps walked vs. how strong your "closed all rings" flex is.</li><li>Hours of revision vs. confidence walking into the exam hall.</li></ul></div>
+      </div>
+    </div>
+
+    <div class="card tinted-blush" style="max-width:760px;">
+      <div class="badge coral">REAL WORLD</div>
+      <p style="font-weight:700; margin:6px 0 0 0;">A sports-science dataset of athlete height vs weight, scatter-plotted, shows a tight upward-sloping cloud — confirming taller athletes tend to weigh more, instantly, without computing a single statistic.</p>
+    </div>
+  </section>
+
+  <!-- CHAPTER 13: CHART CHEAT SHEET + TITANIC -->
+  <section class="chapter" id="ch13">
+    <div class="eyebrow">🧭 Part 6 · Case Study</div>
+    <h2>Choosing the right chart</h2>
+    <p class="lede">A quick reference for the moment you're staring at data wondering "...bar or line?"</p>
+
+    <table class="cheat-table" style="max-width:820px; margin-bottom:30px;">
+      <tr><td>📈 Line</td><td>Trend over time / ordered data</td></tr>
+      <tr><td>📊 Bar</td><td>Comparing categories</td></tr>
+      <tr><td>📶 Histogram</td><td>Distribution / shape of one variable</td></tr>
+      <tr><td>🌊 KDE</td><td>Smoothed distribution, easy to overlay</td></tr>
+      <tr><td>🔵 Scatter</td><td>Relationship between two variables</td></tr>
+      <tr><td>🧩 Subplots</td><td>Comparing several charts side by side</td></tr>
+    </table>
+
+    <div class="card tinted-sky" style="max-width:820px;">
+      <div class="badge teal">CASE STUDY · TITANIC DATASET</div>
+      <h3 style="margin:.4rem 0;">Turning survivor records into insight</h3>
+      <p style="font-weight:600; color:var(--ink-soft);">Passenger records from the 1912 Titanic voyage — age, class, fare, and survival outcome — are the classic "first dataset" for practicing every tool from this unit.</p>
+      <div class="code-box" style="margin-top:14px;"><pre><span class="kw">import</span> pandas <span class="kw">as</span> pd
+
+titanic.groupby(<span class="str">"Pclass"</span>)[<span class="str">"Survived"</span>]\
+    .mean().plot(kind=<span class="str">"bar"</span>,
+        title=<span class="str">"Survival Rate by Class"</span>,
+        color=[<span class="str">"#3F8F86"</span>,<span class="str">"#8577B3"</span>,<span class="str">"#E2795C"</span>])</pre></div>
+      <p style="font-weight:700; margin-top:12px;">Result: 1st-class passengers survived at a clearly higher rate — a famous, often-cited finding, spotted in one bar chart.</p>
+    </div>
+  </section>
+
+  <!-- CHAPTER 14: MISTAKES + RECAP -->
+  <section class="chapter" id="ch14">
+    <div class="eyebrow">🎓 Before You Plot</div>
+    <h2>Common mistakes &amp; best practices</h2>
+
+    <div class="grid grid-2" style="max-width:920px;">
+      <div class="card tinted-blush">
+        <div class="badge coral">AVOID</div>
+        <div class="mistake-card"><span class="mistake-emoji">🙈</span><p style="font-weight:700; margin:0;"><b>Skipping labels</b> — forces the reader to guess the units.</p></div>
+        <div class="mistake-card" style="margin-top:12px;"><span class="mistake-emoji">🌈</span><p style="font-weight:700; margin:0;"><b>Color overload</b> — ten random colors confuse more than they clarify.</p></div>
+        <div class="mistake-card" style="margin-top:12px;"><span class="mistake-emoji">🍕</span><p style="font-weight:700; margin:0;"><b>Wrong chart type</b> — a line chart for unordered categories hides the story.</p></div>
+        <div class="mistake-card" style="margin-top:12px;"><span class="mistake-emoji">📉</span><p style="font-weight:700; margin:0;"><b>Low-res exports</b> — always <code>savefig(dpi=300)</code>, never a screenshot.</p></div>
+      </div>
+      <div class="card tinted-mint">
+        <div class="badge teal">DO INSTEAD</div>
+        <div class="mistake-card"><span class="mistake-emoji">✏️</span><p style="font-weight:700; margin:0;"><b>Start simple</b> — sketch with pyplot first, switch to OO for multiple subplots.</p></div>
+        <div class="mistake-card" style="margin-top:12px;"><span class="mistake-emoji">🏷️</span><p style="font-weight:700; margin:0;"><b>Label everything</b> — title, X-axis, Y-axis, legend, every time.</p></div>
+        <div class="mistake-card" style="margin-top:12px;"><span class="mistake-emoji">🎯</span><p style="font-weight:700; margin:0;"><b>Pick colors with intent</b> — let color encode meaning, not decoration.</p></div>
+        <div class="mistake-card" style="margin-top:12px;"><span class="mistake-emoji">🖨️</span><p style="font-weight:700; margin:0;"><b>Test in black &amp; white</b> — if it's unreadable, add markers/linestyles.</p></div>
+      </div>
+    </div>
+
+    <div class="recap-box" style="max-width:920px; margin-top:30px;">
+      <h4>🎁 Key takeaways</h4>
+      <ul>
+        <li>A Figure holds one or more Axes — build dashboards with <code>plt.subplots()</code>.</li>
+        <li>Color, marker &amp; linestyle are a visual language — use them with intent.</li>
+        <li>Ticks, labels, legends and annotations turn a chart into a self-explaining story.</li>
+        <li><code>rcParams</code> and <code>savefig()</code> make your styling consistent and report-ready.</li>
+        <li>pandas' <code>.plot()</code> is matplotlib in automatic mode — one line, five chart types.</li>
+        <li>Every dataset today — sales, sensors, exams, Titanic — used the SAME five tools.</li>
+      </ul>
+    </div>
+
+    <div class="card tinted-lav" style="max-width:920px; margin-top:24px;">
+      <div class="badge purple">YOUR TURN</div>
+      <h3 style="margin:.3rem 0;">Today's practical</h3>
+      <p style="font-weight:600;">Open Colab and recreate these on a real CSV: a line plot trending over an index, a bar chart of category averages, a histogram + KDE of the same column, a scatter testing a relationship, one annotation on the maximum value, and a proper title + labels + legend, saved as a 300-dpi PNG.</p>
+    </div>
+
+    <div class="card tinted-butter" style="max-width:920px; margin-top:24px; text-align:center;">
+      <p style="font-weight:800; font-size:1.15rem; margin:0 0 10px 0;">Questions? Let's talk plots. 📊</p>
+      <p style="font-weight:600; color:var(--ink-soft); margin:0 0 16px 0;">Data Science using Python · BTIT15501 · Prof. (Dr.) Bhumika Desai Shah · SCET, Surat</p>
+      <a class="prof-link" style="margin:0 auto;" href="https://bhumikaa7981.github.io/meet-bhumika/" target="_blank" rel="noopener">👩‍🏫 Meet Prof. Bhumika →</a>
+    </div>
+  </section>
+
+</div>
+
+<div class="dotnav" id="dotnav"></div>
+
+<script>
+  const scroller = document.getElementById('scroller');
+  const chapters = Array.from(document.querySelectorAll('.chapter'));
+  const dotnav = document.getElementById('dotnav');
+  const progressFill = document.getElementById('progressFill');
+
+  chapters.forEach((ch, i) => {
+    const b = document.createElement('button');
+    b.className = 'dot' + (i === 0 ? ' active' : '');
+    b.title = 'Chapter ' + (i+1);
+    b.onclick = () => goTo(i);
+    dotnav.appendChild(b);
+  });
+  const dots = Array.from(dotnav.children);
+
+  function goTo(index){
+    index = Math.max(0, Math.min(chapters.length - 1, index));
+    chapters[index].scrollIntoView({behavior:'smooth', inline:'start'});
+  }
+
+  function currentIndex(){
+    const scrollLeft = scroller.scrollLeft;
+    const w = window.innerWidth;
+    return Math.round(scrollLeft / w);
+  }
+
+  function updateUI(){
+    const idx = currentIndex();
+    dots.forEach((d,i) => d.classList.toggle('active', i===idx));
+    progressFill.style.width = ((idx) / (chapters.length-1) * 100) + '%';
+  }
+
+  let ticking = false;
+  scroller.addEventListener('scroll', () => {
+    if(!ticking){
+      requestAnimationFrame(() => { updateUI(); ticking = false; });
+      ticking = true;
+    }
+  });
+
+  document.getElementById('prevBtn').onclick = () => goTo(currentIndex()-1);
+  document.getElementById('nextBtn').onclick = () => goTo(currentIndex()+1);
+
+  window.addEventListener('keydown', (e) => {
+    if(e.key === 'ArrowRight') goTo(currentIndex()+1);
+    if(e.key === 'ArrowLeft') goTo(currentIndex()-1);
+  });
+
+  function toggleSteps(btn){
+    const list = btn.closest('.program').querySelector('.steps-list');
+    list.classList.toggle('open');
+    btn.textContent = list.classList.contains('open') ? 'Hide steps ▴' : 'Show steps ▾';
+  }
+
+  updateUI();
+</script>
+
+</body>
+</html>
 
