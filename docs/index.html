@@ -193,6 +193,21 @@
     .resource-cols{grid-template-columns:1fr;}
   }
 
+  /* KNOW MORE — optional, out-of-syllabus reading */
+  .know-more{
+    margin-top:16px;padding-top:14px;border-top:2px dashed var(--sun-d);
+  }
+  .know-more-label{
+    color:var(--grape-d) !important;display:flex;align-items:center;gap:6px;
+  }
+  .know-more-label::after{
+    content:"optional";font-family:'Inter',sans-serif;text-transform:none;letter-spacing:0;
+    background:var(--grape);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px;
+  }
+  .know-more-items{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;}
+  .know-more-items .res-item{flex:1 1 240px;border-color:var(--grape);}
+  .know-more-items .res-item:hover{box-shadow:4px 4px 0 var(--grape);}
+
   /* ADMIN BAR */
   .admin-bar{
     background:var(--ink);color:var(--cream);border-radius:14px;padding:14px 18px;margin-bottom:20px;
@@ -449,6 +464,22 @@ const UNITS = [ {
                 url:"https://bhumikaa7981.github.io/BTIT15501-Data-Science-Using-Python/pandaslab/"
             }
         }
+    ],
+
+    /* ---- Know More: optional, out-of-syllabus reading ---- */
+    knowMore:[
+        {
+            icon:"🚀",
+            title:"Why Data Science?",
+            hint:"The pitch, before the pandas show up.",
+            url:"https://drive.google.com/file/d/1ee1WTo8d3X-1ffPYkgfgZLe4knIPbuN7/view?usp=drive_link"
+        },
+        {
+            icon:"🐼",
+            title:"Why Study Pandas?",
+            hint:"Convince yourself before the exam does.",
+            url:"https://bhumikaa7981.github.io/BTIT15501-Data-Science-Using-Python/whypanda/"
+        }
     ]
 },
   {n:3,title:"Plotting and visualization",hours:5,text:"A brief matplotlib API primer, figures and subplots, colors, markers and line styles, ticks, labels and legends, annotations, saving plots to file, matplotlib configuration. Plotting with pandas: line plots, bar plots, histograms, density plots, scatter plots."},
@@ -609,6 +640,17 @@ function renderResourceBox(n, res){
                 </a>
             </div>`;
         });
+    }
+
+    /* Know More — optional, out-of-syllabus reading */
+    if(unit.knowMore && unit.knowMore.length){
+        html += `
+        <div class="know-more">
+            <div class="label know-more-label">🎓 Know More — Out of Syllabus</div>
+            <div class="know-more-items">
+                ${unit.knowMore.map(item => resItemHtml(item)).join('')}
+            </div>
+        </div>`;
     }
 
     /* Slides (admin-uploaded, applies to any unit) */
