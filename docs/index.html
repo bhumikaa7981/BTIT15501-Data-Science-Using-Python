@@ -82,7 +82,7 @@
   .draw{stroke-dasharray:600;stroke-dashoffset:600;animation:draw 1.6s ease-out forwards;}
   .draw2{stroke-dasharray:900;stroke-dashoffset:900;animation:draw 2.1s 0.25s ease-out forwards;}
   @keyframes draw{to{stroke-dashoffset:0;}}
-  @media (prefers-reduced-motion:reduce){.draw,.draw2{animation:none;stroke-dashoffset:0;}.dot{animation:none !important;opacity:1;}}
+  @media (prefers-reduced-motion:reduce){.draw,.draw2{animation:none;stroke-dashoffset:0;}.dot{animation:none !important;opacity:1;}.res-emoji{animation:none !important;}}
   .dot{opacity:0;animation:pop 0.4s ease forwards;}
   @keyframes pop{from{opacity:0;transform:scale(0);}to{opacity:1;transform:scale(1);}}
 
@@ -138,7 +138,7 @@
   .chevron{transition:transform 0.2s ease;color:var(--ink-dim);font-size:18px;}
   .unit.open .chevron{transform:rotate(180deg);}
   .unit-body{max-height:0;overflow:hidden;transition:max-height 0.3s ease;}
-  .unit.open .unit-body{max-height:600px;}
+  .unit.open .unit-body{max-height:1400px;}
   .unit-body-inner{padding:0 20px 20px;font-size:14px;color:var(--ink-dim);}
   .unit-body-inner .content-text{margin-bottom:16px;}
   .resource-box{
@@ -156,6 +156,41 @@
   }
   .edit-row button{
     background:var(--sun);color:var(--ink);border:2px solid var(--ink);padding:8px 16px;border-radius:999px;font-size:13px;cursor:pointer;font-weight:700;
+  }
+
+  /* TWO-COLUMN GROUPED RESOURCES (Lecture Notes / Practical Resources) */
+  .resource-cols{
+    display:grid;grid-template-columns:1fr 1fr;gap:18px;
+  }
+  .res-col-head{
+    display:flex;align-items:center;gap:9px;font-family:'Baloo 2',sans-serif;font-weight:700;
+    font-size:14.5px;color:var(--ink);margin-bottom:10px;
+  }
+  .res-col-head .col-icon{
+    width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-size:14px;border:2px solid var(--ink);flex-shrink:0;
+  }
+  .res-item{
+    background:#fff;border:2px solid var(--ink);border-radius:12px;padding:9px 11px;margin-bottom:8px;
+    display:flex;gap:9px;align-items:flex-start;box-shadow:2px 2px 0 var(--line);
+    text-decoration:none;transition:transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .res-item:hover{transform:translate(-2px,-2px);box-shadow:4px 4px 0 var(--sun);}
+  .res-item:active{transform:translate(0,0);box-shadow:1px 1px 0 var(--line);}
+  .res-emoji{
+    font-size:17px;line-height:1;animation:floaty 2.6s ease-in-out infinite;flex-shrink:0;margin-top:1px;
+  }
+  .res-item:nth-of-type(2n) .res-emoji{animation-delay:0.5s;}
+  .res-item:nth-of-type(3n) .res-emoji{animation-delay:0.9s;}
+  @keyframes floaty{0%,100%{transform:translateY(0);}50%{transform:translateY(-3px);}}
+  .res-body{min-width:0;flex:1;}
+  .res-title{display:block;font-weight:600;font-size:13.3px;color:var(--ink);}
+  .res-hint{display:block;font-size:11px;color:var(--ink-dim);font-style:italic;margin-top:1px;}
+  .res-sub{margin:-2px 0 8px 20px;padding-left:10px;border-left:2px dashed var(--sun-d);}
+  .res-sub .res-item{background:var(--cream-2);box-shadow:none;margin-bottom:0;padding:7px 10px;}
+  .res-sub .res-title{font-size:12.3px;}
+  @media (max-width:760px){
+    .resource-cols{grid-template-columns:1fr;}
   }
 
   /* ADMIN BAR */
@@ -365,26 +400,54 @@ const UNITS = [ {
  
 },
   {n:2,title:"Getting started with raw data",hours:7,text:"The world of arrays with NumPy: creating arrays, mathematical operations, array subtraction, squaring, trigonometric functions, conditional operations, matrix multiplication, indexing and slicing, shape manipulation. Empowering data analysis with pandas: data structures, Series, importing/exporting CSV and XLS. Data cleansing: missing data, string operations, merging data. Data operations: aggregation.",
-    extraLinks:[
+
+    /* ---- Lecture Notes column ---- */
+    lectureNotes:[
         {
-            icon:"📝",
-            title:"Class Notes - Numpy",
-            url:"https://drive.google.com/file/d/15sioImd8gnI3mkg1nflFiRlszpk8T6Ca/view?usp=sharing"
-        },
-        {
-            icon:"💻",
-            title:"Practical - Numpy",
-            url:"https://drive.google.com/file/d/1wHw7zzSpRPTKXdk5tbeBZdpQDfT-nX7B/view?usp=sharing"
-        },
-        {
-            icon:"🔗",
-            title:"The world of arrays with NumPy",
-            url:"https://bhumikaa7981.github.io/BTIT15501-Data-Science-Using-Python/numpy/"
+            icon:"📐",
+            title:"NumPy Lecture Notes",
+            hint:"Where arrays learn their ABCs.",
+            url:"https://drive.google.com/file/d/15sioImd8gnI3mkg1nflFiRlszpk8T6Ca/view"
         },
         {
             icon:"🐼",
-            title:"WhyPandas — Why Learn Pandas? Know Why",
-            url:"https://bhumikaa7981.github.io/BTIT15501-Data-Science-Using-Python/whypanda/"
+            title:"Pandas Lecture Notes",
+            hint:"DataFrames, demystified.",
+            url:"https://drive.google.com/file/d/10-pu3G4QUPJSS2vNe3w_yEuVbiO-t6dB/view?usp=sharing"
+        },
+        {
+            icon:"🎬",
+            title:"Pandas — The Interactive Deep-Dive",
+            hint:"Same story, director's cut, with bonus scenes.",
+            url:"https://bhumikaa7981.github.io/BTIT15501-Data-Science-Using-Python/pandas/"
+        }
+    ],
+
+    /* ---- Practical Resources column (each can carry a nested "help" companion link) ---- */
+    practicals:[
+        {
+            icon:"💪",
+            title:"NumPy Practicals",
+            hint:"Homework that fights back.",
+            url:"https://drive.google.com/file/d/1wHw7zzSpRPTKXdk5tbeBZdpQDfT-nX7B/view",
+            help:{
+                icon:"🗺️",
+                title:"NumPy Practical Help",
+                hint:"The cheat sheet, but legal.",
+                url:"https://bhumikaa7981.github.io/BTIT15501-Data-Science-Using-Python/numpy/"
+            }
+        },
+        {
+            icon:"🔥",
+            title:"Pandas Practical List",
+            hint:"Five practicals. Zero mercy.",
+            url:"https://drive.google.com/file/d/1Oxib6bd4yQDk2ASBDBfPlMeXytU5tO8Y/view?usp=sharing",
+            help:{
+                icon:"🐾",
+                title:"Pandas Practical Help",
+                hint:"Your personal pandas whisperer.",
+                url:"https://bhumikaa7981.github.io/BTIT15501-Data-Science-Using-Python/pandaslab/"
+            }
         }
     ]
 },
@@ -472,6 +535,19 @@ async function renderUnits(){
     renderResourceBox(u.n, res);
   }
 }
+
+/* Renders one clickable resource card: icon (floats gently), title, witty hint */
+function resItemHtml(item){
+    return `
+    <a class="res-item" href="${item.url}" target="_blank" rel="noopener">
+        <span class="res-emoji">${item.icon || "🔗"}</span>
+        <span class="res-body">
+            <span class="res-title">${item.title}</span>
+            ${item.hint ? `<span class="res-hint">${item.hint}</span>` : ``}
+        </span>
+    </a>`;
+}
+
 function renderResourceBox(n, res){
 
     const box = document.getElementById('resbox-' + n);
@@ -480,39 +556,65 @@ function renderResourceBox(n, res){
     const hasPDF = !!unit.pdf;
     const hasSlides = res && res.pptUrl;
     const extraLinks = unit.extraLinks || [];
+    const hasGrouped = !!(unit.lectureNotes || unit.practicals);
 
     let html = `<div class="label">Learning Resources</div>`;
 
-    /* PDF */
-    if(hasPDF){
-        html += `
-        <div class="resource-link">
-            📄
-            <a href="${unit.pdf.url}"
-               target="_blank"
-               rel="noopener">
-               ${unit.pdf.title}
-            </a>
-        </div>`;
+    if(hasGrouped){
+        /* Two-column layout: Lecture Notes | Practical Resources */
+        html += `<div class="resource-cols">`;
+
+        html += `<div class="res-col">
+            <div class="res-col-head"><span class="col-icon" style="background:var(--sky);">📚</span> Lecture Notes</div>`;
+        (unit.lectureNotes || []).forEach(item => {
+            html += resItemHtml(item);
+        });
+        html += `</div>`;
+
+        html += `<div class="res-col">
+            <div class="res-col-head"><span class="col-icon" style="background:var(--coral);color:#fff;">🧪</span> Practical Resources</div>`;
+        (unit.practicals || []).forEach(item => {
+            html += resItemHtml(item);
+            if(item.help){
+                html += `<div class="res-sub">${resItemHtml(item.help)}</div>`;
+            }
+        });
+        html += `</div>`;
+
+        html += `</div>`; /* /resource-cols */
+    } else {
+
+        /* PDF */
+        if(hasPDF){
+            html += `
+            <div class="resource-link">
+                📄
+                <a href="${unit.pdf.url}"
+                   target="_blank"
+                   rel="noopener">
+                   ${unit.pdf.title}
+                </a>
+            </div>`;
+        }
+
+        /* Any extra static links defined on the unit (e.g. walkthroughs, demos) */
+        extraLinks.forEach(link => {
+            html += `
+            <div class="resource-link">
+                ${link.icon || "🔗"}
+                <a href="${link.url}"
+                   target="_blank"
+                   rel="noopener">
+                   ${link.title} ↗
+                </a>
+            </div>`;
+        });
     }
 
-    /* Any extra static links defined on the unit (e.g. walkthroughs, demos) */
-    extraLinks.forEach(link => {
-        html += `
-        <div class="resource-link">
-            ${link.icon || "🔗"}
-            <a href="${link.url}"
-               target="_blank"
-               rel="noopener">
-               ${link.title} ↗
-            </a>
-        </div>`;
-    });
-
-    /* Slides */
+    /* Slides (admin-uploaded, applies to any unit) */
     if(hasSlides){
         html += `
-        <div class="resource-link">
+        <div class="resource-link" style="margin-top:${hasGrouped ? '4px' : '0'};">
             📑
             <a href="${res.pptUrl}"
                target="_blank"
@@ -529,8 +631,8 @@ function renderResourceBox(n, res){
         }
     }
 
-    /* Show placeholder only if nothing exists */
-    if(!hasPDF && !hasSlides && extraLinks.length === 0){
+    /* Show placeholder only if nothing exists anywhere */
+    if(!hasPDF && !hasSlides && extraLinks.length === 0 && !hasGrouped){
         html += `
         <div class="resource-empty">
             ${EMPTY_LINES[n % EMPTY_LINES.length]}
