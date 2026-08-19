@@ -1455,6 +1455,33 @@ plt.savefig(<span class="str">"chart.png"</span>, dpi=300, bbox_inches=<span cla
 
         <h5>⚖️ dpi=72 vs dpi=300</h5>
         <div class="compare-box">72 dpi is screen resolution — fine on a laptop screen, but pixelated the moment it's printed or zoomed in. 300 dpi packs over 4x more detail per inch — the standard for anything that will be printed (reports, posters).</div>
+
+        <h5>📂 Where does "chart.png" actually get saved?</h5>
+        <div class="why-box">When you only give a plain filename like <code>"chart.png"</code> (no folder path in front of it), Python saves it in the <b>current working directory</b> — basically "whatever folder you were in when you ran the script." That is NOT always the folder where your <code>.py</code> file lives.<br><br>Simple ways to check exactly where it landed:</div>
+        <table class="param-table">
+          <tr><td>Check first</td><td><code>import os; print(os.getcwd())</code> — prints the exact folder Python is currently "standing in." Your chart.png is inside that folder.</td></tr>
+          <tr><td>Terminal / command line</td><td>Usually the folder you were in when you typed <code>python myscript.py</code></td></tr>
+          <tr><td>VS Code / IDE "Run" button</td><td>Often the project's root folder, NOT necessarily the script's own folder</td></tr>
+          <tr><td>Jupyter Notebook</td><td>The folder where the <code>.ipynb</code> notebook file itself is saved</td></tr>
+        </table>
+
+        <h5>📁 Saving to a specific folder instead</h5>
+        <div class="why-box">Just put a path in front of the filename — matplotlib treats it exactly like any normal file path in Python:</div>
+        <div class="line-row"><code>plt.savefig("charts/chart.png", dpi=300, bbox_inches="tight")</code><div class="expl">Saves inside a folder named <b>charts</b> that sits next to your script. ⚠️ Matplotlib will NOT auto-create this folder — if "charts" doesn't already exist, you'll get a <code>FileNotFoundError</code>. Create it first with <code>os.makedirs("charts", exist_ok=True)</code>.</div></div>
+        <div class="line-row"><code>plt.savefig("/Users/yourname/Desktop/chart.png", dpi=300)</code><div class="expl">An <b>absolute path</b> — starts from the very top of your computer's file system, so it always points to the exact same place no matter which folder you ran the script from. On Windows this looks like <code>"C:/Users/yourname/Desktop/chart.png"</code>.</div></div>
+        <div class="line-row"><code>plt.savefig("../output/chart.png", dpi=300)</code><div class="expl"><code>..</code> means "go up one folder first, then into output." A <b>relative path</b> — depends on where you're currently standing (your working directory), same as the plain filename case above.</div></div>
+
+        <h5>☁️ What about Google Colab, Jupyter, and other cloud platforms?</h5>
+        <table class="param-table">
+          <tr><td>Google Colab</td><td>Files save into a TEMPORARY virtual machine, not your computer or Google Drive. Click the 📁 folder icon on the left sidebar to see/download it, or it disappears when the session ends. To save it permanently, mount your Drive first: <code>from google.colab import drive; drive.mount('/content/drive')</code>, then save with <code>plt.savefig("/content/drive/MyDrive/chart.png")</code>.</td></tr>
+          <tr><td>Jupyter Notebook (local)</td><td>Saves next to your <code>.ipynb</code> file by default — same folder you'd see in the Jupyter file browser tab.</td></tr>
+          <tr><td>Kaggle Notebooks</td><td>Saves into <code>/kaggle/working/</code> — this folder is what gets kept when you "Save Version"; anything outside it is discarded.</td></tr>
+          <tr><td>Replit / online IDEs</td><td>Saves inside your project's root folder — visible directly in the file tree on the left, downloadable from there.</td></tr>
+          <tr><td>VS Code / PyCharm (local)</td><td>Best practice: always check <code>os.getcwd()</code> once, or just use a full absolute path so there's zero guessing.</td></tr>
+        </table>
+
+        <h5>🤔 Golden rule to avoid confusion</h5>
+        <div class="compare-box">When in doubt, don't guess — just print it: <code>import os; print(os.getcwd())</code> right before <code>savefig()</code> tells you EXACTLY which folder the file is about to land in, on any platform.</div>
       </div>
     </div>
 
