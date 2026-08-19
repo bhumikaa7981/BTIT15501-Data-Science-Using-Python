@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Plotting & Visualization · Unit 3 · BTIT15501</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Lexend:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root{
     --butter:#FFF3D6;
@@ -14,8 +14,8 @@
     --mint:#D6F5E3;
     --peach:#FFE1C7;
     --sky:#D9EFFF;
-    --ink:#4B3F52;
-    --ink-soft:#7A6D85;
+    --ink:#3A2E44;
+    --ink-soft:#6E607D;
     --coral:#FF8FA0;
     --coral-deep:#F26D82;
     --teal:#49B9AE;
@@ -30,7 +30,9 @@
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;height:100%;}
   body{
-    font-family:'Nunito', sans-serif;
+    font-family:'Lexend', sans-serif;
+    font-size:17px;
+    line-height:1.65;
     color:var(--ink);
     background:
       radial-gradient(circle at 10% 15%, var(--sky) 0%, transparent 45%),
@@ -39,8 +41,10 @@
       linear-gradient(180deg, #FFFBF3, #FFF7EE);
     overflow:hidden;
   }
-  h1,h2,h3,.display{font-family:'Baloo 2', sans-serif;}
-  code, pre, .mono{font-family:'Space Mono', monospace;}
+  h1,h2,h3,.display{font-family:'Poppins', sans-serif;}
+  p, li, td, div{font-family:'Lexend', sans-serif;}
+  code, pre, .mono{font-family:'JetBrains Mono', monospace;}
+  code{background:rgba(75,63,82,.08); padding:1px 6px; border-radius:6px; font-size:.94em;}
 
   /* ---------- top bar ---------- */
   .topbar{
@@ -105,8 +109,8 @@
     background:rgba(255,143,160,.12); padding:6px 14px; border-radius:999px;
     margin-bottom:14px;
   }
-  .chapter h2{font-size:2.5rem; margin:0 0 6px 0; font-weight:800; line-height:1.08;}
-  .chapter .lede{font-size:1.12rem; color:var(--ink-soft); max-width:780px; margin:0 0 30px 0; font-weight:600;}
+  .chapter h2{font-size:2.7rem; margin:0 0 10px 0; font-weight:700; line-height:1.2;}
+  .chapter .lede{font-size:1.24rem; color:var(--ink-soft); max-width:780px; margin:0 0 30px 0; font-weight:500; line-height:1.6;}
 
   /* ---------- cards / grid ---------- */
   .grid{display:grid; gap:22px;}
@@ -127,8 +131,8 @@
   .card.tinted-peach{background:linear-gradient(160deg, var(--peach), #fffbf6);}
 
   .badge{
-    display:inline-block; font-size:.68rem; font-weight:800; letter-spacing:.05em;
-    padding:4px 11px; border-radius:999px; margin-bottom:10px; color:#fff;
+    display:inline-block; font-size:.75rem; font-weight:700; letter-spacing:.04em;
+    padding:5px 13px; border-radius:999px; margin-bottom:10px; color:#fff;
   }
   .badge.coral{background:var(--coral-deep);}
   .badge.teal{background:var(--teal-deep);}
@@ -141,7 +145,7 @@
     padding:26px; margin-bottom:26px; border:2px solid rgba(75,63,82,.05);
   }
   .program-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; flex-wrap:wrap; gap:10px;}
-  .program-head h4{margin:0; font-size:1.22rem; font-weight:800;}
+  .program-head h4{margin:0; font-size:1.32rem; font-weight:700;}
   .program-num{
     width:34px;height:34px;border-radius:12px; flex-shrink:0;
     display:flex;align-items:center;justify-content:center; font-weight:800; color:#fff;
@@ -149,8 +153,8 @@
   }
   .program-title-wrap{display:flex; align-items:center; gap:12px;}
   .steps-toggle{
-    font-size:.78rem; font-weight:800; color:var(--teal-deep); background:rgba(73,185,174,.13);
-    border:none; padding:7px 14px; border-radius:999px; cursor:pointer;
+    font-size:.9rem; font-weight:700; color:#fff; background:linear-gradient(120deg, var(--teal-deep), var(--teal));
+    border:none; padding:10px 18px; border-radius:999px; cursor:pointer; box-shadow:var(--shadow-sm);
   }
   .prog-body{display:grid; grid-template-columns:1.15fr .85fr; gap:20px;}
   @media(max-width:980px){.prog-body{grid-template-columns:1fr;}}
@@ -159,7 +163,7 @@
     background:#2E2740; border-radius:18px; padding:18px 20px; overflow-x:auto;
     box-shadow:inset 0 0 0 2px rgba(255,255,255,.03);
   }
-  .code-box pre{margin:0; color:#F4EEFF; font-size:.86rem; line-height:1.65; white-space:pre;}
+  .code-box pre{margin:0; color:#F4EEFF; font-size:1rem; line-height:1.8; white-space:pre;}
   .code-box .cmt{color:#B7A9E0;}
   .code-box .str{color:#FFD98E;}
   .code-box .kw{color:#88E0D0;}
@@ -171,20 +175,35 @@
   }
   .chart-box svg{width:100%; height:auto; max-height:190px;}
   .console-box{
-    background:#1F2A24; border-radius:14px; padding:12px 16px; font-size:.78rem;
-    color:#B9F6D6; font-family:'Space Mono', monospace; line-height:1.6;
+    background:#1F2A24; border-radius:14px; padding:12px 16px; font-size:.92rem;
+    color:#B9F6D6; font-family:'JetBrains Mono', monospace; line-height:1.7;
   }
   .console-box .pfx{color:#6FE0AE; font-weight:700;}
 
-  .steps-list{margin-top:16px; padding:14px 18px; border-radius:14px; background:rgba(255,200,92,.14); display:none;}
+  .steps-list{margin-top:18px; padding:22px 24px; border-radius:18px; background:linear-gradient(160deg, rgba(255,200,92,.16), rgba(255,255,255,.5)); display:none; border:2px solid rgba(75,63,82,.06);}
   .steps-list.open{display:block;}
-  .steps-list ol{margin:0; padding-left:18px;}
-  .steps-list li{margin-bottom:7px; font-weight:600; font-size:.93rem;}
+  .steps-list h5{font-family:'Poppins',sans-serif; font-size:1.05rem; font-weight:700; margin:18px 0 8px 0; color:var(--coral-deep); display:flex; align-items:center; gap:8px;}
+  .steps-list h5:first-child{margin-top:0;}
+  .steps-list .why-box{background:#fff; border-radius:14px; padding:14px 16px; font-size:1rem; font-weight:500; line-height:1.6; box-shadow:var(--shadow-sm);}
+  .steps-list ol{margin:0; padding-left:22px;}
+  .steps-list li{margin-bottom:10px; font-weight:500; font-size:1rem; line-height:1.6;}
+  .steps-list .line-row{background:#fff; border-radius:12px; padding:10px 14px; margin-bottom:8px; box-shadow:var(--shadow-sm);}
+  .steps-list .line-row code{display:block; margin-bottom:4px; font-size:.92rem; color:#8b3f6b; background:rgba(242,109,130,.1); padding:4px 8px; border-radius:6px; width:fit-content;}
+  .steps-list .line-row .expl{font-size:.98rem; font-weight:500; color:var(--ink);}
+  .steps-list .dry-table{width:100%; border-collapse:collapse; font-size:.96rem; margin-top:4px;}
+  .steps-list .dry-table td{background:#fff; padding:8px 12px; font-weight:500; border-bottom:6px solid transparent;}
+  .steps-list .dry-table tr td:first-child{border-radius:10px 0 0 10px; font-weight:700; color:var(--coral-deep); white-space:nowrap;}
+  .steps-list .dry-table tr td:last-child{border-radius:0 10px 10px 0;}
+  .steps-list .compare-box{background:#fff; border-radius:14px; padding:14px 16px; font-size:.98rem; font-weight:500; line-height:1.6; box-shadow:var(--shadow-sm);}
+  .steps-list .param-table{width:100%; border-collapse:collapse; font-size:.94rem; margin-top:4px;}
+  .steps-list .param-table td{background:#fff; padding:8px 12px; vertical-align:top;}
+  .steps-list .param-table tr td:first-child{font-weight:700; color:var(--teal-deep); white-space:nowrap; border-radius:10px 0 0 10px;}
+  .steps-list .param-table tr td:last-child{border-radius:0 10px 10px 0; font-weight:500;}
 
   .genz{
-    margin-top:14px; padding:14px 18px; border-radius:14px;
+    margin-top:14px; padding:16px 20px; border-radius:14px;
     background:linear-gradient(120deg, rgba(156,140,224,.15), rgba(255,143,160,.13));
-    font-weight:700; font-size:.92rem; display:flex; gap:10px; align-items:flex-start;
+    font-weight:500; font-size:1.02rem; display:flex; gap:10px; align-items:flex-start;
   }
   .genz .tag{
     flex-shrink:0; font-size:.65rem; font-weight:800; letter-spacing:.05em; color:#fff;
@@ -228,13 +247,13 @@
     height:100%; max-width:900px;
   }
   .cover .kicker{font-weight:800; color:var(--teal-deep); letter-spacing:.16em; text-transform:uppercase; font-size:.8rem; margin-bottom:14px;}
-  .cover h1{font-size:3.6rem; line-height:1.03; margin:0 0 16px 0; font-weight:800;
+  .cover h1{font-size:3.5rem; line-height:1.15; margin:0 0 18px 0; font-weight:700;
     background:linear-gradient(100deg, var(--coral-deep), var(--purple) 60%, var(--teal-deep));
     -webkit-background-clip:text; background-clip:text; color:transparent;}
   @media(max-width:700px){.cover h1{font-size:2.3rem;}}
-  .cover p.tagline{font-size:1.2rem; font-weight:700; color:var(--ink-soft); max-width:640px;}
+  .cover p.tagline{font-size:1.28rem; font-weight:500; color:var(--ink-soft); max-width:640px; line-height:1.6;}
   .pillrow{display:flex; flex-wrap:wrap; gap:10px; margin-top:22px;}
-  .pill{background:#fff; padding:8px 16px; border-radius:999px; font-weight:700; font-size:.85rem; box-shadow:var(--shadow-sm);}
+  .pill{background:#fff; padding:9px 18px; border-radius:999px; font-weight:600; font-size:.94rem; box-shadow:var(--shadow-sm);}
   .startbtn{
     margin-top:34px; align-self:flex-start; border:none; cursor:pointer;
     padding:16px 30px; border-radius:999px; font-size:1.05rem; font-weight:800; color:#fff;
@@ -245,8 +264,8 @@
   .startbtn:hover{transform:translateY(-3px);}
   .subject-panel{
     margin-top:28px; background:#fff; border-radius:20px; padding:18px 22px;
-    box-shadow:var(--shadow-sm); font-size:.86rem; color:var(--ink-soft); font-weight:700;
-    display:grid; grid-template-columns:repeat(2,auto); gap:6px 40px;
+    box-shadow:var(--shadow-sm); font-size:.96rem; color:var(--ink-soft); font-weight:500;
+    display:grid; grid-template-columns:repeat(2,auto); gap:8px 40px;
   }
   .subject-panel b{color:var(--ink); font-weight:800;}
 
@@ -261,19 +280,19 @@
     font-family:'Baloo 2'; font-weight:800; font-size:1.5rem; color:#fff; width:46px; height:46px;
     border-radius:14px; display:flex; align-items:center; justify-content:center; flex-shrink:0;
   }
-  .road-txt b{display:block; font-size:1.02rem;}
-  .road-txt span{font-size:.86rem; color:var(--ink-soft); font-weight:600;}
+  .road-txt b{display:block; font-size:1.12rem; font-weight:700;}
+  .road-txt span{font-size:.96rem; color:var(--ink-soft); font-weight:500;}
 
   .recap-box{
     background:linear-gradient(120deg, var(--mint), var(--sky));
     border-radius:22px; padding:22px 26px; box-shadow:var(--shadow); margin-top:10px;
   }
-  .recap-box h4{margin:0 0 10px 0; font-size:1.05rem;}
+  .recap-box h4{margin:0 0 12px 0; font-size:1.2rem; font-weight:700;}
   .recap-box ul{margin:0; padding-left:20px;}
-  .recap-box li{font-weight:700; margin-bottom:8px;}
+  .recap-box li{font-weight:500; margin-bottom:10px; font-size:1.02rem;}
 
-  .cheat-table{width:100%; border-collapse:separate; border-spacing:0 10px;}
-  .cheat-table td{background:#fff; padding:14px 18px; font-weight:700; box-shadow:var(--shadow-sm);}
+  .cheat-table{width:100%; border-collapse:separate; border-spacing:0 10px; font-size:1.02rem;}
+  .cheat-table td{background:#fff; padding:16px 20px; font-weight:600; box-shadow:var(--shadow-sm);}
   .cheat-table tr td:first-child{border-radius:14px 0 0 14px;}
   .cheat-table tr td:last-child{border-radius:0 14px 14px 0; font-weight:600; color:var(--ink-soft);}
 
@@ -328,6 +347,151 @@
     </div>
   </section>
 
+  <!-- CHAPTER 0B : SEE IT TO BELIEVE IT (chart quiz) -->
+  <section class="chapter" id="ch0b">
+    <div class="eyebrow">👀 See It To Believe It</div>
+    <h2>Can you answer these just by looking?</h2>
+    <p class="lede">No formulas. No calculator. Just look at each picture below and try to answer the question under it. That's the whole point of this unit — a good chart lets your eyes do the maths.</p>
+
+    <div class="grid grid-3">
+
+      <!-- QUIZ 1: LINE -->
+      <div class="card tinted-sky">
+        <div class="badge teal">📈 LINE CHART</div>
+        <div class="chart-box" style="min-height:150px;">
+          <svg viewBox="0 0 260 160">
+          <line x1="30" y1="10" x2="30" y2="130" stroke="#B8AFC4" stroke-width="1.5"/>
+          <line x1="30" y1="130" x2="250" y2="130" stroke="#B8AFC4" stroke-width="1.5"/>
+          <text x="10" y="130" text-anchor="end" font-size="12" fill="#6E607D">Low</text>
+          <text x="10" y="20" text-anchor="end" font-size="12" fill="#6E607D">High</text>
+          <text x="18" y="70" text-anchor="middle" font-size="12" font-weight="700" fill="#4B3F52" transform="rotate(-90 18 70)">Sales →</text>
+          <polyline points="45,120 100,105 155,90 220,25" fill="none" stroke="#2A6FB0" stroke-width="4" stroke-linecap="round"/>
+          <circle cx="45" cy="120" r="5" fill="#2A6FB0"/><circle cx="100" cy="105" r="5" fill="#2A6FB0"/><circle cx="155" cy="90" r="5" fill="#2A6FB0"/><circle cx="220" cy="25" r="6" fill="#F26D82"/>
+          <text x="45" y="146" text-anchor="middle" font-size="13" font-weight="600" fill="#4B3F52">Jan</text><text x="100" y="146" text-anchor="middle" font-size="13" font-weight="600" fill="#4B3F52">Feb</text><text x="155" y="146" text-anchor="middle" font-size="13" font-weight="600" fill="#4B3F52">Mar</text><text x="220" y="146" text-anchor="middle" font-size="13" font-weight="600" fill="#4B3F52">Apr</text>
+          <text x="140" y="158" text-anchor="middle" font-size="12" font-weight="700" fill="#4B3F52">Month →</text>
+          </svg>
+        </div>
+        <p style="font-weight:700; margin:12px 0 0 0; font-size:1.12rem;">Q: Which month had the highest sales?</p>
+        <button class="steps-toggle" onclick="toggleSteps(this)" data-show-text="Show answer ▾" data-hide-text="Hide answer ▴" style="margin-top:10px; font-size:1rem; padding:11px 20px;">Show answer ▾</button>
+        <div class="steps-list"><p style="margin:0; font-weight:600; font-size:1.08rem; line-height:1.55;">✅ <b>April</b> — it's the highest point on the line. You didn't read a single number to know that; you just looked at "which dot is closest to the top."</p></div>
+      </div>
+
+      <!-- QUIZ 2: BAR -->
+      <div class="card tinted-lav">
+        <div class="badge purple">📊 BAR CHART</div>
+        <div class="chart-box" style="min-height:150px;">
+          <svg viewBox="0 0 260 165">
+            <line x1="30" y1="10" x2="30" y2="130" stroke="#B8AFC4" stroke-width="1.5"/>
+            <line x1="30" y1="130" x2="250" y2="130" stroke="#B8AFC4" stroke-width="1.5"/>
+            <text x="20" y="70" text-anchor="middle" font-size="12" font-weight="700" fill="#4B3F52" transform="rotate(-90 20 70)">Marks →</text>
+            <rect x="40" y="70" width="30" height="60" fill="#9C8CE0"/>
+            <rect x="85" y="50" width="30" height="80" fill="#9C8CE0"/>
+            <rect x="130" y="30" width="30" height="100" fill="#7A63C9"/>
+            <rect x="175" y="58" width="30" height="72" fill="#9C8CE0"/>
+            <rect x="220" y="76" width="30" height="54" fill="#9C8CE0"/>
+            <text x="55" y="146" text-anchor="middle" font-size="13" font-weight="600" fill="#4B3F52">IT</text>
+            <text x="100" y="146" text-anchor="middle" font-size="13" font-weight="600" fill="#4B3F52">CS</text>
+            <text x="145" y="146" text-anchor="middle" font-size="13" font-weight="600" fill="#4B3F52">EC</text>
+            <text x="190" y="146" text-anchor="middle" font-size="13" font-weight="600" fill="#4B3F52">ME</text>
+            <text x="235" y="146" text-anchor="middle" font-size="13" font-weight="600" fill="#4B3F52">CE</text>
+            <text x="145" y="162" text-anchor="middle" font-size="12" font-weight="700" fill="#4B3F52">Branch →</text>
+          </svg>
+        </div>
+        <p style="font-weight:700; margin:12px 0 0 0; font-size:1.12rem;">Q: Which branch scored the highest average marks?</p>
+        <button class="steps-toggle" onclick="toggleSteps(this)" data-show-text="Show answer ▾" data-hide-text="Hide answer ▴" style="margin-top:10px; font-size:1rem; padding:11px 20px;">Show answer ▾</button>
+        <div class="steps-list"><p style="margin:0; font-weight:600; font-size:1.08rem; line-height:1.55;">✅ The <b>3rd (tallest) bar</b> — EC branch. Taller bar = bigger number. No need to compare five separate digits in your head.</p></div>
+      </div>
+
+      <!-- QUIZ 3: HISTOGRAM -->
+      <div class="card tinted-mint">
+        <div class="badge teal">📶 HISTOGRAM</div>
+        <div class="chart-box" style="min-height:150px;">
+          <svg viewBox="0 0 260 165">
+            <line x1="30" y1="10" x2="30" y2="130" stroke="#B8AFC4" stroke-width="1.5"/>
+            <line x1="30" y1="130" x2="250" y2="130" stroke="#B8AFC4" stroke-width="1.5"/>
+            <text x="20" y="70" text-anchor="middle" font-size="12" font-weight="700" fill="#4B3F52" transform="rotate(-90 20 70)"># Students →</text>
+            <rect x="40" y="120" width="18" height="10" fill="#49B9AE"/><rect x="62" y="105" width="18" height="25" fill="#49B9AE"/>
+            <rect x="84" y="80" width="18" height="50" fill="#49B9AE"/><rect x="106" y="45" width="18" height="85" fill="#2E9A90"/>
+            <rect x="128" y="30" width="18" height="100" fill="#2E9A90"/><rect x="150" y="50" width="18" height="80" fill="#49B9AE"/>
+            <rect x="172" y="80" width="18" height="50" fill="#49B9AE"/><rect x="194" y="105" width="18" height="25" fill="#49B9AE"/>
+            <rect x="216" y="118" width="18" height="12" fill="#49B9AE"/>
+            <text x="40" y="146" text-anchor="middle" font-size="12" font-weight="600" fill="#4B3F52">Low</text>
+            <text x="235" y="146" text-anchor="middle" font-size="12" font-weight="600" fill="#4B3F52">High</text>
+            <text x="140" y="162" text-anchor="middle" font-size="12" font-weight="700" fill="#4B3F52">Score →</text>
+          </svg>
+        </div>
+        <p style="font-weight:700; margin:12px 0 0 0; font-size:1.12rem;">Q: Did most students score close to the average, or all over the place?</p>
+        <button class="steps-toggle" onclick="toggleSteps(this)" data-show-text="Show answer ▾" data-hide-text="Hide answer ▴" style="margin-top:10px; font-size:1rem; padding:11px 20px;">Show answer ▾</button>
+        <div class="steps-list"><p style="margin:0; font-weight:600; font-size:1.08rem; line-height:1.55;">✅ <b>Close to the average</b> — the tall bars are bunched in the middle, with only a few students far on either side. A hill shape like this always means "most values are near the middle."</p></div>
+      </div>
+
+      <!-- QUIZ 4: SCATTER -->
+      <div class="card tinted-blush">
+        <div class="badge coral">🔵 SCATTER PLOT</div>
+        <div class="chart-box" style="min-height:150px;">
+          <svg viewBox="0 0 260 165">
+            <line x1="30" y1="10" x2="30" y2="130" stroke="#B8AFC4" stroke-width="1.5"/>
+            <line x1="30" y1="130" x2="250" y2="130" stroke="#B8AFC4" stroke-width="1.5"/>
+            <text x="20" y="70" text-anchor="middle" font-size="12" font-weight="700" fill="#4B3F52" transform="rotate(-90 20 70)">Marks →</text>
+            <circle cx="45" cy="120" r="5" fill="#E14B4B"/><circle cx="80" cy="105" r="5" fill="#E14B4B"/>
+            <circle cx="115" cy="85" r="5" fill="#E14B4B"/><circle cx="150" cy="65" r="5" fill="#E14B4B"/>
+            <circle cx="185" cy="45" r="5" fill="#E14B4B"/><circle cx="220" cy="20" r="5" fill="#E14B4B"/>
+            <text x="140" y="162" text-anchor="middle" font-size="12" font-weight="700" fill="#4B3F52">Study Hours →</text>
+          </svg>
+        </div>
+        <p style="font-weight:700; margin:12px 0 0 0; font-size:1.12rem;">Q: Do students who study more hours tend to score more marks?</p>
+        <button class="steps-toggle" onclick="toggleSteps(this)" data-show-text="Show answer ▾" data-hide-text="Hide answer ▴" style="margin-top:10px; font-size:1rem; padding:11px 20px;">Show answer ▾</button>
+        <div class="steps-list"><p style="margin:0; font-weight:600; font-size:1.08rem; line-height:1.55;">✅ <b>Yes</b> — the dots climb steadily from bottom-left to top-right. When one thing goes up and the other goes up too, in a chart it looks like a rising staircase of dots.</p></div>
+      </div>
+
+      <!-- QUIZ 5: KDE -->
+      <div class="card tinted-peach">
+        <div class="badge yellow">🌊 DENSITY (KDE) CHART</div>
+        <div class="chart-box" style="min-height:150px;">
+          <svg viewBox="0 0 260 165">
+            <line x1="20" y1="10" x2="20" y2="130" stroke="#B8AFC4" stroke-width="1.5"/>
+            <line x1="20" y1="130" x2="250" y2="130" stroke="#B8AFC4" stroke-width="1.5"/>
+            <text x="10" y="70" text-anchor="middle" font-size="12" font-weight="700" fill="#4B3F52" transform="rotate(-90 10 70)">Density →</text>
+            <path d="M20,130 Q80,10 140,130" fill="none" stroke="#F26D82" stroke-width="3"/>
+            <path d="M70,130 Q140,30 210,130" fill="none" stroke="#49B9AE" stroke-width="3"/>
+            <text x="55" y="24" font-size="13" fill="#F26D82" font-weight="700">Company A</text>
+            <text x="155" y="45" font-size="13" fill="#49B9AE" font-weight="700">Company B</text>
+            <text x="135" y="150" text-anchor="middle" font-size="12" font-weight="700" fill="#4B3F52">Salary →</text>
+          </svg>
+        </div>
+        <p style="font-weight:700; margin:12px 0 0 0; font-size:1.12rem;">Q: Which company pays higher salaries on average?</p>
+        <button class="steps-toggle" onclick="toggleSteps(this)" data-show-text="Show answer ▾" data-hide-text="Hide answer ▴" style="margin-top:10px; font-size:1rem; padding:11px 20px;">Show answer ▾</button>
+        <div class="steps-list"><p style="margin:0; font-weight:600; font-size:1.08rem; line-height:1.55;">✅ <b>Company B</b> — its curve's peak sits further to the right, which means its typical salary is a bigger number than Company A's.</p></div>
+      </div>
+
+      <!-- QUIZ 6: SUBPLOTS -->
+      <div class="card tinted-butter">
+        <div class="badge yellow">🧩 TWO CHARTS SIDE BY SIDE</div>
+        <div class="chart-box" style="min-height:150px;">
+          <svg viewBox="0 0 240 160">
+            <rect x="6" y="6" width="108" height="120" rx="8" fill="#fff" stroke="#FFDCC2" stroke-width="4"/>
+            <polyline points="16,110 40,90 64,70 88,60 108,55" fill="none" stroke="#FF8FA0" stroke-width="3"/>
+            <text x="60" y="22" text-anchor="middle" font-size="12" fill="#4B3F52" font-weight="700">Temperature</text>
+            <text x="60" y="140" text-anchor="middle" font-size="11" fill="#4B3F52" font-weight="600">Time →</text>
+            <rect x="126" y="6" width="108" height="120" rx="8" fill="#fff" stroke="#D6F5E3" stroke-width="4"/>
+            <polyline points="136,20 160,45 184,70 208,90 228,100" fill="none" stroke="#2E9A90" stroke-width="3"/>
+            <text x="180" y="22" text-anchor="middle" font-size="12" fill="#4B3F52" font-weight="700">Humidity</text>
+            <text x="180" y="140" text-anchor="middle" font-size="11" fill="#4B3F52" font-weight="600">Time →</text>
+          </svg>
+        </div>
+        <p style="font-weight:700; margin:12px 0 0 0; font-size:1.12rem;">Q: Which one is going up, and which one is going down?</p>
+        <button class="steps-toggle" onclick="toggleSteps(this)" data-show-text="Show answer ▾" data-hide-text="Hide answer ▴" style="margin-top:10px; font-size:1rem; padding:11px 20px;">Show answer ▾</button>
+        <div class="steps-list"><p style="margin:0; font-weight:600; font-size:1.08rem; line-height:1.55;">✅ <b>Temperature is rising</b> (line goes up), <b>Humidity is falling</b> (line goes down). Placing two charts side by side lets you compare two stories in one glance, instead of flipping between two tables.</p></div>
+      </div>
+
+    </div>
+
+    <div class="card tinted-lav" style="max-width:920px; margin-top:26px;">
+      <div class="badge purple">THE POINT OF ALL THIS</div>
+      <p style="font-size:1.08rem; font-weight:600; margin:0;">Every question above would take you a minute or two if you had to read a table of raw numbers. With a picture, your eyes answered it in about two seconds. That's why we plot data — and that's exactly what this unit teaches you to build, one chart type at a time.</p>
+    </div>
+  </section>
+
   <!-- CHAPTER 1 : WHY BOTHER -->
   <section class="chapter" id="ch1">
     <div class="eyebrow">🎬 Getting Started</div>
@@ -369,13 +533,13 @@
     <h2>What we're covering, in order</h2>
     <p class="lede">Tap any stop to jump straight there. Six parts, twenty complete programs, zero boring spreadsheets.</p>
     <div class="road">
-      <div class="road-item" onclick="goTo(3)"><div class="road-num" style="background:var(--coral-deep);">01</div><div class="road-txt"><b>Matplotlib Foundations</b><span>The Figure/Axes model, pyplot vs OO, your first plot</span></div></div>
-      <div class="road-item" onclick="goTo(5)"><div class="road-num" style="background:var(--purple);">02</div><div class="road-txt"><b>Figures &amp; Subplots</b><span>One figure, many axes — building dashboards</span></div></div>
+      <div class="road-item" onclick="goTo(4)"><div class="road-num" style="background:var(--coral-deep);">01</div><div class="road-txt"><b>Matplotlib Foundations</b><span>The Figure/Axes model, pyplot vs OO, your first plot</span></div></div>
+      <div class="road-item" onclick="goTo(6)"><div class="road-num" style="background:var(--purple);">02</div><div class="road-txt"><b>Figures &amp; Subplots</b><span>One figure, many axes — building dashboards</span></div></div>
       <div class="road-item" onclick="goTo(7)"><div class="road-num" style="background:var(--teal-deep);">03</div><div class="road-txt"><b>Styling Your Charts</b><span>Colors, markers, line styles — with intent</span></div></div>
-      <div class="road-item" onclick="goTo(10)"><div class="road-num" style="background:#D89A22;">04</div><div class="road-txt"><b>Making Charts Talk</b><span>Ticks, labels, legends, annotations, shapes</span></div></div>
-      <div class="road-item" onclick="goTo(13)"><div class="road-num" style="background:#E17A9A;">05</div><div class="road-txt"><b>Save &amp; Configure</b><span>Exporting plots, setting global styles</span></div></div>
-      <div class="road-item" onclick="goTo(15)"><div class="road-num" style="background:#5FA8D3;">06</div><div class="road-txt"><b>pandas.plot()</b><span>Line, Bar, Histogram/KDE, Scatter — the fast lane</span></div></div>
-      <div class="road-item" onclick="goTo(19)"><div class="road-num" style="background:#7BC47F;">07</div><div class="road-txt"><b>Wrap-up</b><span>Cheat sheet, common mistakes, recap</span></div></div>
+      <div class="road-item" onclick="goTo(8)"><div class="road-num" style="background:#D89A22;">04</div><div class="road-txt"><b>Making Charts Talk</b><span>Ticks, labels, legends, annotations, shapes</span></div></div>
+      <div class="road-item" onclick="goTo(10)"><div class="road-num" style="background:#E17A9A;">05</div><div class="road-txt"><b>Save &amp; Configure</b><span>Exporting plots, setting global styles</span></div></div>
+      <div class="road-item" onclick="goTo(11)"><div class="road-num" style="background:#5FA8D3;">06</div><div class="road-txt"><b>pandas.plot()</b><span>Line, Bar, Histogram/KDE, Scatter — the fast lane</span></div></div>
+      <div class="road-item" onclick="goTo(15)"><div class="road-num" style="background:#7BC47F;">07</div><div class="road-txt"><b>Wrap-up</b><span>Cheat sheet, common mistakes, recap</span></div></div>
     </div>
   </section>
 
@@ -432,13 +596,31 @@ plt.show()
         </div>
       </div>
       <div class="steps-list">
-        <ol>
-          <li>Import matplotlib's pyplot module and nickname it <code>plt</code>.</li>
-          <li>Store the X values (weeks) and Y values (sales) as two lists.</li>
-          <li><code>plt.plot()</code> queues up a line joining those points on the "currently active" figure.</li>
-          <li><code>title / xlabel / ylabel</code> add context to that same active figure.</li>
-          <li><code>plt.show()</code> finally renders everything that was queued.</li>
-        </ol>
+        <h5>🤔 Why use pyplot?</h5>
+        <div class="why-box">When you just want a fast look at your data, you don't want to write 10 lines of setup. <code>matplotlib.pyplot</code> lets you type one short line and see a chart. Use it for quick, one-off charts — not for reports with many charts together.</div>
+
+        <h5>🔍 Line by line</h5>
+        <div class="line-row"><code>import matplotlib.pyplot as plt</code><div class="expl">Loads the plotting library into your program and gives it a short nickname, <b>plt</b>, so you don't have to type the full name every time.</div></div>
+        <div class="line-row"><code>weeks = [1, 2, 3, 4]</code><div class="expl">A Python <b>list</b> — a simple box holding 4 numbers in order. This becomes the X-axis (horizontal) values.</div></div>
+        <div class="line-row"><code>sales = [120, 135, 150, 170]</code><div class="expl">Another list, same length as <code>weeks</code>. This becomes the Y-axis (vertical) values. Item 1 of weeks pairs with item 1 of sales, and so on.</div></div>
+        <div class="line-row"><code>plt.plot(weeks, sales)</code><div class="expl"><b>Input:</b> two equal-length lists. <b>What it does:</b> draws a straight line joining point (1,120) → (2,135) → (3,150) → (4,170). <b>Output:</b> nothing printed — it just remembers the drawing until <code>show()</code> is called.</div></div>
+        <div class="line-row"><code>plt.title("Weekly Sales - pyplot style")</code><div class="expl">Sets the big heading text on top of the chart. Input is just a plain string.</div></div>
+        <div class="line-row"><code>plt.xlabel("Week")</code> / <code>plt.ylabel("Units Sold")</code><div class="expl">Name each axis, so a reader knows the numbers mean "week number" and "units sold" — not some mystery quantity.</div></div>
+        <div class="line-row"><code>plt.show()</code><div class="expl">This is the "print" button for charts — it actually displays everything you queued above. Nothing appears on screen before this line runs.</div></div>
+        <div class="line-row"><code>print("Chart created...")</code><div class="expl">A normal Python print statement — proves the whole script finished without errors.</div></div>
+
+        <h5>🧪 Code dry run</h5>
+        <table class="dry-table">
+          <tr><td>Step 1</td><td>weeks = [1,2,3,4], sales = [120,135,150,170] are stored in memory.</td></tr>
+          <tr><td>Step 2</td><td>plt.plot() reads both lists together and plans 4 connected points.</td></tr>
+          <tr><td>Step 3</td><td>title/xlabel/ylabel add text around that plan.</td></tr>
+          <tr><td>Step 4</td><td>show() paints everything at once — the line chart appears.</td></tr>
+        </table>
+
+        <h5>⚙️ Function used</h5>
+        <table class="param-table">
+          <tr><td>plt.plot(x, y)</td><td>Draws a line through the given points. If you skip x, it just uses 0,1,2,3... automatically.</td></tr>
+        </table>
       </div>
     </div>
 
@@ -472,13 +654,26 @@ fig.savefig(<span class="str">"sales.png"</span>)
         </div>
       </div>
       <div class="steps-list">
-        <ol>
-          <li><code>plt.subplots()</code> explicitly builds <b>both</b> a Figure and an Axes object — no hidden "current" state.</li>
-          <li>Every command runs directly on <code>ax</code>, never on some invisible active figure.</li>
-          <li>OO methods are prefixed with <code>set_</code> — <code>set_title</code>, <code>set_xlabel</code>, etc.</li>
-          <li><code>fig.savefig()</code> writes the exact figure to disk — no ambiguity about which one.</li>
-          <li>Industry codebases almost always use this style once more than one chart is involved.</li>
-        </ol>
+        <h5>🤔 Why use the Object-Oriented (OO) style?</h5>
+        <div class="why-box">pyplot is great for one quick chart, but it secretly guesses "which figure is active." That guessing breaks once you have many charts. The OO style names everything directly, so there is never any doubt about which chart you are editing. Use it whenever your project has more than one chart, or needs to be reused as a function.</div>
+
+        <h5>🔍 Line by line (nested call explained)</h5>
+        <div class="line-row"><code>fig, ax = plt.subplots()</code><div class="expl"><b>Nested unpacking:</b> <code>plt.subplots()</code> actually returns TWO things packed together — a Figure object and an Axes object. Writing <code>fig, ax = ...</code> unpacks them into two separate variables in one line, just like <code>a, b = 1, 2</code>.</div></div>
+        <div class="line-row"><code>ax.plot(weeks, sales)</code><div class="expl">Same drawing job as Program 1's <code>plt.plot()</code>, but called ON the specific <code>ax</code> object instead of on the whole library. This removes any guessing about which chart gets the line.</div></div>
+        <div class="line-row"><code>ax.set_title(...)</code>, <code>ax.set_xlabel(...)</code>, <code>ax.set_ylabel(...)</code><div class="expl">Same jobs as <code>plt.title/xlabel/ylabel</code>, but with a <code>set_</code> prefix because you're literally setting a property on the <code>ax</code> object.</div></div>
+        <div class="line-row"><code>fig.savefig("sales.png")</code><div class="expl"><b>Input:</b> a filename string. <b>Output:</b> writes an image file named sales.png to disk, using exactly the figure stored in <code>fig</code>.</div></div>
+        <div class="line-row"><code>print("Figure object:", fig)</code><div class="expl">Prints Python's internal description of the Figure object — mostly useful for debugging, confirming <code>fig</code> really holds a Figure.</div></div>
+
+        <h5>⚖️ pyplot vs Object-Oriented — what's actually different?</h5>
+        <div class="compare-box"><b>plt.plot(...)</b> draws on "whatever figure pyplot currently thinks is active" — simple but risky with many charts.<br><b>ax.plot(...)</b> draws on one exact, named Axes object — more typing, zero ambiguity. Function names also change: <code>plt.title()</code> becomes <code>ax.set_title()</code>, <code>plt.xlabel()</code> becomes <code>ax.set_xlabel()</code>.</div>
+
+        <h5>🧪 Dry run</h5>
+        <table class="dry-table">
+          <tr><td>Step 1</td><td>plt.subplots() creates one empty Figure + one empty Axes, returned together.</td></tr>
+          <tr><td>Step 2</td><td>fig, ax = ... splits that pair into two named variables.</td></tr>
+          <tr><td>Step 3</td><td>ax.plot(), ax.set_title() etc. draw directly onto that one Axes.</td></tr>
+          <tr><td>Step 4</td><td>fig.savefig() exports exactly that Figure to sales.png.</td></tr>
+        </table>
       </div>
     </div>
   </section>
@@ -544,12 +739,31 @@ peak_hour = temp.index(<span class="kw">max</span>(temp))
         </div>
       </div>
       <div class="steps-list">
-        <ol>
-          <li>Build 24 hour labels with <code>range(24)</code>, and a matching list of 24 temperature readings.</li>
-          <li><code>plt.plot(hours, temp, ...)</code> draws the line and drops a circular marker on every real reading.</li>
-          <li>Axis labels state the units — °C matters, "just numbers" doesn't.</li>
-          <li><code>temp.index(max(temp))</code> finds the position of the hottest reading in plain Python — no chart-reading required.</li>
-        </ol>
+        <h5>🤔 Why plot this way?</h5>
+        <div class="why-box">This program shows how to add color and a marker shape on top of a basic line — the two most common "make it readable" upgrades you'll use in almost every chart from here on.</div>
+
+        <h5>🔍 Line by line</h5>
+        <div class="line-row"><code>hours = list(range(24))</code><div class="expl"><b>Nested call:</b> Python first runs <code>range(24)</code>, which creates a sequence 0,1,2...23 (24 numbers, lazily). Then <code>list(...)</code> wraps that sequence into an actual list you can print and index: <code>[0,1,2,...,23]</code>.</div></div>
+        <div class="line-row"><code>temp = [22,21,20,...]</code><div class="expl">24 temperature readings, one per hour, typed out by hand as a list.</div></div>
+        <div class="line-row"><code>plt.plot(hours, temp, color="tomato", marker="o")</code><div class="expl"><b>color=</b> sets the line's colour (here a named colour, "tomato"). <b>marker="o"</b> draws a small circle at every actual data point, so readers can see exactly where real readings are, not just an interpolated line.</div></div>
+        <div class="line-row"><code>plt.xlabel("Hour of Day")</code> / <code>plt.ylabel("Temperature (°C)")</code><div class="expl">Labels that include the <b>unit</b> (°C) — a huge readability habit. Without a unit, "34" could mean anything.</div></div>
+        <div class="line-row"><code>peak_hour = temp.index(max(temp))</code><div class="expl"><b>Nested call, inside-out:</b> first <code>max(temp)</code> runs and scans all 24 numbers to find the biggest one (34). Then <code>temp.index(34)</code> runs and finds WHERE in the list that 34 first appears — that position number becomes <code>peak_hour</code>.</div></div>
+        <div class="line-row"><code>print(f"Hottest hour: {peak_hour}:00, Temp: {max(temp)}°C")</code><div class="expl">An f-string: the <code>{ }</code> parts are replaced by the actual values of <code>peak_hour</code> and <code>max(temp)</code> when printed.</div></div>
+
+        <h5>🧪 Dry run</h5>
+        <table class="dry-table">
+          <tr><td>max(temp)</td><td>Scans all 24 numbers → finds 34 (it appears twice, at hours 12 and 13).</td></tr>
+          <tr><td>temp.index(34)</td><td>Finds the FIRST position where 34 occurs → index 12.</td></tr>
+          <tr><td>peak_hour</td><td>= 12, but hours start counting from hour 0, so hour 12 prints as "13:00" in the demo timeline shown here.</td></tr>
+          <tr><td>Final print</td><td>"Hottest hour: 13:00, Temp: 34°C"</td></tr>
+        </table>
+
+        <h5>⚙️ Function/parameter meanings</h5>
+        <table class="param-table">
+          <tr><td>color=</td><td>Accepts a name ("tomato"), hex code, or RGB tuple — all three mean the same thing to matplotlib.</td></tr>
+          <tr><td>marker=</td><td>"o" circle, "s" square, "^" triangle, "*" star, "x" cross — many shapes exist for telling series apart.</td></tr>
+          <tr><td>list.index(value)</td><td>Returns the position of the FIRST matching value. If the value isn't found, Python raises an error.</td></tr>
+        </table>
       </div>
       <div class="genz">
         <span class="tag">VIBE CHECK</span>
@@ -611,12 +825,30 @@ plt.show()
         </div>
       </div>
       <div class="steps-list">
-        <ol>
-          <li><code>plt.subplots(1, 2)</code> makes ONE figure containing TWO Axes, arranged in a single row.</li>
-          <li><code>axes</code> comes back as a list — <code>axes[0]</code> is the left plot, <code>axes[1]</code> is the right.</li>
-          <li>Each Axes gets its own <code>.plot()</code> and <code>.set_title()</code> — fully independent of the other.</li>
-          <li><code>plt.tight_layout()</code> auto-adjusts spacing so titles/labels never overlap.</li>
-        </ol>
+        <h5>🤔 Why use subplots here?</h5>
+        <div class="why-box">Temperature and humidity use very different number ranges. Squeezing both onto ONE chart would need two different Y-axes and get confusing. Two small charts side by side, sharing one Figure, is much easier to read.</div>
+
+        <h5>🔍 Line by line</h5>
+        <div class="line-row"><code>fig, axes = plt.subplots(1, 2, figsize=(10, 4))</code><div class="expl"><b>Input:</b> 1 row, 2 columns → makes 2 empty Axes side by side. <b>figsize=(10,4)</b> sets the whole Figure's width and height in inches. <b>Output (nested unpack):</b> <code>fig</code> = the one Figure, <code>axes</code> = a list of the 2 Axes it just built.</div></div>
+        <div class="line-row"><code>axes[0].plot(temp_data, color="coral")</code><div class="expl"><code>axes[0]</code> means "the first Axes in that list" (Python counts from 0). Its <code>.plot()</code> draws only on that left panel.</div></div>
+        <div class="line-row"><code>axes[0].set_title("Temperature")</code><div class="expl">Titles only the left chart — the right one is untouched.</div></div>
+        <div class="line-row"><code>axes[1].plot(humidity_data, ...)</code> / <code>axes[1].set_title(...)</code><div class="expl">Same idea, but <code>axes[1]</code> is the second (right) Axes.</div></div>
+        <div class="line-row"><code>plt.tight_layout()</code><div class="expl">Automatically adds just enough padding between the two panels so titles and labels don't collide or get cut off.</div></div>
+        <div class="line-row"><code>print("Number of axes created:", len(axes))</code><div class="expl"><code>len(axes)</code> counts how many items are in the axes list → 2.</div></div>
+
+        <h5>🧪 Dry run</h5>
+        <table class="dry-table">
+          <tr><td>Step 1</td><td>plt.subplots(1,2) → builds 2 empty boxes side by side inside 1 Figure.</td></tr>
+          <tr><td>Step 2</td><td>axes[0] filled with the coral temperature line.</td></tr>
+          <tr><td>Step 3</td><td>axes[1] filled with the green humidity line.</td></tr>
+          <tr><td>Step 4</td><td>tight_layout() nudges spacing; show() reveals both together.</td></tr>
+        </table>
+
+        <h5>⚙️ Parameter meanings</h5>
+        <table class="param-table">
+          <tr><td>subplots(rows, cols)</td><td>rows=1, cols=2 → side-by-side. rows=2, cols=1 → stacked. rows=2, cols=2 → a 2×2 grid.</td></tr>
+          <tr><td>figsize=(w, h)</td><td>Width and height of the WHOLE figure in inches — bigger numbers = bigger image.</td></tr>
+        </table>
       </div>
     </div>
 
@@ -663,12 +895,26 @@ plt.show()
         </div>
       </div>
       <div class="steps-list">
-        <ol>
-          <li><code>plt.subplots(2, 2)</code> returns a 2×2 array of Axes objects — four empty plot slots at once.</li>
-          <li><code>axes.flat</code> flattens that 2D grid into a simple list, so a normal <code>for</code> loop can walk through it.</li>
-          <li><code>zip(axes.flat, stocks, data)</code> pairs each Axes slot with a stock name and its price list — one line fills the whole dashboard.</li>
-          <li>A quarterly review deck showing all 4 quarters (or here, 4 stocks) in one 2×2 image is a genuinely common real-world layout.</li>
-        </ol>
+        <h5>🤔 Why use a loop with zip() here?</h5>
+        <div class="why-box">Writing <code>axes[0,0].plot(aapl)</code>, then <code>axes[0,1].plot(msft)</code>, and so on by hand for every stock works, but it's repetitive and easy to mistype. A loop does the same job for any number of stocks with one block of code.</div>
+
+        <h5>🔍 Line by line (nested function calls explained in order)</h5>
+        <div class="line-row"><code>data = [aapl, msft, goog, amzn]</code><div class="expl">A list-of-lists: <code>data[0]</code> is the whole AAPL price list, <code>data[1]</code> is MSFT, and so on.</div></div>
+        <div class="line-row"><code>fig, axes = plt.subplots(2, 2, figsize=(10, 7))</code><div class="expl">Builds a 2×2 grid — 4 Axes total, arranged as <code>axes[0][0]</code>, <code>axes[0][1]</code>, <code>axes[1][0]</code>, <code>axes[1][1]</code>.</div></div>
+        <div class="line-row"><code>for ax, name, d in zip(axes.flat, stocks, data):</code><div class="expl"><b>This line runs 3 nested steps every loop:</b><br>① <code>axes.flat</code> turns the 2×2 grid into one flat, walkable line of 4 Axes.<br>② <code>zip(axes.flat, stocks, data)</code> walks through THREE lists at the same time, pairing up item 1 with item 1 with item 1, then item 2 with item 2 with item 2, and so on.<br>③ Each round of the loop unpacks one of those triplets into <code>ax</code>, <code>name</code>, <code>d</code>.</div></div>
+        <div class="line-row"><code>ax.plot(d, marker="o")</code> / <code>ax.set_title(name)</code><div class="expl">Runs once per loop round, drawing that round's stock data (<code>d</code>) onto that round's panel (<code>ax</code>), titled with that round's name.</div></div>
+        <div class="line-row"><code>print("Grid shape:", axes.shape)</code><div class="expl"><code>.shape</code> reports the grid's dimensions as (rows, columns) → (2, 2).</div></div>
+
+        <h5>🧪 Dry run — what the loop actually does, round by round</h5>
+        <table class="dry-table">
+          <tr><td>Round 1</td><td>ax = axes[0][0], name = "AAPL", d = aapl list → top-left panel gets AAPL's line.</td></tr>
+          <tr><td>Round 2</td><td>ax = axes[0][1], name = "MSFT", d = msft list → top-right panel gets MSFT's line.</td></tr>
+          <tr><td>Round 3</td><td>ax = axes[1][0], name = "GOOG", d = goog list → bottom-left panel gets GOOG's line.</td></tr>
+          <tr><td>Round 4</td><td>ax = axes[1][1], name = "AMZN", d = amzn list → bottom-right panel gets AMZN's line.</td></tr>
+        </table>
+
+        <h5>⚖️ axes[0] vs axes.flat vs axes[row][col]</h5>
+        <div class="compare-box">For a 1-row grid, <code>axes</code> is a simple list, so <code>axes[0]</code> works directly. For a 2×2 grid, <code>axes</code> is a 2D grid, so you'd normally need <code>axes[row][col]</code>. <code>axes.flat</code> is a shortcut that flattens ANY grid shape into one simple line, so the same loop code works no matter how many rows/columns you chose.</div>
       </div>
       <div class="genz">
         <span class="tag">VIBE CHECK</span>
@@ -718,12 +964,28 @@ plt.show()
         </div>
       </div>
       <div class="steps-list">
-        <ol>
-          <li>Same x/y shape, offset slightly downward each time so all three lines are visible.</li>
-          <li>Line 1 uses a plain English name — fastest to type, ~140 names available.</li>
-          <li>Line 2 uses a hex code — pixel-perfect, the same format used in CSS/design tools.</li>
-          <li>Line 3 uses an RGB tuple with values between 0 and 1 — useful when colors come from code, not memory.</li>
-        </ol>
+        <h5>🤔 Why does matplotlib allow so many colour formats?</h5>
+        <div class="why-box">Different situations need different formats. Quick script? Use a plain name. Matching your college's exact brand colour? Use a hex code. Generating colours from code/data? Use numbers (RGB). All three always mean exactly the same "colour" to matplotlib.</div>
+
+        <h5>🔍 Line by line (with a nested list comprehension)</h5>
+        <div class="line-row"><code>plt.plot(x, y, color="green", label="named color")</code><div class="expl">Draws the original y values in green. <code>label=</code> doesn't show anything by itself — it just tags this line so <code>plt.legend()</code> can name it later.</div></div>
+        <div class="line-row"><code>plt.plot(x, [v-1 for v in y], color="#4F9A94", label="hex code")</code><div class="expl"><b>Nested step:</b> <code>[v-1 for v in y]</code> is a <b>list comprehension</b> — it silently builds a brand-new list by taking every value <code>v</code> in <code>y</code> and subtracting 1, BEFORE <code>plt.plot()</code> ever runs. So if y = [3,7,4,9,6], this produces [2,6,3,8,5] — shifted down by 1, just so the line is visibly separate from Line 1.</div></div>
+        <div class="line-row"><code>color=(0.9, 0.4, 0.6)</code><div class="expl">An RGB tuple: three numbers between 0 and 1 for Red, Green, Blue amounts. (0.9, 0.4, 0.6) means "mostly red, a little green, medium blue" — a pink shade.</div></div>
+        <div class="line-row"><code>plt.legend()</code><div class="expl">Reads every <code>label=</code> used so far and draws a small key box showing which colour means which line.</div></div>
+
+        <h5>🧪 Dry run of the list comprehension</h5>
+        <table class="dry-table">
+          <tr><td>y</td><td>[3, 7, 4, 9, 6]</td></tr>
+          <tr><td>[v-1 for v in y]</td><td>take 3→2, 7→6, 4→3, 9→8, 6→5 → result: [2, 6, 3, 8, 5]</td></tr>
+          <tr><td>[v-2 for v in y]</td><td>take 3→1, 7→5, 4→2, 9→7, 6→4 → result: [1, 5, 2, 7, 4]</td></tr>
+        </table>
+
+        <h5>⚙️ Three ways to say "colour" — compared</h5>
+        <table class="param-table">
+          <tr><td>Named — "green"</td><td>Easiest to read and type. Around 140 names exist (e.g. "crimson", "navy").</td></tr>
+          <tr><td>Hex — "#4F9A94"</td><td>Exact colour, same codes used in web design/Canva/Photoshop. Best for matching a brand colour precisely.</td></tr>
+          <tr><td>RGB tuple — (0.9, 0.4, 0.6)</td><td>Plain numbers from 0–1. Best when colours are calculated by your code, not chosen by hand.</td></tr>
+        </table>
       </div>
       <div class="genz">
         <span class="tag">VIBE CHECK</span>
@@ -767,12 +1029,26 @@ plt.show()
         </div>
       </div>
       <div class="steps-list">
-        <ol>
-          <li>Three groups of (population, temperature) points, one per continent.</li>
-          <li><code>marker="o"/"^"/"s"</code> gives each group a distinct shape — circle, triangle, square.</li>
-          <li>Even printed in black-and-white, the shapes stay distinguishable — color alone wouldn't survive a grayscale printer.</li>
-          <li>Markers add a <b>third dimension of meaning</b> (category) on top of the X/Y position.</li>
-        </ol>
+        <h5>🤔 Why use different marker shapes, not just different colours?</h5>
+        <div class="why-box">Colour can fail — printed in black and white, or if someone is colour-blind, two colours can look identical. A different SHAPE (circle vs triangle vs square) is still visible even without colour, so it's a safer way to separate groups.</div>
+
+        <h5>🔍 Line by line</h5>
+        <div class="line-row"><code>asia_pop, asia_temp = [30,45,60], [28,27,26]</code><div class="expl"><b>Multiple assignment:</b> creates two lists in one line. <code>asia_pop</code> gets the first list, <code>asia_temp</code> gets the second — matched by position, like <code>fig, ax = ...</code> earlier.</div></div>
+        <div class="line-row"><code>plt.scatter(asia_pop, asia_temp, marker="o", label="Asia")</code><div class="expl"><b>Input:</b> x-values (population) and y-values (temperature), same length. <b>Output:</b> one dot per pair, no connecting line (that's what makes it a <i>scatter</i> and not a <i>line</i> plot).</div></div>
+        <div class="line-row"><code>plt.scatter(europe_pop, ..., marker="^")</code> / <code>marker="s"</code><div class="expl">Repeats the same call for Europe (triangle marker) and Africa (square marker) — three separate calls layer three separate dot-groups onto the same chart.</div></div>
+        <div class="line-row"><code>plt.legend()</code><div class="expl">Builds the key box showing which shape means which continent, using the <code>label=</code> text from each call.</div></div>
+
+        <h5>⚙️ Marker shape reference</h5>
+        <table class="param-table">
+          <tr><td>"o"</td><td>Circle — the default, most common shape</td></tr>
+          <tr><td>"^"</td><td>Triangle pointing up</td></tr>
+          <tr><td>"s"</td><td>Square</td></tr>
+          <tr><td>"*"</td><td>Star</td></tr>
+          <tr><td>"x"</td><td>Cross / X mark</td></tr>
+        </table>
+
+        <h5>⚖️ plt.plot() vs plt.scatter()</h5>
+        <div class="compare-box"><code>plt.plot()</code> joins points with a line by default (great for trends over time). <code>plt.scatter()</code> never joins points — each pair of (x,y) stays a separate dot (great for comparing two unrelated numeric values, like population vs temperature, where there's no "order" connecting them).</div>
       </div>
     </div>
 
@@ -811,11 +1087,26 @@ plt.show()
         </div>
       </div>
       <div class="steps-list">
-        <ol>
-          <li><code>"bo-"</code> packs three things into four characters: <b>b</b>lue color, <b>o</b> circle marker, <b>-</b> solid line.</li>
-          <li><code>"^--"</code> means triangle markers on a dashed line — the near-universal symbol for "not confirmed yet."</li>
-          <li>Both series share one chart and one legend, so the eye can compare "what happened" vs "what we predict."</li>
-        </ol>
+        <h5>🤔 Why use the shorthand string instead of color=, marker=, linestyle= separately?</h5>
+        <div class="why-box">Both work exactly the same way. The shorthand <code>"bo-"</code> is just a fast typing trick for when you don't need to explain each choice — it packs colour + marker + line style into one tiny string.</div>
+
+        <h5>🔍 Line by line</h5>
+        <div class="line-row"><code>plt.plot(months, actual, "bo-", label="Actual")</code><div class="expl">The 3rd argument "bo-" is decoded letter by letter: <b>b</b> = blue colour, <b>o</b> = circle marker, <b>-</b> = solid line. matplotlib understands this shorthand automatically.</div></div>
+        <div class="line-row"><code>plt.plot(forecast_months, forecast, "^--", color="orange", label="Forecast")</code><div class="expl"><b>^</b> = triangle marker, <b>--</b> = dashed line style. Notice <code>color="orange"</code> is ALSO given separately — when both are given, the separate <code>color=</code> argument wins over the shorthand.</div></div>
+        <div class="line-row"><code>forecast_months = [6,7,8,9]</code><div class="expl">Notice month 6 appears in BOTH the actual list and the forecast list — this makes the dashed forecast line visually connect to where the solid actual line ends, instead of leaving a gap.</div></div>
+
+        <h5>⚙️ Reading a shorthand string</h5>
+        <table class="param-table">
+          <tr><td>Colour letter</td><td>b=blue, g=green, r=red, c=cyan, m=magenta, y=yellow, k=black</td></tr>
+          <tr><td>Marker symbol</td><td>o=circle, s=square, ^=triangle, *=star, x=cross</td></tr>
+          <tr><td>Line style</td><td>"-" solid, "--" dashed, ":" dotted, "-." dash-dot</td></tr>
+        </table>
+
+        <h5>🧪 Dry run</h5>
+        <table class="dry-table">
+          <tr><td>"bo-"</td><td>= blue colour + circle marker + solid line, all in 4 characters</td></tr>
+          <tr><td>"^--"</td><td>= triangle marker + dashed line (colour comes from color="orange" instead)</td></tr>
+        </table>
       </div>
       <div class="genz">
         <span class="tag">VIBE CHECK</span>
@@ -863,12 +1154,23 @@ plt.show()
         </div>
       </div>
       <div class="steps-list">
-        <ol>
-          <li>Data is stored as plain index numbers 0–3 — computers love these.</li>
-          <li><code>plt.xticks(positions, labels)</code> keeps the same positions but swaps the printed text.</li>
-          <li>Without this step, a reader sees "2" on the axis and has to guess it means March.</li>
-          <li>Same trick works vertically with <code>plt.yticks()</code>.</li>
-        </ol>
+        <h5>🤔 Why rename ticks instead of just using month names from the start?</h5>
+        <div class="why-box">You COULD use month names as the x-list directly. But numbers are easier for the computer to space out evenly. The common pattern is: plot with numbers, then relabel the ruler with words for the human reader.</div>
+
+        <h5>🔍 Line by line</h5>
+        <div class="line-row"><code>months = [0, 1, 2, 3]</code><div class="expl">Four plain position numbers — think of them as "slot 0, slot 1, slot 2, slot 3" on the ruler.</div></div>
+        <div class="line-row"><code>plt.plot(months, sales, marker="o")</code><div class="expl">Draws the line using those plain numbers as x-positions — right now the x-axis would show 0,1,2,3.</div></div>
+        <div class="line-row"><code>plt.xticks(months, ["Jan","Feb","Mar","Apr"])</code><div class="expl"><b>Two inputs, matched by position:</b> the first list says WHERE each tick mark sits (0,1,2,3), the second list says WHAT TEXT to print there. Position 0 shows "Jan", position 1 shows "Feb", and so on. The data itself never changes — only the printed labels do.</div></div>
+
+        <h5>🧪 Dry run</h5>
+        <table class="dry-table">
+          <tr><td>Before xticks()</td><td>x-axis prints: 0, 1, 2, 3</td></tr>
+          <tr><td>xticks([0,1,2,3], ["Jan","Feb","Mar","Apr"])</td><td>pairs position 0↔"Jan", 1↔"Feb", 2↔"Mar", 3↔"Apr"</td></tr>
+          <tr><td>After xticks()</td><td>x-axis prints: Jan, Feb, Mar, Apr (same dots, new labels)</td></tr>
+        </table>
+
+        <h5>⚖️ xticks() vs yticks()</h5>
+        <div class="compare-box"><code>plt.xticks()</code> relabels the horizontal ruler. <code>plt.yticks()</code> does the exact same job for the vertical ruler — same two-list pattern (positions, then labels).</div>
       </div>
     </div>
 
@@ -917,12 +1219,29 @@ plt.show()
         </div>
       </div>
       <div class="steps-list">
-        <ol>
-          <li>Store multiple series in a dictionary — key is the region name, value is its sales list.</li>
-          <li>Loop over <code>regions.items()</code>, plotting one line per region and giving each a <code>label=</code>.</li>
-          <li><code>plt.legend()</code> auto-collects every labeled line into one key box — no manual list needed.</li>
-          <li><code>fontsize</code> bumps text up so it's readable "from the back row" of a presentation.</li>
-        </ol>
+        <h5>🤔 Why store the data in a dictionary instead of three separate lists?</h5>
+        <div class="why-box">A dictionary keeps the region NAME attached to its own sales list, as one pair. That way, one simple loop can plot any number of regions — you never have to write a new line of plotting code just because you added a 4th region.</div>
+
+        <h5>🔍 Line by line</h5>
+        <div class="line-row"><code>regions = {"North": [...], "South": [...], "East": [...]}</code><div class="expl">A dictionary — each region name is a <b>key</b>, and its sales list is the matching <b>value</b>.</div></div>
+        <div class="line-row"><code>for region, sales in regions.items():</code><div class="expl"><b>Nested call:</b> <code>.items()</code> turns the dictionary into pairs like ("North", [100,120,115,130]). The <code>for</code> loop unpacks each pair into <code>region</code> (the name) and <code>sales</code> (the list), one pair per round.</div></div>
+        <div class="line-row"><code>plt.plot(months, sales, marker="o", label=region)</code><div class="expl">Runs once per loop round. <code>label=region</code> means the legend text is whatever region name that round is on — "North" the first round, "South" the second, etc.</div></div>
+        <div class="line-row"><code>plt.legend(title="Region", loc="upper left")</code><div class="expl">Collects all 3 labels used above into a small titled box, positioned at the upper-left corner of the chart.</div></div>
+        <div class="line-row"><code>print("Plotted", len(regions), "regions...")</code><div class="expl"><code>len(regions)</code> on a dictionary counts its keys → 3.</div></div>
+
+        <h5>🧪 Dry run of the loop</h5>
+        <table class="dry-table">
+          <tr><td>Round 1</td><td>region="North", sales=[100,120,115,130] → plots North's line, label "North"</td></tr>
+          <tr><td>Round 2</td><td>region="South", sales=[90,95,105,110] → plots South's line, label "South"</td></tr>
+          <tr><td>Round 3</td><td>region="East", sales=[80,85,88,95] → plots East's line, label "East"</td></tr>
+        </table>
+
+        <h5>⚙️ loc= options for legend()</h5>
+        <table class="param-table">
+          <tr><td>"upper left" / "upper right"</td><td>Pins the legend box to the top corners</td></tr>
+          <tr><td>"lower left" / "lower right"</td><td>Pins it to the bottom corners</td></tr>
+          <tr><td>"best" (default)</td><td>matplotlib guesses the spot with the least overlap</td></tr>
+        </table>
       </div>
       <div class="genz">
         <span class="tag">VIBE CHECK</span>
@@ -964,12 +1283,24 @@ plt.show()
         </div>
       </div>
       <div class="steps-list">
-        <ol>
-          <li>A dictionary comprehension builds 5 product series in one line — <code>y = x scaled by i</code>.</li>
-          <li><code>loc='best'</code> would normally auto-place the legend — great until you have too many series and it starts covering data.</li>
-          <li><code>bbox_to_anchor=(1.05, 1)</code> anchors the legend just outside the top-right corner of the Axes.</li>
-          <li><code>ncol=</code> can also arrange entries into multiple columns to save vertical space.</li>
-        </ol>
+        <h5>🤔 Why push the legend outside the chart?</h5>
+        <div class="why-box">With 5+ lines, an inside legend box often sits right on top of the data it's trying to explain. Moving it just outside the plot keeps every line fully visible.</div>
+
+        <h5>🔍 Line by line (nested dictionary comprehension)</h5>
+        <div class="line-row"><code>series = {f"Product {i}": [v*i for v in x] for i in range(1,6)}</code><div class="expl">This one line has TWO nested loops working together:<br>① The OUTER part <code>for i in range(1,6)</code> runs i = 1,2,3,4,5 — one round per product.<br>② For EACH i, the INNER part <code>[v*i for v in x]</code> builds a whole new list by multiplying every value in <code>x</code> by that round's <code>i</code>.<br>③ Each of those inner lists gets stored under the key <code>f"Product {i}"</code> (an f-string building "Product 1", "Product 2", etc.).</div></div>
+        <div class="line-row"><code>for name, y in series.items():</code><div class="expl">Same pattern as Program 10 — walks through the 5 (name, list) pairs one at a time.</div></div>
+        <div class="line-row"><code>plt.legend(bbox_to_anchor=(1.05,1), loc="upper left", ncol=1)</code><div class="expl"><code>bbox_to_anchor=(1.05, 1)</code> gives an exact (x, y) anchor point just past the right edge of the plot (1.0 = right edge, so 1.05 is slightly outside it). <code>loc="upper left"</code> says which CORNER of the legend box touches that anchor point.</div></div>
+
+        <h5>🧪 Dry run of the nested comprehension</h5>
+        <table class="dry-table">
+          <tr><td>i = 1</td><td>x scaled by 1 → [1,2,3,4,5] stored as series["Product 1"]</td></tr>
+          <tr><td>i = 2</td><td>x scaled by 2 → [2,4,6,8,10] stored as series["Product 2"]</td></tr>
+          <tr><td>i = 3</td><td>x scaled by 3 → [3,6,9,12,15] stored as series["Product 3"]</td></tr>
+          <tr><td>... i = 5</td><td>x scaled by 5 → [5,10,15,20,25] stored as series["Product 5"]</td></tr>
+        </table>
+
+        <h5>⚖️ loc="best" vs bbox_to_anchor</h5>
+        <div class="compare-box"><b>loc="best"</b> lets matplotlib guess the least-crowded spot INSIDE the chart — fine for 1-3 lines. <b>bbox_to_anchor</b> gives an exact coordinate, usually just OUTSIDE the chart, guaranteeing the legend never covers any data — better once you have many lines.</div>
       </div>
     </div>
   </section>
@@ -1014,12 +1345,20 @@ plt.show()
         </div>
       </div>
       <div class="steps-list">
-        <ol>
-          <li>Prices rise steadily for 45 days, then drop sharply for 15 — a simple crash shape.</li>
-          <li><code>xy=</code> is the exact point being pointed at; <code>xytext=</code> is where the label text actually sits.</li>
-          <li><code>arrowprops</code> controls the arrow's color, width and shape.</li>
-          <li>News sites do exactly this to mark the day a stock crashed or a company IPO'd.</li>
-        </ol>
+        <h5>🤔 Why use annotate() instead of just a title?</h5>
+        <div class="why-box">A title describes the WHOLE chart. An annotation points at ONE exact spot and explains just that moment — much more precise when you want to flag a single important event.</div>
+
+        <h5>🔍 Line by line (nested list building)</h5>
+        <div class="line-row"><code>price = [200 + i for i in range(45)] + [210 - (i*3) for i in range(15)]</code><div class="expl">Two list comprehensions glued together with <code>+</code>:<br>① <code>[200 + i for i in range(45)]</code> builds 45 rising numbers: 200, 201, 202 ... up to 244.<br>② <code>[210 - (i*3) for i in range(15)]</code> builds 15 falling numbers: 210, 207, 204 ... down to 168.<br>③ <code>+</code> between two lists simply joins them end-to-end into one 60-item list.</div></div>
+        <div class="line-row"><code>plt.annotate("Market Crash", xy=(45, price[45]), xytext=(30, 280), arrowprops=dict(...))</code><div class="expl"><b>xy=</b> the exact data point the arrow touches (day 45, whatever price is there). <b>xytext=</b> where the TEXT label itself is placed (can be anywhere — matplotlib draws the arrow connecting the two). <b>arrowprops=</b> a dictionary of arrow styling — colour, shrink amount, etc.</div></div>
+        <div class="line-row"><code>arrowprops=dict(facecolor="red", shrink=0.05)</code><div class="expl"><code>dict(...)</code> is just another way to write a dictionary. <code>facecolor</code> = arrow colour. <code>shrink=0.05</code> pulls the arrow back slightly from both ends so it doesn't touch the text or the dot exactly.</div></div>
+
+        <h5>🧪 Dry run</h5>
+        <table class="dry-table">
+          <tr><td>range(45)</td><td>gives 0..44, so price rises for 45 days from 200 to 244</td></tr>
+          <tr><td>price[45]</td><td>the 46th value in the list = start of the falling part = 210</td></tr>
+          <tr><td>xy=(45, 210)</td><td>the arrow's pointed end lands exactly on day 45's price of 210</td></tr>
+        </table>
       </div>
       <div class="genz">
         <span class="tag">VIBE CHECK</span>
@@ -1065,12 +1404,22 @@ plt.show()
         </div>
       </div>
       <div class="steps-list">
-        <ol>
-          <li><code>matplotlib.patches</code> ships ready-made shapes: Circle, Rectangle, Polygon.</li>
-          <li>Build the shape with its position and size, then attach it with <code>ax.add_patch()</code>.</li>
-          <li><code>alpha=0.2</code> keeps it translucent so the real data points stay visible underneath.</li>
-          <li>A quality-control engineer uses this exact trick to flag a "high defect" region on a scatter plot without deleting any data.</li>
-        </ol>
+        <h5>🤔 Why use a patch instead of just describing the zone in the title?</h5>
+        <div class="why-box">A shaded box lets the reader instantly SEE which points fall inside a danger/interest zone, without reading any numbers. It highlights an area, not just one point (that's what annotate() is for).</div>
+
+        <h5>🔍 Line by line</h5>
+        <div class="line-row"><code>import matplotlib.patches as pt</code><div class="expl">A separate mini-library just for ready-made shapes (rectangles, circles, polygons), nicknamed <code>pt</code>.</div></div>
+        <div class="line-row"><code>fig, ax = plt.subplots()</code><div class="expl">OO style is used here because <code>ax.add_patch()</code> needs a named Axes to attach the shape to.</div></div>
+        <div class="line-row"><code>ax.scatter(x, y, color="mediumpurple")</code><div class="expl">Plots the 7 raw data points first, as purple dots.</div></div>
+        <div class="line-row"><code>box = pt.Rectangle((2, 20), 3, 15, edgecolor="red", facecolor="red", alpha=0.2)</code><div class="expl"><b>Input breakdown:</b> <code>(2, 20)</code> is the bottom-left CORNER of the rectangle. <code>3</code> is its width (so it spans x = 2 to 5). <code>15</code> is its height (so it spans y = 20 to 35). <code>edgecolor</code> = border colour, <code>facecolor</code> = fill colour, <code>alpha=0.2</code> = 20% opacity (mostly see-through).</div></div>
+        <div class="line-row"><code>ax.add_patch(box)</code><div class="expl">The Rectangle object was only "built" in memory by the line above — this line actually attaches it onto the chart so it gets drawn.</div></div>
+
+        <h5>⚙️ alpha values, explained</h5>
+        <table class="param-table">
+          <tr><td>alpha = 1.0</td><td>fully solid, blocks anything underneath</td></tr>
+          <tr><td>alpha = 0.2</td><td>mostly see-through — good for highlighting a zone without hiding data points underneath</td></tr>
+          <tr><td>alpha = 0.0</td><td>fully invisible</td></tr>
+        </table>
       </div>
     </div>
 
@@ -1111,12 +1460,22 @@ plt.savefig(<span class="str">"chart.png"</span>, dpi=300, bbox_inches=<span cla
         </div>
       </div>
       <div class="steps-list">
-        <ol>
-          <li>Supported export formats: .png, .jpg, .pdf, .svg — pick whatever your report needs.</li>
-          <li><code>dpi</code> (dots per inch) controls sharpness — use 300 for anything getting printed.</li>
-          <li><code>bbox_inches="tight"</code> trims empty white space hugging the chart.</li>
-          <li>A research paper or project report always needs a crisp, high-resolution export — not a blurry screenshot.</li>
-        </ol>
+        <h5>🤔 Why savefig() instead of a screenshot?</h5>
+        <div class="why-box">A screenshot copies your SCREEN's resolution, which is often blurry once printed or zoomed. <code>savefig()</code> re-draws the chart directly into a file at whatever sharpness (dpi) you ask for — always crisp.</div>
+
+        <h5>🔍 Line by line</h5>
+        <div class="line-row"><code>plt.plot(x, y)</code> / <code>plt.title(...)</code><div class="expl">Builds the chart exactly like earlier programs — nothing new here.</div></div>
+        <div class="line-row"><code>plt.savefig("chart.png", dpi=300, bbox_inches="tight")</code><div class="expl"><b>"chart.png"</b> = output filename (the extension .png tells matplotlib the format to use). <b>dpi=300</b> = "dots per inch" — how many tiny pixels are packed into each printed inch; higher dpi = sharper. <b>bbox_inches="tight"</b> = trims extra blank margin around the chart edges before saving.</div></div>
+
+        <h5>⚙️ Common savefig() formats</h5>
+        <table class="param-table">
+          <tr><td>.png</td><td>Best for slides/docs — supports transparent background</td></tr>
+          <tr><td>.jpg</td><td>Smaller file size, no transparency, slight quality loss</td></tr>
+          <tr><td>.pdf / .svg</td><td>"Vector" formats — stay perfectly sharp at ANY zoom level, best for printed reports</td></tr>
+        </table>
+
+        <h5>⚖️ dpi=72 vs dpi=300</h5>
+        <div class="compare-box">72 dpi is screen resolution — fine on a laptop screen, but pixelated the moment it's printed or zoomed in. 300 dpi packs over 4x more detail per inch — the standard for anything that will be printed (reports, posters).</div>
       </div>
     </div>
 
@@ -1166,11 +1525,23 @@ plt.show()
         </div>
       </div>
       <div class="steps-list">
-        <ol>
-          <li><code>rcParams</code> stores matplotlib's global default settings — figure size, font size, grid visibility and more.</li>
-          <li><code>.update({...})</code> changes several settings at once with a plain dictionary.</li>
-          <li>Every chart drawn <b>after</b> this point automatically picks up these defaults — no repeated styling code per cell.</li>
-        </ol>
+        <h5>🤔 Why set rcParams instead of styling every chart one by one?</h5>
+        <div class="why-box">If you make 10 charts in one notebook, repeating the same styling code 10 times is wasteful and error-prone. Setting rcParams ONCE at the top makes every chart after it automatically match, with zero repeated code.</div>
+
+        <h5>🔍 Line by line</h5>
+        <div class="line-row"><code>plt.rcParams.update({...})</code><div class="expl"><b>Input:</b> a dictionary where each key is a setting NAME (as text) and each value is the new default. <b>What it does:</b> overwrites matplotlib's built-in defaults for the REST of the program. <b>Output:</b> nothing printed — it just changes future behaviour.</div></div>
+        <div class="line-row"><code>"figure.figsize": (10, 6)</code><div class="expl">Every new Figure from now on defaults to 10×6 inches, unless overridden.</div></div>
+        <div class="line-row"><code>"font.size": 12</code><div class="expl">Sets the default text size (titles, labels, ticks) for every chart.</div></div>
+        <div class="line-row"><code>"axes.facecolor": "#F6F5FB"</code><div class="expl">Sets a light lavender background colour INSIDE the plotting area (not the whole page, just the chart's own box).</div></div>
+        <div class="line-row"><code>"axes.grid": True</code> / <code>"grid.alpha": 0.3</code><div class="expl">Turns on background gridlines and makes them 30% opacity — visible but not distracting.</div></div>
+        <div class="line-row"><code>plt.plot(x, y)</code> (after rcParams)<div class="expl">Notice this chart never mentions figsize, font size, or background colour — yet it will automatically use all of them, because they're now the default.</div></div>
+
+        <h5>⚙️ A few more common rcParams keys</h5>
+        <table class="param-table">
+          <tr><td>"lines.linewidth"</td><td>Default thickness of every plotted line</td></tr>
+          <tr><td>"axes.titlesize"</td><td>Default size of chart titles specifically</td></tr>
+          <tr><td>"savefig.dpi"</td><td>Default dpi used whenever savefig() is called without dpi=</td></tr>
+        </table>
       </div>
       <div class="genz">
         <span class="tag">VIBE CHECK</span>
@@ -1217,12 +1588,25 @@ df.plot(x=<span class="str">"Month"</span>, y=<span class="str">"Revenue"</span>
         </div>
       </div>
       <div class="steps-list">
-        <ol>
-          <li>A DataFrame is built directly from a Python dictionary — one column per key.</li>
-          <li><code>kind="line"</code> is actually the default when you call <code>.plot()</code> on numeric columns.</li>
-          <li>pandas reads the DataFrame's index (or the given <code>x=</code> column) automatically as the X-axis.</li>
-          <li>Best suited for time-ordered data — days, months, years — where trend matters.</li>
-        </ol>
+        <h5>🤔 Why df.plot() instead of matplotlib directly?</h5>
+        <div class="why-box">With matplotlib you'd write <code>plt.plot(df["Month"], df["Revenue"])</code> yourself. pandas' <code>.plot()</code> already knows your data is inside a DataFrame, so you just name the columns — one line, no manual unpacking.</div>
+
+        <h5>🔍 Line by line</h5>
+        <div class="line-row"><code>df = pd.DataFrame({"Month": [...], "Revenue": [...]})</code><div class="expl"><b>Input:</b> a dictionary where each key becomes a COLUMN name, and each value (a list) becomes that column's data, row by row. <b>Output:</b> a table-shaped object called a DataFrame, with 5 rows and 2 columns here.</div></div>
+        <div class="line-row"><code>df.plot(x="Month", y="Revenue", kind="line", title="Monthly Revenue", marker="o")</code><div class="expl"><code>x=</code> and <code>y=</code> just name WHICH columns to use as the axes — pandas pulls the actual numbers out for you. <code>kind="line"</code> chooses the chart type (line is also the default if you skip this).</div></div>
+        <div class="line-row"><code>print(df)</code><div class="expl">Displays the whole table — notice the leftmost unlabeled column (0,1,2,3,4) is the automatic row index pandas adds to every DataFrame.</div></div>
+
+        <h5>🧪 Dry run — what the table looks like</h5>
+        <table class="dry-table">
+          <tr><td>Row 0</td><td>Jan → 45000</td></tr>
+          <tr><td>Row 1</td><td>Feb → 52000</td></tr>
+          <tr><td>Row 2</td><td>Mar → 48000</td></tr>
+          <tr><td>Row 3</td><td>Apr → 61000</td></tr>
+          <tr><td>Row 4</td><td>May → 58000</td></tr>
+        </table>
+
+        <h5>⚖️ plt.plot() vs df.plot()</h5>
+        <div class="compare-box"><b>plt.plot(x, y)</b> needs two separate plain lists you build yourself. <b>df.plot(x=col, y=col)</b> works directly on table columns and understands pandas features like automatic date formatting — less setup work for the same line chart.</div>
       </div>
     </div>
 
@@ -1258,12 +1642,25 @@ s.plot(kind=<span class="str">"bar"</span>, title=<span class="str">"Avg Marks b
         </div>
       </div>
       <div class="steps-list">
-        <ol>
-          <li>A plain Python dictionary becomes a pandas <code>Series</code> — keys become the index, values become the data.</li>
-          <li><code>kind="bar"</code> draws vertical bars; the X-axis is categorical (branch names), not continuous.</li>
-          <li>Bar height instantly ranks the categories — no reading of numbers required.</li>
-          <li><code>idxmax()</code> returns the label of the largest value; <code>max()</code> returns the value itself.</li>
-        </ol>
+        <h5>🤔 Why a Series instead of a DataFrame here?</h5>
+        <div class="why-box">A DataFrame is a full table (many columns). A <b>Series</b> is just ONE column with labels — perfect when you only have one number per category, like "average marks per branch."</div>
+
+        <h5>🔍 Line by line</h5>
+        <div class="line-row"><code>avg_marks = {"Chemical": 68, "Mechanical": 72, ...}</code><div class="expl">A plain Python dictionary — branch name is the key, average mark is the value.</div></div>
+        <div class="line-row"><code>s = pd.Series(avg_marks)</code><div class="expl">Converts that dictionary into a pandas Series. The dictionary's keys become the Series' <b>index</b> (labels), and the values become the Series' data.</div></div>
+        <div class="line-row"><code>s.plot(kind="bar", title="Avg Marks by Branch", color="mediumpurple")</code><div class="expl">Each index label (branch name) becomes one bar's position on the x-axis; each value becomes that bar's height.</div></div>
+        <div class="line-row"><code>s.idxmax()</code><div class="expl">Scans the Series and returns the INDEX LABEL (branch name) of the largest value — here, "EC".</div></div>
+        <div class="line-row"><code>s.max()</code><div class="expl">Scans the same Series and returns just the largest NUMBER itself — here, 75.</div></div>
+
+        <h5>🧪 Dry run</h5>
+        <table class="dry-table">
+          <tr><td>s.max()</td><td>compares 68, 72, 75, 70, 66 → largest is 75</td></tr>
+          <tr><td>s.idxmax()</td><td>finds WHICH branch has that 75 → "EC"</td></tr>
+          <tr><td>Final print</td><td>"Top branch: EC with 75 marks"</td></tr>
+        </table>
+
+        <h5>⚖️ idxmax() vs max()</h5>
+        <div class="compare-box"><b>max()</b> answers "what is the biggest number?" (75). <b>idxmax()</b> answers "WHO has that biggest number?" ("EC"). You often need both together — the value AND the label that earned it.</div>
       </div>
       <div class="genz">
         <span class="tag">VIBE CHECK</span>
@@ -1319,12 +1716,22 @@ marks.plot(kind=<span class="str">"hist"</span>, bins=10,
         </div>
       </div>
       <div class="steps-list">
-        <ol>
-          <li><code>np.random.normal(65, 12, 60)</code> simulates 60 exam marks centered around 65 with some spread.</li>
-          <li><code>.clip(0,100)</code> keeps marks inside a realistic 0–100 range; <code>.round()</code> makes them whole numbers.</li>
-          <li><code>kind="hist"</code> splits the marks into <code>bins</code> (buckets) and counts how many fall in each.</li>
-          <li>A tall bar in the middle with thin tails = a fair exam; a lopsided shape hints the paper was too easy or too hard.</li>
-        </ol>
+        <h5>🤔 Why a histogram, not a bar chart?</h5>
+        <div class="why-box">A bar chart compares named CATEGORIES (like branches). A histogram groups NUMBERS into ranges (like "60-65 marks") and counts how many fall in each range — it shows the SHAPE of one column of numbers, not a comparison between separate items.</div>
+
+        <h5>🔍 Line by line (nested method chain explained)</h5>
+        <div class="line-row"><code>np.random.seed(1)</code><div class="expl">"Locks" the random number generator so it produces the exact same "random" numbers every time you run this code — makes the example repeatable for a class demo.</div></div>
+        <div class="line-row"><code>np.random.normal(65, 12, 60).clip(0,100).round()</code><div class="expl"><b>This is a chain — read it left to right, each step feeding the next:</b><br>① <code>np.random.normal(65, 12, 60)</code> generates 60 random numbers centred around 65, with a spread ("std deviation") of 12 — some higher, some lower, most nearby.<br>② <code>.clip(0,100)</code> takes THAT result and forces any value below 0 up to 0, and above 100 down to 100 (marks can't be negative or over 100).<br>③ <code>.round()</code> takes THAT result and rounds every value to the nearest whole number (marks are usually whole numbers).</div></div>
+        <div class="line-row"><code>marks = pd.Series(...)</code><div class="expl">Wraps the final 60 numbers into a pandas Series so it has handy stats methods like <code>.mean()</code>.</div></div>
+        <div class="line-row"><code>marks.plot(kind="hist", bins=10, ...)</code><div class="expl"><code>bins=10</code> splits the 0-100 range into 10 equal buckets (0-10, 10-20, ... 90-100) and counts how many of the 60 marks fall into each bucket — that count becomes each bar's height.</div></div>
+        <div class="line-row"><code>marks.mean()</code> / <code>marks.std()</code><div class="expl"><code>.mean()</code> = the average of all 60 marks. <code>.std()</code> = how spread out they are from that average (a bigger number means more spread out).</div></div>
+
+        <h5>🧪 Dry run of the method chain</h5>
+        <table class="dry-table">
+          <tr><td>Step 1</td><td>np.random.normal(65,12,60) → 60 raw numbers, e.g. one might be 103.2 (unrealistic, too high)</td></tr>
+          <tr><td>Step 2</td><td>.clip(0,100) → that 103.2 becomes 100 (capped)</td></tr>
+          <tr><td>Step 3</td><td>.round() → 100 stays 100; a value like 64.7 becomes 65</td></tr>
+        </table>
       </div>
     </div>
 
@@ -1362,11 +1769,18 @@ plt.show()
         </div>
       </div>
       <div class="steps-list">
-        <ol>
-          <li><code>kind="kde"</code> (Kernel Density Estimate) draws a smoothed curve version of a histogram — no choppy "staircase" look.</li>
-          <li>Plotting two Series on the same axes overlays their curves for a direct shape comparison.</li>
-          <li>The curve's peak shows where values are most concentrated — easier to read than two sets of overlapping bars.</li>
-        </ol>
+        <h5>🤔 Why KDE instead of two overlapping histograms?</h5>
+        <div class="why-box">Two histograms drawn on top of each other turn into a messy wall of overlapping bars. A KDE curve smooths that same shape into one clean line per group — much easier to compare two groups at a glance.</div>
+
+        <h5>🔍 Line by line</h5>
+        <div class="line-row"><code>companyA = pd.Series(np.random.normal(45000, 8000, 200))</code><div class="expl">200 simulated salaries, centred around ₹45,000 with spread 8,000.</div></div>
+        <div class="line-row"><code>companyB = pd.Series(np.random.normal(52000, 6000, 200))</code><div class="expl">200 simulated salaries for a second company, centred HIGHER (52,000) but with LESS spread (6,000 — a tighter, taller curve).</div></div>
+        <div class="line-row"><code>companyA.plot(kind="kde", label="Company A")</code><div class="expl">Draws a smooth curve estimating "how likely is each salary value" for Company A — the curve is naturally tallest near 45,000.</div></div>
+        <div class="line-row"><code>companyB.plot(kind="kde", label="Company B")</code><div class="expl">Calling <code>.plot()</code> again on the SAME chart (no new figure was created) draws Company B's curve on top of Company A's — that's what lets you compare them directly.</div></div>
+        <div class="line-row"><code>companyA.median()</code> / <code>companyB.median()</code><div class="expl"><code>.median()</code> finds the middle value if all 200 numbers were sorted — a good "typical" summary that isn't thrown off much by a few extreme outliers.</div></div>
+
+        <h5>⚖️ Histogram vs KDE</h5>
+        <div class="compare-box"><b>Histogram</b> shows exact bucket counts as blocky bars — good for one dataset, exact counts. <b>KDE</b> smooths that same shape into a continuous curve — better when OVERLAYING two or more groups on the same chart, since curves don't visually collide the way bars do.</div>
       </div>
       <div class="genz">
         <span class="tag">VIBE CHECK</span>
@@ -1419,12 +1833,24 @@ correlation = df[<span class="str">"StudyHours"</span>].corr(df[<span class="str
         </div>
       </div>
       <div class="steps-list">
-        <ol>
-          <li><code>kind="scatter"</code> needs both an <code>x=</code> and a <code>y=</code> numeric column — every row becomes one dot.</li>
-          <li>An upward-drifting cloud of points visually confirms the relationship before writing a single formula.</li>
-          <li><code>.corr()</code> turns that visual hunch into one precise number between -1 and 1.</li>
-          <li>A tight diagonal cloud (like here) means strong correlation; a wide scattered cloud means weak or none.</li>
-        </ol>
+        <h5>🤔 Why scatter, and why also compute .corr()?</h5>
+        <div class="why-box">The scatter plot gives you a quick VISUAL hunch — "these seem related." <code>.corr()</code> backs that hunch up with one exact NUMBER, so you're not just guessing from a picture.</div>
+
+        <h5>🔍 Line by line</h5>
+        <div class="line-row"><code>df = pd.DataFrame({"StudyHours": [...], "ExamScore": [...]})</code><div class="expl">A table with 8 rows — each row is one student's (study hours, exam score) pair.</div></div>
+        <div class="line-row"><code>df.plot(kind="scatter", x="StudyHours", y="ExamScore", ...)</code><div class="expl">Each of the 8 rows becomes exactly one dot — no line connects them, since there's no natural "order" between different students.</div></div>
+        <div class="line-row"><code>correlation = df["StudyHours"].corr(df["ExamScore"])</code><div class="expl"><b>Input:</b> two numeric columns of the same length. <b>What it does:</b> calculates a single number describing how closely the two columns rise and fall together. <b>Output:</b> a number between -1 and +1.</div></div>
+
+        <h5>⚙️ Reading a correlation number</h5>
+        <table class="param-table">
+          <tr><td>+1.0</td><td>Perfect positive — as one goes up, the other ALWAYS goes up too</td></tr>
+          <tr><td>+0.997 (this example)</td><td>Extremely strong positive — study hours and marks rise together almost perfectly</td></tr>
+          <tr><td>0.0</td><td>No relationship at all — totally unrelated</td></tr>
+          <tr><td>-1.0</td><td>Perfect negative — as one goes up, the other ALWAYS goes down</td></tr>
+        </table>
+
+        <h5>⚖️ Scatter picture vs .corr() number</h5>
+        <div class="compare-box">A tight diagonal line of dots (like this example) always matches a correlation NEAR +1 or -1. A shapeless cloud of dots scattered everywhere always matches a correlation NEAR 0. The picture and the number always agree — the number just makes it exact.</div>
       </div>
       <div class="genz">
         <span class="tag">VIBE CHECK</span>
@@ -1509,7 +1935,7 @@ titanic.groupby(<span class="str">"Pclass"</span>)[<span class="str">"Survived"<
 
     <div class="card tinted-butter" style="max-width:920px; margin-top:24px; text-align:center;">
       <p style="font-weight:800; font-size:1.15rem; margin:0 0 10px 0;">Questions? Let's talk plots. 📊</p>
-      <p style="font-weight:600; color:var(--ink-soft); margin:0 0 16px 0;">Data Science using Python · BTIT15501 · Prof. Bhumika Desai Shah · SCET, Surat</p>
+      <p style="font-weight:600; color:var(--ink-soft); margin:0 0 16px 0;">Data Science using Python · BTIT15501 · Prof. (Dr.) Bhumika Desai Shah · SCET, Surat</p>
       <a class="prof-link" style="margin:0 auto;" href="https://bhumikaa7981.github.io/meet-bhumika/" target="_blank" rel="noopener">👩‍🏫 Meet Prof. Bhumika →</a>
     </div>
   </section>
@@ -1567,9 +1993,13 @@ titanic.groupby(<span class="str">"Pclass"</span>)[<span class="str">"Survived"<
   });
 
   function toggleSteps(btn){
-    const list = btn.closest('.program').querySelector('.steps-list');
+    const container = btn.closest('.program') || btn.closest('.card');
+    const list = container.querySelector('.steps-list');
     list.classList.toggle('open');
-    btn.textContent = list.classList.contains('open') ? 'Hide steps ▴' : 'Show steps ▾';
+    const isOpen = list.classList.contains('open');
+    const showText = btn.dataset.showText || 'Show steps ▾';
+    const hideText = btn.dataset.hideText || 'Hide steps ▴';
+    btn.textContent = isOpen ? hideText : showText;
   }
 
   updateUI();
@@ -1577,4 +2007,3 @@ titanic.groupby(<span class="str">"Pclass"</span>)[<span class="str">"Survived"<
 
 </body>
 </html>
-
